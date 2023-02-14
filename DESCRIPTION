@@ -2,19 +2,26 @@ Package: ProbSup
 Title: Probability of superior performance of genotypes evaluated at Multi-Environment Trials (METs)
 Version: 0.0.0.9000
 Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
-                     email = "saulo.chaves@ufv.br"),
+                     email = "saulo.chaves@ufv.br",
+                     comment = c(ORCID = "0000-0002-0694-1798")),
               person("Kaio", "Dias", role = "aut",
-                     email = "kaio.o.dias@ufv.br"))
+                     email = "kaio.o.dias@ufv.br",
+                     comment = c(ORCID = "0000-0002-9171-1021")))
 Author: Saulo Chaves
         Kaio Dias
-Description: Run a MET model employing Bayesian statistics, and use its results to estimate the marginal, pairwise and conditional probability of superior performance of each genotype.
+Description: Run a MET model employing Bayesian statistics, 
+            and use its results to estimate the marginal, pairwise and conditional 
+            probability of superior performance of each genotype. The plots are 
+            made using 'ggplot2' package, and can be customized using the very
+            'ggplot2'.
 License: MIT + file LICENSE
-Depends: 
-    rstan,
-    dplyr,
+Depends: R (>= 2.10)
+Imports: dplyr,
     ggplot2,
-    R (>= 2.10)
-Imports: tidyr, tibble, rlang
+    rstan,
+    tidyr, 
+    tibble, 
+    rlang
 Suggests: 
     plotly,
     testthat (>= 3.0.0)
