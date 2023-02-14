@@ -23,7 +23,7 @@ You can install the development version of ProbSup from
 devtools::install_github("saulo-chaves/ProbSup")
 ```
 
-## Example
+## Usage
 
 A basic workflow using the available data is:
 

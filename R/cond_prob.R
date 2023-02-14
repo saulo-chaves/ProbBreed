@@ -48,8 +48,10 @@
 ##'
 ##'
 ##' @examples
-##' \dontrun{conds = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
-##'                   reg = "Region", int = .2, save.df = TRUE, interactive = TRUE)}
+##' \dontrun{
+##' conds = cond_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
+##'                   reg = "Region", int = .2, save.df = TRUE, interactive = TRUE)
+##'                   }
 
 
 cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,

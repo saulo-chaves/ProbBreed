@@ -42,8 +42,10 @@
 ##' @importFrom tibble rownames_to_column
 ##'
 ##' @examples
-##' \dontrun{margs = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
-##'                   int = .2, save.df = TRUE, interactive = TRUE)}
+##' \dontrun{
+##' margs = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
+##'                   int = .2, save.df = TRUE, interactive = TRUE)
+##'                   }
 ##'
 
 marg_prob = function(data, trait, gen, env, extr_outs, int = .2,

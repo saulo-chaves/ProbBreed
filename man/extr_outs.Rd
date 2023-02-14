@@ -67,7 +67,9 @@ This function extracts outputs of the Bayesian model fitted using "rstan",
 and provides some diagnostics about the model
 }
 \examples{
-\dontrun{outs = extr_outs(data = df, trait = "GY", gen = "H", model = Model4,
+\dontrun{
+outs = extr_outs(data = df, trait = "GY", gen = "H", model = Model4,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)}
+                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+                 }
 }

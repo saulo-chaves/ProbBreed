@@ -48,9 +48,11 @@
 ##'
 ##'
 ##' @examples
-##' \dontrun{outs = extr_outs(data = df, trait = "GY", gen = "H", model = Model4,
+##' \dontrun{
+##' outs = extr_outs(data = df, trait = "GY", gen = "H", model = Model4,
 ##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)}
+##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+##'                  }
 
 extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
                      check.stan.diag = FALSE, ...){

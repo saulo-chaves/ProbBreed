@@ -59,7 +59,9 @@ This function computates the marginal probabilities of superior performance and
 yields plots for better visualization. All the plots are customizable, using ggplot2
 }
 \examples{
-\dontrun{margs = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
-                  int = .2, save.df = TRUE, interactive = TRUE)}
+\dontrun{
+margs = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
+                  int = .2, save.df = TRUE, interactive = TRUE)
+                  }
 
 }
