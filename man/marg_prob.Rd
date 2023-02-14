@@ -60,8 +60,21 @@ yields plots for better visualization. All the plots are customizable, using ggp
 }
 \examples{
 \dontrun{
-margs = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
-                  int = .2, save.df = TRUE, interactive = TRUE)
+mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
+                env = c("Location", "normal", "cauchy"),
+                rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+                trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
+                mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+                reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+                iter = 100, cores = 2, chain = 2)
+                #Remember, increase the number of iterations, cores and chains
+
+outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
+                 effects = c("r", "b", "l", "m", "g", "gl", "gm"),
+                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+
+margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location",
+                  extr_outs = outs, int = .2, save.df = TRUE, interactive = TRUE)
                   }
 
 }

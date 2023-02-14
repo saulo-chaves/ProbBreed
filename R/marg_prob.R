@@ -33,18 +33,34 @@
 ##' superior performance
 ##' }
 ##'
-##' @export
+##'
 ##'
 ##' @import ggplot2 dplyr
 ##' @importFrom utils write.csv
 ##' @importFrom tidyr pivot_longer
 ##' @importFrom tidyr separate
 ##' @importFrom tibble rownames_to_column
+##' @importFrom rlang .data
+##'
+##' @export
 ##'
 ##' @examples
 ##' \dontrun{
-##' margs = marg_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
-##'                   int = .2, save.df = TRUE, interactive = TRUE)
+##' mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
+##'                 env = c("Location", "normal", "cauchy"),
+##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
+##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+##'                 iter = 100, cores = 2, chain = 2)
+##'                 #Remember, increase the number of iterations, cores and chains
+##'
+##' outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
+##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
+##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+##'
+##' margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location",
+##'                   extr_outs = outs, int = .2, save.df = TRUE, interactive = TRUE)
 ##'                   }
 ##'
 
@@ -52,7 +68,6 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
                      save.df = FALSE, interactive = FALSE){
 
   requireNamespace('ggplot2')
-  requireNamespace('tidyr')
   requireNamespace('dplyr')
 
   mod = extr_outs
@@ -65,17 +80,18 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
                                dimnames=list(t(outer(colnames(mod$post$g),
                                                      rownames(mod$post$g),
                                                      FUN=paste)), NULL))) %>%
-    mutate(gen = rep(name.gen, each = nrow(mod$post$g))) %>%  group_by(gen) %>%
+    dplyr::mutate(gen = rep(name.gen, each = nrow(mod$post$g))) %>%
+    dplyr::group_by(.data$gen) %>%
     summarise(
-      g = median(V1),
-      UP = quantile(V1, probs = 0.95),
-      up = quantile(V1, probs = 0.975),
-      DOWN = quantile(V1, probs = 0.05),
-      down = quantile(V1, probs = 0.025)
+      g = stats::median(.data$V1),
+      UP = stats::quantile(.data$V1, probs = 0.95),
+      up = stats::quantile(.data$V1, probs = 0.975),
+      DOWN = stats::quantile(.data$V1, probs = 0.05),
+      down = stats::quantile(.data$V1, probs = 0.025)
     ) %>%
-    ggplot(aes(x = g, y = reorder(gen,g))) +
-    geom_errorbar(aes(xmin = down, xmax = up), width = 0)+
-    geom_errorbar(aes(xmin = DOWN, xmax = UP), width = 0, linewidth = 2, alpha = .8) +
+    ggplot(aes(x = .data$g, y = reorder(.data$gen, .data$g))) +
+    geom_errorbar(aes(xmin = .data$down, xmax = .data$up), width = 0)+
+    geom_errorbar(aes(xmin = .data$DOWN, xmax = .data$UP), width = 0, linewidth = 2, alpha = .8) +
     labs(x = 'Values', y = 'Genotypes') +
     geom_point(size = 4, color = '#781c1e')
 
@@ -91,9 +107,9 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
   prob_g = prob_g[order(prob_g$prob, decreasing = T),]
   prob_g$ID = factor(prob_g$ID, levels = prob_g$ID)
 
-  psps.bar = ggplot(prob_g, aes(x = ID, y = prob))+
+  psps.bar = ggplot(prob_g, aes(x = .data$ID, y = .data$prob))+
     geom_bar(stat = 'identity', fill = '#781c1e')+
-    geom_text(aes(label = round(prob,2)), fontface = 'bold', vjust = -.4,
+    geom_text(aes(label = round(.data$prob,2)), fontface = 'bold', vjust = -.4,
               angle = 45, hjust = -.3)+
     labs(x = 'Genotypes', y = 'Probability') +
     theme(axis.text.x = element_text(angle = 90))
@@ -114,13 +130,13 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
   pwsprob = as.data.frame(pwsprob) %>%
     tibble::rownames_to_column(var = 'gen') %>%
     tidyr::pivot_longer(cols = c(colnames(pwsprob)[1]:colnames(pwsprob)[length(colnames(pwsprob))])) %>%
-    rename('gen2' = name, 'prob' = value)
+    dplyr::rename('gen2' = .data$name, 'prob' = .data$value)
 
   pwsprob$gen = factor(pwsprob$gen, levels = unique(pwsprob$gen))
   pwsprob$gen2 = factor(pwsprob$gen2, levels = unique(pwsprob$gen))
 
-  pwsp.heat = ggplot(pwsprob, aes(x = gen, y = gen2))+
-    geom_tile(aes(fill = prob), colour = 'white')+
+  pwsp.heat = ggplot(pwsprob, aes(x = .data$gen, y = .data$gen2))+
+    geom_tile(aes(fill = .data$prob), colour = 'white')+
     labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
     theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
           legend.position = c(.8,.15), legend.direction = 'horizontal')+
@@ -130,8 +146,8 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
                                  title.hjust = .5))
 
   if(save.df){
-    write.csv(prob_g, file = paste0(getwd(),'/probsp.csv'), row.names = F)
-    write.csv(pwsprob, file = paste0(getwd(),'/pwsprob.csv'), row.names = F)
+    utils::write.csv(prob_g, file = paste0(getwd(),'/probsp.csv'), row.names = F)
+    utils::write.csv(pwsprob, file = paste0(getwd(),'/pwsprob.csv'), row.names = F)
   }
 
   if(interactive){
@@ -139,12 +155,12 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
     requireNamespace('plotly')
 
     g_hpd = plotly::ggplotly(g_hpd)
-    psps.bar = plotly::ggplotly(ggplot(prob_g, aes(x = ID, y = prob))+
+    psps.bar = plotly::ggplotly(ggplot(prob_g, aes(x = .data$ID, y = .data$prob))+
                           geom_bar(stat = 'identity', fill = '#781c1e')+
                           labs(x = 'Genotypes', y = 'Probability') +
                           theme(axis.text.x = element_text(angle = 90)))
-    pwsp.heat = plotly::ggplotly(ggplot(pwsprob, aes(x = gen, y = gen2))+
-                           geom_tile(aes(fill = prob), colour = 'white')+
+    pwsp.heat = plotly::ggplotly(ggplot(pwsprob, aes(x = .data$gen, y = .data$gen2))+
+                           geom_tile(aes(fill = .data$prob), colour = 'white')+
                            labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
                            theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
                                  legend.position = 'right', legend.direction = 'vertical')+

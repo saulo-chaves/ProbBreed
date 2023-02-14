@@ -9,8 +9,12 @@ Author: Saulo Chaves
         Kaio Dias
 Description: Run a MET model employing Bayesian statistics, and use its results to estimate the marginal, pairwise and conditional probability of superior performance of each genotype.
 License: MIT + file LICENSE
-Depends: rstan, dplyr, ggplot2
-Imports: tidyr, tibble
+Depends: 
+    rstan,
+    dplyr,
+    ggplot2,
+    R (>= 2.10)
+Imports: tidyr, tibble, rlang
 Suggests: 
     plotly,
     testthat (>= 3.0.0)
@@ -18,3 +22,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Config/testthat/edition: 3
+LazyData: true

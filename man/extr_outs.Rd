@@ -68,7 +68,16 @@ and provides some diagnostics about the model
 }
 \examples{
 \dontrun{
-outs = extr_outs(data = df, trait = "GY", gen = "H", model = Model4,
+mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
+                env = c("Location", "normal", "cauchy"),
+                rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+                trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
+                mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+                reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+                iter = 100, cores = 2, chain = 2)
+                #Do not forget to increase the number of iterations, cores and chains
+
+outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
                  }

@@ -94,12 +94,13 @@ trials using RStan, the R interface to Stan.
 }
 \examples{
 \dontrun{
-mod = bayes_met(data = df, gen = c("Hybrid", "normal", "cauchy"),
+mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
                 env = c("Location", "normal", "cauchy"),
                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-                iter = 8000, cores = 4, chain = 4)
+                iter = 100, cores = 2, chain = 2)
+                #You may want to increase the number of iterations, cores and chains
                 }
 }

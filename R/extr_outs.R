@@ -40,16 +40,25 @@
 ##' }
 ##'
 ##'
-##' @export
 ##'
 ##' @import rstan ggplot2
 ##' @importFrom utils write.csv
+##' @importFrom rlang .data
 ##'
-##'
+##' @export
 ##'
 ##' @examples
 ##' \dontrun{
-##' outs = extr_outs(data = df, trait = "GY", gen = "H", model = Model4,
+##' mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
+##'                 env = c("Location", "normal", "cauchy"),
+##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
+##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+##'                 iter = 100, cores = 2, chain = 2)
+##'                 #Do not forget to increase the number of iterations, cores and chains
+##'
+##' outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
 ##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
 ##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
 ##'                  }
@@ -174,8 +183,10 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
     y = c(y, c(out[['y_gen']])),
     type = c(rep('Real data', length(y)), rep('Generated data', length(c(out[['y_gen']]))))
   )
+
+
   den_plot = ggplot(plot) +
-    geom_density(aes(x = y, color = type, fill = type), alpha = .4) +
+    geom_density(aes(x = .data$y, color = .data$type, fill = .data$type), alpha = .4) +
     scale_color_manual(values = c("#0E74E7", "#D65B00"))+
     scale_fill_manual(values = c("#0E74E7", "#D65B00"))+
     theme(legend.position = 'bottom')+

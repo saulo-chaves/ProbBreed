@@ -38,19 +38,35 @@
 ##' provided for "reg"
 ##' }
 ##'
-##' @export
+##'
 ##'
 ##' @import ggplot2 dplyr
 ##' @importFrom utils write.csv
 ##' @importFrom tidyr pivot_longer
 ##' @importFrom tidyr separate
 ##' @importFrom tibble rownames_to_column
+##' @importFrom rlang .data
 ##'
+##' @export
 ##'
 ##' @examples
 ##' \dontrun{
-##' conds = cond_prob(data = df, trait = "GY", gen = "H",env = "L", extr_outs = outs,
-##'                   reg = "Region", int = .2, save.df = TRUE, interactive = TRUE)
+##' mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
+##'                 env = c("Location", "normal", "cauchy"),
+##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
+##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+##'                 iter = 100, cores = 2, chain = 2)
+##'                 #Reiterating: increase the number of iterations, cores and chains
+##'
+##' outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
+##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
+##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+##'
+##' conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location",
+##'                   extr_outs = outs, reg = "Region", int = .2,
+##'                   save.df = TRUE, interactive = TRUE)
 ##'                   }
 
 
@@ -77,10 +93,10 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                       dimnames = list(name.gen, name.env)), 1, sd)
     V2 = apply(matrix(mod$map$gm, num.gen, num.reg,
                       dimnames = list(name.gen, name.reg)), 1, sd)
-    Zi = quantile(mod$post$g, probs = .95)
+    Zi = stats::quantile(mod$post$g, probs = .95)
     Risk = mod$map$g - (Zi * V1+V2)
-    Risk = as.data.frame(Risk) %>% rownames_to_column(var = 'gen') %>%
-      arrange(desc(Risk))
+    Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
+      dplyr::arrange(desc(Risk))
     Risk$gen = factor(Risk$gen, levels = Risk$gen)
 
     sfi = ggplot(Risk, aes(x = gen, y = Risk))+
@@ -131,20 +147,20 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                  tapply(x, rep(name.gen, num.sim), mean)
                  })
 
-   env.heat = as.data.frame(probs) %>% rownames_to_column(var = 'gen') %>%
-     pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
-     separate(name, into = c('envir','region'), sep = '_') %>%
-     ggplot(aes(x = envir, y = reorder(gen, value), fill = value))+
+   env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
+     tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
+     tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+     ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
      labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
            legend.position = 'right', legend.direction = 'vertical')+
      scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
 
-   reg.heat = as.data.frame(probs) %>% rownames_to_column(var = 'gen') %>%
-     pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
-     separate(name, into = c('envir','region'), sep = '_') %>%
-     ggplot(aes(x = region, y = reorder(gen, value), fill = value))+
+   reg.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
+     tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
+     tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+     ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
      labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
@@ -152,7 +168,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
 
    if(save.df){
-     write.csv(probs, file = paste0(getwd(),'/psp_env_reg.mat.csv'), row.names = F)
+     utils::write.csv(probs, file = paste0(getwd(),'/psp_env_reg.mat.csv'), row.names = F)
    }
 
    if(interactive){
@@ -173,10 +189,10 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
     Vi = apply(matrix(mod$map$gl, num.gen, num.env,
                       dimnames = list(name.gen, name.env)), 1, sd)
-    Zi = quantile(mod$post$g, probs = .95)
+    Zi = stats::quantile(mod$post$g, probs = .95)
     Risk = mod$map$g - (Zi * Vi)
-    Risk = as.data.frame(Risk) %>% rownames_to_column(var = 'gen') %>%
-      arrange(desc(Risk))
+    Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
+      dplyr::arrange(desc(Risk))
     Risk$gen = factor(Risk$gen, levels = Risk$gen)
 
     sfi = ggplot(Risk, aes(x = gen, y = Risk))+
@@ -219,10 +235,10 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       tapply(x, rep(name.gen, num.sim), mean)
     })
 
-    env.heat = as.data.frame(probs) %>% rownames_to_column(var = 'gen') %>%
-      pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))]),
+    env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
+      tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))]),
                   names_to = 'envir') %>%
-      ggplot(aes(x = envir, y = reorder(gen, value), fill = value))+
+      ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
       geom_tile(colour = 'white')+
       labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
       theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
@@ -231,7 +247,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
 
     if(save.df){
-      write.csv(probs, file = paste0(getwd(),'/psp_env.mat.csv'), row.names = F)
+      utils::write.csv(probs, file = paste0(getwd(),'/psp_env.mat.csv'), row.names = F)
     }
 
     if(interactive){
