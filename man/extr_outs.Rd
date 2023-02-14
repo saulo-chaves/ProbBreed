@@ -27,8 +27,17 @@ corresponds to the evaluated genotypes}
 
 \item{model}{An object containing the Bayesian model fitted using rstan}
 
-\item{effects}{A string vector containing the names of the effects included
-in the model}
+\item{effects}{A string vector containing the codes of the effects included
+in the model. The codes are:
+\itemize{
+\item \code{r} : replicate effect
+\item \code{b} : block inside replicate effect (if the trials are lattices)
+\item \code{l} : environment (or location) effect
+\item \code{m} : region effect (if it is available)
+\item \code{g} : genetic effect
+\item \code{gl} : genotype-by-location effect
+\item \code{gm} : genotype-by-region effect
+}}
 
 \item{nenv}{The number of environments in the analysis}
 
