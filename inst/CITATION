@@ -1,0 +1,16 @@
+citHeader("To cite ProbSup in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "ProbSup for genotypes' probability of superior performance",
+  author   = "Saulo Chaves, Kaio Dias, Matheus Krause",
+  journal  = "XXX",
+  year     = "2023",
+  volume   = "XX",
+  number   = "XX",
+  pages    = "XX - XX",
+  url      = "bla",
+  textVersion = paste(
+
+  )
+)
