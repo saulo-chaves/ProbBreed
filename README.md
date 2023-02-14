@@ -39,7 +39,7 @@ mod = bayes_met(data = maize,
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
-          iter = 100, cores = 2, chain = 2) # You may want to increase the number of iterations
+          iter = 100, cores = 2, chain = 2) # You may want to increase the number of iterations, cores and chains
 
 outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
