@@ -31,7 +31,7 @@ corresponds to the environments}
 \item{reg}{A character representing the name of the column that
 corresponds to the regions. NULL otherwise (default)}
 
-\item{extr_outs}{An object from the 'extr_outs' function}
+\item{extr_outs}{An object from the \code{extr_outs} function}
 
 \item{int}{numeric A number representing the selection intensity
 (superior limit = 1)}
@@ -41,7 +41,8 @@ probability of each genotype and the pairwise probabilities should be saved at
 the work directory.}
 
 \item{interactive}{A logical value indicating if the plots should be interactive.
-If TRUE, the function loads the "plotly" package and uses the "ggplotly" command.}
+If TRUE, the function loads the \code{plotly} package and uses the \code{\link[plotly:ggplotly]{plotly::ggplotly()}}
+command.}
 }
 \value{
 The function returns a list with:
@@ -61,9 +62,32 @@ provided for "reg"
 }
 }
 \description{
-This function computates the  probabilities of superior performance within
+This function estimates the  probabilities of superior performance within
 environments and yields plots for better visualization.
-All the plots are customizable, using ggplot2
+All the plots are customizable, using \code{ggplot2}
+}
+\details{
+Using \code{cond_prob()}, you can estimate the probability of a genotype being amongst the
+selected, based on a given selection intensity in a specific environment or
+breeding region. If we let \eqn{\Omega_k} represent the subset of superior
+genotypes in the \if{html}{\out{<i>}}kth\if{html}{\out{</i>}} environment, then the probability of the \if{html}{\out{<i>}}jth\if{html}{\out{</i>}}
+genotype belonging to \eqn{\Omega_k} is:
+
+\deqn{Pr(g_{jk} \in \Omega_k \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} \in \Omega \vert y)}}
+
+where \eqn{S} is the total number of samples, and \eqn{I(g_{jk}^{(s)} \in \Omega \vert y)}
+is an indicator variable mapping success (1) if \eqn{g_{jk}^{(s)}} exists in \eqn{\Omega},
+and failure (0) otherwise.
+
+This function also estimates a Bayesian adapatation of Eskridge's (1990) safety-first
+index, given by:
+
+\deqn{g_j - Z_e(1-\alpha)(\sigma^2_j)^{\frac{1}{2}}}
+
+where \eqn{\sigma^2_j} is the genotype-by-environment interaction variance for
+genotype \if{html}{\out{<i>}}j\if{html}{\out{</i>}}, \eqn{Z_e(1-\alpha)} is the percentile of posterior distribution
+of the genotype main effect considering a threshold of \eqn{\alpha = 0.05},
+and \eqn{g_j} is the maximum posteriori for genotype main effect.
 }
 \examples{
 \dontrun{
@@ -84,4 +108,16 @@ conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location",
                   extr_outs = outs, reg = "Region", int = .2,
                   save.df = TRUE, interactive = TRUE)
                   }
+}
+\references{
+Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
+Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
+for cultivar recommendation in multi-environment trials. \if{html}{\out{<i>}}Theoretical and
+Applied Genetics\if{html}{\out{</i>}}, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
+
+Eskridge KM (1990) Selection of stable cultivars using a safety-first rule.
+\if{html}{\out{<i>}}Crop Science\if{html}{\out{</i>}} 30:369–374. https://doi.org/10.2135/cropsci1990.0011183X003000020025x
+}
+\seealso{
+\code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}
 }

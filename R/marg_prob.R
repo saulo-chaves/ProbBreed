@@ -1,9 +1,38 @@
 ## Function marg_prob
 ##
-##' This function computates the marginal probabilities of superior performance and
-##' yields plots for better visualization. All the plots are customizable, using ggplot2
+##' @title
+##' Marginal probabilities of superior performance
 ##'
-##' @title Marginal probabilities of superior performance
+##'
+##' @description
+##' This function estimates the marginal probabilities of superior performance and
+##' yields plots for better visualization. All the plots are customizable, using `ggplot2`
+##'
+##' @details
+##' Using `marg_prob()`, you can estimate the probability of a genotype being amongst the
+##' selected, based on a given selection intensity. If we let \eqn{\Omega} represent the
+##' subset of superior genotypes, then the probability of the <i>jth</i> genotype belonging to
+##' \eqn{\Omega} is:
+##'
+##' \deqn{Pr(g_j \in \Omega \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} \in \Omega \vert y)}}
+##'
+##' where \eqn{S} is the total number of samples, and \eqn{I(g_j^{(s)} \in \Omega \vert y)}
+##' is an indicator variable mapping success (1) if \eqn{g_j^{(s)}} exists in \eqn{\Omega},
+##' and failure (0) otherwise.
+##'
+##' This function also estimates the pairwise probability of superior performance, i.e.
+##' the probability of a given genotype <i>j</i> being superior to genotype <i>i</i>:
+##'
+##' \deqn{Pr(g_j > g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} > g_i^{(s)} \vert y)}}
+##'
+##' @references
+##'
+##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
+##' Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
+##' for cultivar recommendation in multi-environment trials. <i>Theoretical and
+##' Applied Genetics</i>, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
+##'
+##'
 ##' @param data A dataframe containing the observations
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable
@@ -11,18 +40,19 @@
 ##' corresponds to the evaluated genotypes
 ##' @param env A character representing the name of the column that
 ##' corresponds to the environments
-##' @param extr_outs An object from the 'extr_outs' function
+##' @param extr_outs An object from the `extr_outs` function
 ##' @param int An integer representing the selection intensity
 ##' (superior limit = 1)
 ##' @param save.df A logical value indicating if the data frames with the marginal
 ##' probability of each genotype and the pairwise probabilities should be saved at
 ##' the work directory.
 ##' @param interactive A logical value indicating if the plots should be interactive.
-##' If TRUE, the function loads the "plotly" package and uses the "ggplotly" command.
+##' If TRUE, the function loads the `plotly` package and uses the [plotly::ggplotly]
+##' command.
 ##' @return The function returns a list with:
 ##' \itemize{
 ##' \item \code{g_hpd} : a catterpillar plot representing the performance of
-##' each genotype, and their respective confidence interval (95% and 97.5%)
+##' each genotype, and their respective confidence interval (95% (thick) and 97.5% (thin))
 ##' \item \code{marg_prob.df} : a dataframe with the marginal probability of superior
 ##' performance of each genotype
 ##' \item \code{marg_prob.plot} : a bar plot with the marginal probability of superior
@@ -33,7 +63,7 @@
 ##' superior performance
 ##' }
 ##'
-##'
+##' @seealso [ggplot2::ggplot()]
 ##'
 ##' @import ggplot2 dplyr
 ##' @importFrom utils write.csv

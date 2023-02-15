@@ -24,24 +24,19 @@ bayes_met(
 \arguments{
 \item{data}{A dataframe containing the observations}
 
-\item{gen}{A string vector. The first element is the name of the
-column that corresponds to the evaluated genotype. The second element is the
-prior probability distribution of this parameter. The third element is the
-hyperprior of this parameter. This order must be followed.}
+\item{gen, env}{A string vector. The first element is the name of the
+column that corresponds to the evaluated genotype or environment.
+The second element is the  prior probability distribution of this parameter.
+The third element is the hyperprior of this parameter. This order must be followed.}
 
-\item{env}{A string vector. The first element is the name of the
-column that corresponds to the environments. The second element is the
-prior probability distribution of this parameter. The third element is the
-hyperprior of this parameter. This order must be followed.}
-
-\item{rept}{A vector, a list or NULL. If the trial is randomized in complete blocks,
+\item{rept}{A vector, a list or \code{NULL}. If the trial is randomized in complete blocks,
 rept will be a vector with the first element representing the name of the column
 that corresponds to the blocks, the second element being the prior probability
 distribution of the block parameter, and the third element representing the
 hyperprior of this parameter. If the trial is randomized in a lattice,
 rept will be a list containing two vectors with the same structure previously
 mentioned: a vector for replicate effects, and a vector for block effects.
-If the data do not have replicates, rept will be NULL.}
+If the data do not have replicates, rept will be \code{NULL}.}
 
 \item{trait}{A character representing the name of the column that
 corresponds to the analysed variable.}
@@ -50,17 +45,12 @@ corresponds to the analysed variable.}
 is give (so hyperparam = 'default'), the function will use max(trait) * 10
 as the global hyperparameter.}
 
-\item{sigma.dist}{A string vector containing the prior probability distribution
-(1st element) and the hyperprior (2nd element) of the residual effects.
-The default is c("cauchy","cauchy").}
-
-\item{mu.dist}{A string vector containing the prior probability distribution
-(1st element) and the hyperprior (2nd element) of the intercept. The default
-is c("normal","cauchy").}
-
-\item{gli.dist}{A string vector containing the prior probability distribution
-(1st element) and the hyperprior (2nd element) of the genotype-by-environment
-interaction. The default is c("normal","cauchy").}
+\item{sigma.dist, mu.dist, gli.dist}{A string vector containing the prior
+probability distribution (1st element) and the hyperprior (2nd element)
+of the residual effects (\code{sigma.dist}, which the default is \code{c("cauchy","cauchy")}),
+intercept (\code{mu.dist}, which the default is \code{c("normal", "normal")}), or the
+genotype-by-environment interaction (\code{gli.dist}, which the default is also
+\code{c("normal", "normal")}).}
 
 \item{reg}{A list containing two string vectors. The first vector have the name
 of the column that contain the information of region in the first position, the
@@ -70,30 +60,31 @@ hyperprior of the genotype-by-region interaction effects, in the first and
 second position, respectively. If there are no information about regions in
 the dataset, reg = NULL (default).}
 
-\item{iter}{Inherited from the "sampling" function of the "rstan" package.
+\item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of iterations for each chain
 (including warmup). The default is 2000.}
 
-\item{cores}{Inherited from the "sampling" function of the "rstan" package.
+\item{cores}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of cores to use when executing the
 chains in parallel (defaults to 1).}
 
-\item{chain}{Inherited from the "sampling" function of the "rstan" package.
+\item{chain}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of Markov chains. The default is 4.}
 
-\item{...}{Additional arguments passed to the "sampling" function.
-For more information, see "sampling" manual}
+\item{...}{Additional arguments passed to the \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} function.
+For more information, see \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} manual}
 }
 \value{
 The function returns an object of S4 class stanfit containing the
 fitted results
 }
 \description{
-This function runs a Bayesian model for analysing data from Multi-environment
-trials using RStan, the R interface to Stan.
+This function runs a Bayesian model for analysing data from
+Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Stan}.
 }
 \examples{
 \dontrun{
+# Good
 mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
                 env = c("Location", "normal", "cauchy"),
                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
@@ -102,5 +93,16 @@ mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
                 iter = 100, cores = 2, chain = 2)
                 #You may want to increase the number of iterations, cores and chains
+
+# Bad
+mod = bayes_met(data = maize, gen = "Hybrid", env = "Location",
+                rept = "Rep", trait = "GY", hyperparam = "default",
+                mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+                reg = "Region", sigma.dist = c("cauchy", "cauchy"),
+                iter = 100, cores = 2, chain = 2)
+                #Do not forget the priors and hyperpriors!
                 }
+}
+\seealso{
+\code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}
 }

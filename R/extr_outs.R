@@ -1,15 +1,18 @@
 ## Function extr_outs
 ##
-##' This function extracts outputs of the Bayesian model fitted using "rstan",
-##' and provides some diagnostics about the model
+##' @title
+##' Extracting outputs from [ProbSup::bayes_met()] objects
 ##'
-##' @title Extracting outputs of "rstan" models
+##' @description
+##' This function extracts outputs of the Bayesian model fitted
+##' using [ProbSup::bayes_met()], and provides some diagnostics about the model
+##'
 ##' @param data A dataframe containing the observations
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable
 ##' @param gen A character representing the name of the column that
 ##' corresponds to the evaluated genotypes
-##' @param model An object containing the Bayesian model fitted using rstan
+##' @param model An object containing the Bayesian model fitted using `rstan`
 ##' @param effects A string vector containing the codes of the effects included
 ##' in the model. The codes are:
 ##' \itemize{
@@ -25,7 +28,7 @@
 ##' @param res.het Are the residual heterogeneous? Default is FALSE
 ##' @param check.stan.diag A logical value indicating whether the function should
 ##' extract some diagnostic using native stan functions.
-##' @param ... Passed to stan_diag (for more information, see stan_diag manual)
+##' @param ... Passed to [rstan::stan_diag()]
 ##' @return The function returns a list with:
 ##' \itemize{
 ##' \item \code{post} : a list with the posterior of the effects, and the data
@@ -36,16 +39,17 @@
 ##' median, mean and standard deviation; effective number of parameters, WAIC2
 ##' value and Rhat
 ##' \item \code{den_plot} a density plot comparing the generated data and the
-##' real data. Note that this plot is customizable using the "ggplot2" library
+##' real data. Note that this plot is customizable using the `ggplot2` library
 ##' }
 ##'
+##' @seealso [rstan::stan_diag()], [ggplot2::ggplot()]
 ##'
 ##'
 ##' @import rstan ggplot2
 ##' @importFrom utils write.csv
 ##' @importFrom rlang .data
 ##'
-##' @export
+##'
 ##'
 ##' @examples
 ##' \dontrun{
@@ -62,6 +66,7 @@
 ##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
 ##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
 ##'                  }
+##' @export
 
 extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
                      check.stan.diag = FALSE, ...){
