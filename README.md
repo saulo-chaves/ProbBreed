@@ -30,8 +30,6 @@ A basic workflow using the available data is:
 ``` r
 library(ProbSup)
 
-df = read.csv('maize_dataset.csv')
-
 mod = bayes_met(data = maize, 
           gen = c("Hybrid", "normal", "cauchy"), 
           env = c("Location", "normal", "cauchy"),
