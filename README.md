@@ -45,10 +45,10 @@ outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
 
-margs_pair = marg_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location", 
+margs_pair = marg_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location", increase = T,
                        extr_outs = outs, int = .2, save.df = F, interactive = F)
 
 conds = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location", 
-                  extr_outs = outs, reg = "Region", int = .2,
+                  extr_outs = outs, reg = "Region", int = .2,increase = T
                   save.df = F, interactive = F)
 ```
