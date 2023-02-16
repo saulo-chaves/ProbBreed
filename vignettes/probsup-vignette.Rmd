@@ -45,7 +45,7 @@ env = c("Location", "normal", "cauchy")
 When you provide the function with these vectors, you are saying that "the column in my data frame that has the information of genotypes is called 'Hybrid', and this effect will have a prior following the normal distribution, and a hyperprior following the half-cauchy distribution". 
 
 
-2- Currently, the function has six options of models: Three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
+2- Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
 
 ```{r}
 knitr::include_graphics("img/scheme.svg")
@@ -57,6 +57,8 @@ Note that when you consider the Region information, and when the trials are latt
 
 4- You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 4000 iterations, 4 cores and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
 
+5- You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
+
 Without further ado, let us see how the six models can be fitted using `bayes_met`. We used the "maize" data, which is contained within the package.
 
 ### Without Region and only means
@@ -67,6 +69,7 @@ mod = bayes_met(data = maize,
           env = c("Location", "normal", "cauchy"),
           rept = NULL,
           reg = NULL,
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
@@ -80,12 +83,13 @@ mod = bayes_met(data = maize,
           env = c("Location", "normal", "cauchy"),
           rept = c("Block", "normal", "cauchy"),
           reg = NULL,
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
 ```
 
-### Withou Region and lattice
+### Without Region and lattice
 
 ```{r eval=FALSE}
 mod = bayes_met(data = maize, 
@@ -93,6 +97,7 @@ mod = bayes_met(data = maize,
           env = c("Location", "normal", "cauchy"),
           rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
           reg = NULL,
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4) 
@@ -105,6 +110,7 @@ mod = bayes_met(data = maize,
           gen = c("Hybrid", "normal", "cauchy"), 
           env = c("Location", "normal", "cauchy"),
           rept = NULL,
+          res.het = T,
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
@@ -119,6 +125,7 @@ mod = bayes_met(data = maize,
           env = c("Location", "normal", "cauchy"),
           rept = c("Block", "normal", "cauchy"),
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
@@ -132,24 +139,73 @@ mod = bayes_met(data = maize,
           env = c("Location", "normal", "cauchy"),
           rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4) 
 ```
 
-```{r eval=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 mod = bayes_met(data = maize, 
           gen = c("Hybrid", "normal", "cauchy"), 
           env = c("Location", "normal", "cauchy"),
           rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 100, cores = 2, chain = 2) 
 ```
 
+We will take this last model as an example for the next steps. We will run this model only with 100 iterations, for the sake of reproducibility.
+
+## Step three - `extr_outs`
+
+After fitting the model, the next step is to extract some outputs. The `extr_outs` function is a pre-requisite for estimating the probability of superior performance using the other functions. `extr_outs` also provide some important diagnostics regarding the convergence and reliability of the model. 
+
+Using the `mod` object from the previous step:
+```{r echo=TRUE, warning=FALSE, results='hide'}
+outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
+                 effects = c("r", "b", "l", "m", "g", "gl", "gm"),
+                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+
+```
+
+This function has some novelties: 
+
+1- `mod` is the model fitted using `bayes_met`
+
+2- `effects` indicates which effects `mod` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
+
+\item \code{r} : replicate effect
+
+\item \code{b} : block inside replicate effect (if the trials are lattices)
+
+\item \code{l} : environment (or location) effect
+
+\item \code{m} : region effect (if it is available)
+
+\item \code{g} : genetic effect
+
+\item \code{gl} : genotype-by-location effect
+
+\item \code{gm} : genotype-by-region effect
+
+If the model do not have a given effect, just remove it from the `effects` vector. 
+
+3- `nenv` indicates the number of environments
+
+4- `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan` or not. Note that these plots are built in ggplot2, so they are customizable.
+
+The function provides the maximum a posteriori values
 
 
+
+
+
+
+
+## Step four - `marg_prob`
 
 
 

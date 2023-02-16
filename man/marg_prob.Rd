@@ -11,6 +11,7 @@ marg_prob(
   env,
   extr_outs,
   int = 0.2,
+  increase = T,
   save.df = FALSE,
   interactive = FALSE
 )
@@ -31,6 +32,9 @@ corresponds to the environments}
 
 \item{int}{An integer representing the selection intensity
 (superior limit = 1)}
+
+\item{increase}{Logical: TRUE if genotypes with higher trait values are better.
+FALSE otherwise.}
 
 \item{save.df}{A logical value indicating if the data frames with the marginal
 probability of each genotype and the pairwise probabilities should be saved at
@@ -84,15 +88,17 @@ mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+                res.het = T,
                 iter = 100, cores = 2, chain = 2)
                 #Remember, increase the number of iterations, cores and chains
 
 outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+                 nenv = 16, res.het = T, check.stan.diag = TRUE)
 
 margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location",
-                  extr_outs = outs, int = .2, save.df = TRUE, interactive = TRUE)
+                  increase = TRUE,extr_outs = outs, int = .2,
+                  save.df = TRUE, interactive = TRUE)
                   }
 
 }

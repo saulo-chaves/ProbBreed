@@ -2,8 +2,6 @@
 ##
 ##' @title
 ##' Marginal probabilities of superior performance
-##'
-##'
 ##' @description
 ##' This function estimates the marginal probabilities of superior performance and
 ##' yields plots for better visualization. All the plots are customizable, using `ggplot2`
@@ -43,6 +41,8 @@
 ##' @param extr_outs An object from the `extr_outs` function
 ##' @param int An integer representing the selection intensity
 ##' (superior limit = 1)
+##' @param increase Logical: TRUE if genotypes with higher trait values are better.
+##' FALSE otherwise.
 ##' @param save.df A logical value indicating if the data frames with the marginal
 ##' probability of each genotype and the pairwise probabilities should be saved at
 ##' the work directory.
@@ -82,19 +82,21 @@
 ##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
 ##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
 ##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+##'                 res.het = T,
 ##'                 iter = 100, cores = 2, chain = 2)
 ##'                 #Remember, increase the number of iterations, cores and chains
 ##'
 ##' outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
 ##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+##'                  nenv = 16, res.het = T, check.stan.diag = TRUE)
 ##'
 ##' margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location",
-##'                   extr_outs = outs, int = .2, save.df = TRUE, interactive = TRUE)
+##'                   increase = TRUE,extr_outs = outs, int = .2,
+##'                   save.df = TRUE, interactive = TRUE)
 ##'                   }
 ##'
 
-marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
+marg_prob = function(data, trait, gen, env, extr_outs, int = .2, increase = T,
                      save.df = FALSE, interactive = FALSE){
 
   requireNamespace('ggplot2')
@@ -125,7 +127,7 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
     labs(x = 'Values', y = 'Genotypes') +
     geom_point(size = 4, color = '#781c1e')
 
-
+  if(increase){
   colnames(mod$post$g) = name.gen
   ind_post = apply(mod$post$g, 1, function(x){
     ifelse(name.gen %in%
@@ -139,8 +141,6 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
 
   psps.bar = ggplot(prob_g, aes(x = .data$ID, y = .data$prob))+
     geom_bar(stat = 'identity', fill = '#781c1e')+
-    geom_text(aes(label = round(.data$prob,2)), fontface = 'bold', vjust = -.4,
-              angle = 45, hjust = -.3)+
     labs(x = 'Genotypes', y = 'Probability') +
     theme(axis.text.x = element_text(angle = 90))
 
@@ -153,19 +153,19 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
     }
   }
   colnames(pwsprob) = rownames(pwsprob) = name.gen
-  pwsprob = pwsprob[match(prob_g$ID, rownames(pwsprob)),
+  pwsprob1 = pwsprob[match(prob_g$ID, rownames(pwsprob)),
                     match(prob_g$ID, rownames(pwsprob))]
-  diag(pwsprob) = NA
-  pwsprob[upper.tri(pwsprob)] = NA
-  pwsprob = as.data.frame(pwsprob) %>%
+  diag(pwsprob1) = NA
+  pwsprob1[upper.tri(pwsprob1)] = NA
+  pwsprob1 = as.data.frame(pwsprob1) %>%
     tibble::rownames_to_column(var = 'gen') %>%
-    tidyr::pivot_longer(cols = c(colnames(pwsprob)[1]:colnames(pwsprob)[length(colnames(pwsprob))])) %>%
+    tidyr::pivot_longer(cols = c(colnames(pwsprob1)[1]:colnames(pwsprob1)[length(colnames(pwsprob1))])) %>%
     dplyr::rename('gen2' = .data$name, 'prob' = .data$value)
 
-  pwsprob$gen = factor(pwsprob$gen, levels = unique(pwsprob$gen))
-  pwsprob$gen2 = factor(pwsprob$gen2, levels = unique(pwsprob$gen))
+  pwsprob1$gen = factor(pwsprob1$gen, levels = unique(pwsprob1$gen))
+  pwsprob1$gen2 = factor(pwsprob1$gen2, levels = unique(pwsprob1$gen))
 
-  pwsp.heat = ggplot(pwsprob, aes(x = .data$gen, y = .data$gen2))+
+  pwsp.heat = ggplot(pwsprob1, aes(x = .data$gen, y = .data$gen2))+
     geom_tile(aes(fill = .data$prob), colour = 'white')+
     labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
     theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
@@ -175,9 +175,18 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
     guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
                                  title.hjust = .5))
 
+  pwsprob = pwsprob[order(rownames(pwsprob)), order(colnames(pwsprob))]
+  diag(pwsprob) = NA
+  pwsprob[upper.tri(pwsprob)] = NA
+  pwsprob = as.data.frame(pwsprob) %>%
+    tibble::rownames_to_column(var = 'gen') %>%
+    tidyr::pivot_longer(cols = c(colnames(pwsprob)[1]:colnames(pwsprob)[length(colnames(pwsprob))])) %>%
+    dplyr::rename('gen2' = .data$name, 'prob' = .data$value)
+
+
   if(save.df){
     utils::write.csv(prob_g, file = paste0(getwd(),'/probsp.csv'), row.names = F)
-    utils::write.csv(pwsprob, file = paste0(getwd(),'/pwsprob.csv'), row.names = F)
+    utils::write.csv(stats::na.exclude(pwsprob), file = paste0(getwd(),'/pwsprob.csv'), row.names = F)
   }
 
   if(interactive){
@@ -203,5 +212,93 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2,
     names(out) = c('g_hpd', 'marg_prob.df', 'marg_prob.plot', 'pair_prob.df', 'pair_prob.plot')
 
   return(out)
+
+  }else{
+    colnames(mod$post$g) = name.gen
+    ind_post = apply(mod$post$g, 1, function(x){
+      ifelse(name.gen %in%
+               names(x[order(x, decreasing = F)][1:ceiling(int * num.gen)]), 1, 0)
+    })
+    rownames(ind_post) = name.gen
+
+    prob_g = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
+    prob_g = prob_g[order(prob_g$prob, decreasing = T),]
+    prob_g$ID = factor(prob_g$ID, levels = prob_g$ID)
+
+    psps.bar = ggplot(prob_g, aes(x = .data$ID, y = .data$prob))+
+      geom_bar(stat = 'identity', fill = '#781c1e')+
+      labs(x = 'Genotypes', y = 'Probability') +
+      theme(axis.text.x = element_text(angle = 90))
+
+
+    pwsprob = matrix(NA, num.gen, num.gen)
+
+    for(i in 1:ncol(mod$post$g)){
+      for (j in 1:ncol(mod$post$g)) {
+        pwsprob[i,j] = mean(mod$post$g[,j] < mod$post$g[,i])
+      }
+    }
+    colnames(pwsprob) = rownames(pwsprob) = name.gen
+    pwsprob1 = pwsprob[match(prob_g$ID, rownames(pwsprob)),
+                      match(prob_g$ID, rownames(pwsprob))]
+    diag(pwsprob1) = NA
+    pwsprob1[upper.tri(pwsprob1)] = NA
+    pwsprob1 = as.data.frame(pwsprob1) %>%
+      tibble::rownames_to_column(var = 'gen') %>%
+      tidyr::pivot_longer(cols = c(colnames(pwsprob1)[1]:colnames(pwsprob1)[length(colnames(pwsprob1))])) %>%
+      dplyr::rename('gen2' = .data$name, 'prob' = .data$value)
+
+    pwsprob1$gen = factor(pwsprob1$gen, levels = unique(pwsprob1$gen))
+    pwsprob1$gen2 = factor(pwsprob1$gen2, levels = unique(pwsprob1$gen))
+
+    pwsp.heat = ggplot(pwsprob1, aes(x = .data$gen, y = .data$gen2))+
+      geom_tile(aes(fill = .data$prob), colour = 'white')+
+      labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
+            legend.position = c(.8,.15), legend.direction = 'horizontal')+
+      coord_flip()+
+      scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
+      guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
+                                   title.hjust = .5))
+
+    pwsprob = pwsprob[order(rownames(pwsprob)), order(colnames(pwsprob))]
+    diag(pwsprob) = NA
+    pwsprob[upper.tri(pwsprob)] = NA
+    pwsprob = as.data.frame(pwsprob) %>%
+      tibble::rownames_to_column(var = 'gen') %>%
+      tidyr::pivot_longer(cols = c(colnames(pwsprob)[1]:colnames(pwsprob)[length(colnames(pwsprob))])) %>%
+      dplyr::rename('gen2' = .data$name, 'prob' = .data$value)
+
+
+    if(save.df){
+      utils::write.csv(prob_g, file = paste0(getwd(),'/probsp.csv'), row.names = F)
+      utils::write.csv(stats::na.exclude(pwsprob), file = paste0(getwd(),'/pwsprob.csv'), row.names = F)
+    }
+
+    if(interactive){
+
+      requireNamespace('plotly')
+
+      g_hpd = plotly::ggplotly(g_hpd)
+      psps.bar = plotly::ggplotly(ggplot(prob_g, aes(x = .data$ID, y = .data$prob))+
+                                    geom_bar(stat = 'identity', fill = '#781c1e')+
+                                    labs(x = 'Genotypes', y = 'Probability') +
+                                    theme(axis.text.x = element_text(angle = 90)))
+      pwsp.heat = plotly::ggplotly(ggplot(pwsprob, aes(x = .data$gen, y = .data$gen2))+
+                                     geom_tile(aes(fill = .data$prob), colour = 'white')+
+                                     labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+                                     theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
+                                           legend.position = 'right', legend.direction = 'vertical')+
+                                     coord_flip()+
+                                     scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1)))
+
+    }
+
+    out = list(g_hpd, prob_g, psps.bar, na.exclude(pwsprob), pwsp.heat)
+    names(out) = c('g_hpd', 'marg_prob.df', 'marg_prob.plot', 'pair_prob.df', 'pair_prob.plot')
+
+    return(out)
+  }
+
 }
 

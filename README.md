@@ -35,6 +35,7 @@ mod = bayes_met(data = maize,
           env = c("Location", "normal", "cauchy"),
           rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+          res.het = T,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
           iter = 100, cores = 2, chain = 2) 

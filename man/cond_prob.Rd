@@ -12,6 +12,7 @@ cond_prob(
   reg = NULL,
   extr_outs,
   int = 0.2,
+  increase = TRUE,
   save.df = FALSE,
   interactive = FALSE
 )
@@ -33,8 +34,11 @@ corresponds to the regions. NULL otherwise (default)}
 
 \item{extr_outs}{An object from the \code{extr_outs} function}
 
-\item{int}{numeric A number representing the selection intensity
+\item{int}{A number representing the selection intensity
 (superior limit = 1)}
+
+\item{increase}{Logical: TRUE if genotypes with higher trait values are better.
+FALSE otherwise.}
 
 \item{save.df}{A logical value indicating if the data frames with the marginal
 probability of each genotype and the pairwise probabilities should be saved at
@@ -97,6 +101,7 @@ mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+                res.het = T,
                 iter = 100, cores = 2, chain = 2)
                 #Reiterating: increase the number of iterations, cores and chains
 
@@ -106,7 +111,7 @@ outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
 
 conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location",
                   extr_outs = outs, reg = "Region", int = .2,
-                  save.df = TRUE, interactive = TRUE)
+                  increase = TRUE, save.df = TRUE, interactive = TRUE)
                   }
 }
 \references{

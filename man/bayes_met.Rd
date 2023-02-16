@@ -15,6 +15,7 @@ bayes_met(
   mu.dist = c("normal", "cauchy"),
   gli.dist = c("normal", "cauchy"),
   reg = NULL,
+  res.het = F,
   iter = 4000,
   cores = 4,
   chain = 4,
@@ -60,9 +61,12 @@ hyperprior of the genotype-by-region interaction effects, in the first and
 second position, respectively. If there are no information about regions in
 the dataset, reg = NULL (default).}
 
+\item{res.het}{Logical, indicating if the model should consider heterogeneous
+residual variances. Default is FALSE.}
+
 \item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of iterations for each chain
-(including warmup). The default is 2000.}
+(including warmup). The default is 4000.}
 
 \item{cores}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of cores to use when executing the
@@ -91,6 +95,7 @@ mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+                res.het = F,
                 iter = 100, cores = 2, chain = 2)
                 #You may want to increase the number of iterations, cores and chains
 
@@ -99,6 +104,7 @@ mod = bayes_met(data = maize, gen = "Hybrid", env = "Location",
                 rept = "Rep", trait = "GY", hyperparam = "default",
                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
                 reg = "Region", sigma.dist = c("cauchy", "cauchy"),
+                res.het = F,
                 iter = 100, cores = 2, chain = 2)
                 #Do not forget the priors and hyperpriors!
                 }
