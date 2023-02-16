@@ -44,7 +44,7 @@
 ##' A positive integer specifying the number of Markov chains. The default is 4.
 ##' @param iter Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of iterations for each chain
-##' (including warmup). The default is 2000.
+##' (including warmup). The default is 4000.
 ##' @param cores Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of cores to use when executing the
 ##' chains in parallel (defaults to 1).
