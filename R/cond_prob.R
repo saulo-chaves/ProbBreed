@@ -112,8 +112,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
       # # Eskridge
       #
-      # name.reg = levels(factor(data[,reg]))
-      # num.reg = nlevels(factor(data[,reg]))
+       name.reg = levels(factor(data[,reg]))
+       num.reg = nlevels(factor(data[,reg]))
       #
       # V1 = apply(matrix(mod$map$gl, num.gen, num.env,
       #                   dimnames = list(name.gen, name.env)), 1, sd)
@@ -293,8 +293,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
     # Eskridge
 
-    # name.reg = levels(factor(data[,reg]))
-    # num.reg = nlevels(factor(data[,reg]))
+     name.reg = levels(factor(data[,reg]))
+     num.reg = nlevels(factor(data[,reg]))
     #
     # V1 = apply(matrix(mod$map$gl, num.gen, num.env,
     #                   dimnames = list(name.gen, name.env)), 1, sd)

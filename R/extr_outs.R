@@ -59,6 +59,7 @@
 ##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
 ##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
 ##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+##'                 res.het = T,
 ##'                 iter = 100, cores = 2, chain = 2)
 ##'                 #Do not forget to increase the number of iterations, cores and chains
 ##'

@@ -51,8 +51,6 @@ command.}
 \value{
 The function returns a list with:
 \itemize{
-\item \code{risk.plot} a plot representing the Bayesian Eskridge's Risk
-index (Adapted from Eskridge (1990))
 \item \code{psp_env_reg.mat} : a matrix containing the probability of superior
 performance within environments and regions. Exists only if a string is provided
 for "reg"
@@ -82,16 +80,6 @@ genotype belonging to \eqn{\Omega_k} is:
 where \eqn{S} is the total number of samples, and \eqn{I(g_{jk}^{(s)} \in \Omega \vert y)}
 is an indicator variable mapping success (1) if \eqn{g_{jk}^{(s)}} exists in \eqn{\Omega},
 and failure (0) otherwise.
-
-This function also estimates a Bayesian adapatation of Eskridge's (1990) safety-first
-index, given by:
-
-\deqn{g_j - Z_e(1-\alpha)(\sigma^2_j)^{\frac{1}{2}}}
-
-where \eqn{\sigma^2_j} is the genotype-by-environment interaction variance for
-genotype \if{html}{\out{<i>}}j\if{html}{\out{</i>}}, \eqn{Z_e(1-\alpha)} is the percentile of posterior distribution
-of the genotype main effect considering a threshold of \eqn{\alpha = 0.05},
-and \eqn{g_j} is the maximum posteriori for genotype main effect.
 }
 \examples{
 \dontrun{
@@ -119,9 +107,6 @@ Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. 
 Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
 for cultivar recommendation in multi-environment trials. \if{html}{\out{<i>}}Theoretical and
 Applied Genetics\if{html}{\out{</i>}}, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
-
-Eskridge KM (1990) Selection of stable cultivars using a safety-first rule.
-\if{html}{\out{<i>}}Crop Science\if{html}{\out{</i>}} 30:369–374. https://doi.org/10.2135/cropsci1990.0011183X003000020025x
 }
 \seealso{
 \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}

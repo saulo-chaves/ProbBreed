@@ -47,7 +47,7 @@ command.}
 \value{
 The function returns a list with:
 \itemize{
-\item \code{g_hpd} : a catterpillar plot representing the performance of
+\item \code{g_hpd} : a caterpillar plot representing the performance of
 each genotype, and their respective confidence interval (95\% (thick) and 97.5\% (thin))
 \item \code{marg_prob.df} : a dataframe with the marginal probability of superior
 performance of each genotype
