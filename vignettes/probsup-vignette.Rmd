@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 
@@ -31,33 +32,31 @@ We know you did not come here for this, so let us go to the next step.
 
 ## Step two - `bayes_met`
 
-The second step is to fit a Multi-environment Bayesian model using the `bayes_met` function, using the `rstan` language implemented within it. There are some importantat details that we would like to stress here:
+The second step is to fit a Multi-environment Bayesian model using the `bayes_met` function, and consequently, the `rstan` language implemented within it. There are some importantat details that we would like to stress here:
 
-1-    The function lets you define which is the prior and hyperprior of each effect of the model. This is controlled by building a vector with the following structure: c("Name of the effect in your data frame", "Desired prior", "Desired hyperprior"). For example, for the genetic and environmental effects:
+**1**-    The function lets you define which is the prior and hyperprior of each effect of the model. This is controlled by building a vector with the following structure: c("Name of the effect in your data frame", "Desired prior", "Desired hyperprior"). For example, for the genetic and environmental effects:
 
 ```{r echo=TRUE}
-
 gen = c("Hybrid", "normal", "cauchy")
 env = c("Location", "normal", "cauchy")
-
 ```
 
 When you provide the function with these vectors, you are saying that "the column in my data frame that has the information of genotypes is called 'Hybrid', and this effect will have a prior following the normal distribution, and a hyperprior following the half-cauchy distribution". 
 
 
-2-    Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
+**2**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
 
-```{r}
-knitr::include_graphics("img/desenho.png")
+```{r out.width = "100%", echo=FALSE}
+knitr::include_graphics("img/desenho.svg")
 ```
 
-Note that when you consider the Region information, and when the trials are lattices, you *must* build a list, not a vector.
+Note that when you consider the Region information, and when the trials are lattices, you **must** build a list, not a vector.
 
-3-    Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
+**3**-    Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
 
-4-    You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 4000 iterations, 4 cores and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
+**4**-    You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 4000 iterations, 4 cores and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
 
-5-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
+**5**-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
 
 Without further ado, let us see how the six models can be fitted using `bayes_met`. We used the "maize" data, which is contained within the package.
 
@@ -164,48 +163,48 @@ We will take this last model as an example for the next steps. We will run this 
 After fitting the model, the next step is to extract some outputs. The `extr_outs` function is a pre-requisite for estimating the probability of superior performance using the other functions. `extr_outs` also provide some important diagnostics regarding the convergence and reliability of the model. 
 
 Using the `mod` object from the previous step:
-```{r echo=TRUE, warning=FALSE, results='hide'}
+```{r echo=TRUE, warning=FALSE, results='hide', fig.width=8}
 outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+                 nenv = 16, res.het = TRUE, check.stan.diag = FALSE)
 
 ```
 
 This function has some novelties: 
 
-*   `mod` is the model fitted using `bayes_met`
+* `mod` is the model fitted using `bayes_met`
 
-*   `effects` indicates which effects `mod` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
+* `effects` indicates which effects `mod` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
 
-\item \code{r} : replicate effect
+  * `r` : replicate effect
 
-\item \code{b} : block inside replicate effect (if the trials are lattices)
+  * `b` : block inside replicate effect (if the trials are lattices)
 
-\item \code{l} : environment (or location) effect
+  * `l` : environment (or location) effect
 
-\item \code{m} : region effect (if it is available)
+  * `m` : region effect (if it is available)
 
-\item \code{g} : genetic effect
+  * `g` : genetic effect
 
-\item \code{gl} : genotype-by-location effect
+  * `gl` : genotype-by-location effect
 
-\item \code{gm} : genotype-by-region effect (if `region` is available)
+  * `gm` : genotype-by-region effect (if `region` is available)
 
 The models will surely have `r`, `l`, `g` and `gl`. The other effects may or may not be necessary, depending on the situation
 
-*   `nenv` indicates the number of environments
+* `nenv` indicates the number of environments
 
-*   `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan::stan_diag()` or not.
+* `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan::stan_diag()` or not.
 
 The function provides a list with the posterior of each effect and the data generated by the model, a dataframe with the variances of each effect, a list of with the maximum posterior values of each effect, a matrix containing some useful quality parameters of the model. It also provide a density plot comparing the generated data and the real data:
 
-```{r echo=TRUE}
+```{r echo=TRUE, fig.retina=2, fig.width=6, fig.height=6}
 outs$den_plot
 ```
 
 Note that this plots was built using `ggplot2` package. In fact, all the plots of this package are built using `ggplot2`, so they are all customizable. All you have to do is keep editing the object that contains the plot with `+` and the function of your preference. For example, if you wanted to change the position of the legend, you would do something like this:
 
-```{r echo=TRUE}
+```{r echo=TRUE, fig.width=6, fig.height=6}
 library(ggplot2)
 outs$den_plot + 
   theme(legend.position = 'right')
@@ -213,6 +212,12 @@ outs$den_plot +
 
 Finally (and optionally), the function provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. More information about these plots in `?rstan::stan_diag`.
 
+```{r echo=TRUE, warning=FALSE, results='hide',fig.width=6, fig.height=6}
+outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
+                 effects = c("r", "b", "l", "m", "g", "gl", "gm"),
+                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+
+```
 
 ## Step four - `marg_prob`
 
@@ -238,19 +243,19 @@ You already know what `data`, `trait`, `gen`, and `env` mean. The new commands o
 
 The function provides a caterpillar plot with the genotypes' performance and their respective confidence interval: 
 
-```{r echo=TRUE}
+```{r echo=TRUE,fig.width=6, fig.height=6}
 margs$g_hpd
 ```
 
 Then, it calculates the marginal probability of superior performance, providing a data frame and a bar plot:
 
-```{r echo=TRUE}
+```{r echo=TRUE,fig.width=6, fig.height=6}
 margs$marg_prob.plot
 ```
 
 Finally, it calculates the pairwise probability of superior performance, also providing a data frame and a plot. For this case, the plot is heat map:
 
-```{r echo=TRUE}
+```{r echo=TRUE,fig.width=6, fig.height=6}
 margs$pair_prob.plot
 ```
 
@@ -270,18 +275,20 @@ The only difference from `marg_prob` is that in `cond_prob` you will indicate wh
 
 The function provides a matrix with the probability of superior performance in each environment. This matrix is used to build a heat map:
 
-```{r echo=TRUE}
+```{r echo=TRUE,fig.width=6, fig.height=6}
 conds$psp_env.plot
 ```
 
 If `reg` is not `NULL`, the function will provide the probability of superior performance within regions: 
 
-```{r echo=TRUE}
+```{r echo=TRUE,fig.width=6, fig.height=6}
 conds$psp_reg.plot
 ```
 
 
 We hope this package is useful for you. Feel free to contact us if there any issues or suggestions for improvement. 
+
+<br>
 
 _FIM_
 

@@ -6,9 +6,13 @@ Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-0694-1798")),
               person("Kaio", "Dias", role = "aut",
                      email = "kaio.o.dias@ufv.br",
+                     comment = c(ORCID = "0000-0002-9171-1021")),
+              person("Matheus", "Krause", role = "aut",
+                     email = "mdkrause@iastate.edu",
                      comment = c(ORCID = "0000-0002-9171-1021")))
 Author: Saulo Chaves
         Kaio Dias
+        Matheus Krause
 Description: Run a MET model employing Bayesian statistics, 
             and use its results to estimate the marginal, pairwise and conditional 
             probability of superior performance of each genotype. The plots are 
