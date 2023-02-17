@@ -235,9 +235,9 @@ You already know what `data`, `trait`, `gen`, and `env` mean. The new commands o
 
 *   `extr_outs`: An object that contains the outputs extracted by `extr_outs`.
 
-*   `int`: The selection intensity. Please, a numeric between 0 and 1.
+*   `int`: The selection intensity. Please, insert a numeric between 0 and 1.
 
-*   `save.df`: If you want to save the data frames with the marginal and pairwise probabilities of superior performance, set this to `TRUE`. Otherwise, `FALSE` (default).
+*   `save.df`: If you want to save the data frames with the marginal and pairwise probabilities of superior performance in the work directory, set this to `TRUE`. Otherwise, `FALSE` (default).
 
 *   `interactive`: If you want to convert the ggplots into ggplotlys, i.e. make them interactive plots, set this to `TRUE`. Otherwise, `FALSE` (default).
 
@@ -261,7 +261,7 @@ margs$pair_prob.plot
 
 The heat map indicates what is the probability of the genotypes at the _x_-axis having higher performance than the ones at the _y_-axis.
 
-## Step five (and last) - `cond_prob`
+## Step five (the last) - `cond_prob`
 
 Now that we have an overview about the probability of superior performance of the the evaluated genotypes, we can calculate this parameter within each environment. This is what `cond_prob` will do:
 
