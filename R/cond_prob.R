@@ -21,16 +21,6 @@
 ##' is an indicator variable mapping success (1) if \eqn{g_{jk}^{(s)}} exists in \eqn{\Omega},
 ##' and failure (0) otherwise.
 ##'
-##' This function also estimates a Bayesian adapatation of Eskridge's (1990) safety-first
-##' index, given by:
-##'
-##' \deqn{g_j - Z_e(1-\alpha)(\sigma^2_j)^{\frac{1}{2}}}
-##'
-##' where \eqn{\sigma^2_j} is the genotype-by-environment interaction variance for
-##' genotype <i>j</i>, \eqn{Z_e(1-\alpha)} is the percentile of posterior distribution
-##' of the genotype main effect considering a threshold of \eqn{\alpha = 0.05},
-##' and \eqn{g_j} is the maximum posteriori for genotype main effect.
-##'
 ##' @param data A dataframe containing the observations
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable
@@ -53,8 +43,6 @@
 ##' command.
 ##' @return The function returns a list with:
 ##' \itemize{
-##' \item \code{risk.plot} a plot representing the Bayesian Eskridge's Risk
-##' index (Adapted from Eskridge (1990))
 ##' \item \code{psp_env_reg.mat} : a matrix containing the probability of superior
 ##' performance within environments and regions. Exists only if a string is provided
 ##' for "reg"
@@ -75,9 +63,6 @@
 ##' Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
 ##' for cultivar recommendation in multi-environment trials. <i>Theoretical and
 ##' Applied Genetics</i>, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
-##'
-##' Eskridge KM (1990) Selection of stable cultivars using a safety-first rule.
-##' <i>Crop Science</i> 30:369–374. https://doi.org/10.2135/cropsci1990.0011183X003000020025x
 ##'
 ##' @import ggplot2 dplyr
 ##' @importFrom utils write.csv
@@ -125,26 +110,26 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
   if(increase){
     if(!is.null(reg)){
 
-      # Eskridge
-
-      name.reg = levels(factor(data[,reg]))
-      num.reg = nlevels(factor(data[,reg]))
-
-      V1 = apply(matrix(mod$map$gl, num.gen, num.env,
-                        dimnames = list(name.gen, name.env)), 1, sd)
-      V2 = apply(matrix(mod$map$gm, num.gen, num.reg,
-                        dimnames = list(name.gen, name.reg)), 1, sd)
-      Zi = stats::quantile(mod$post$g, probs = .95)
-      Risk = mod$map$g - (Zi * V1+V2)
-      Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
-        dplyr::arrange(desc(Risk))
-      Risk$gen = factor(Risk$gen, levels = Risk$gen)
-
-      sfi = ggplot(Risk, aes(x = gen, y = Risk))+
-        geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
-        geom_point(color = '#781c1e', size = 2)+
-        labs(x = 'Genotypes', y = 'Safety-first Index')+
-        theme(axis.text.x = element_text(angle = 90))
+      # # Eskridge
+      #
+      # name.reg = levels(factor(data[,reg]))
+      # num.reg = nlevels(factor(data[,reg]))
+      #
+      # V1 = apply(matrix(mod$map$gl, num.gen, num.env,
+      #                   dimnames = list(name.gen, name.env)), 1, sd)
+      # V2 = apply(matrix(mod$map$gm, num.gen, num.reg,
+      #                   dimnames = list(name.gen, name.reg)), 1, sd)
+      # Zi = stats::quantile(mod$post$g, probs = .95)
+      # Risk = mod$map$g - (Zi * V1+V2)
+      # Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
+      #   dplyr::arrange(desc(Risk))
+      # Risk$gen = factor(Risk$gen, levels = Risk$gen)
+      #
+      # sfi = ggplot(Risk, aes(x = gen, y = Risk))+
+      #   geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
+      #   geom_point(color = '#781c1e', size = 2)+
+      #   labs(x = 'Genotypes', y = 'Safety-first Index')+
+      #   theme(axis.text.x = element_text(angle = 90))
 
       # Probabiliies of superior performance within environments
 
@@ -215,32 +200,32 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       if(interactive){
         env.heat = suppressWarnings(plotly::ggplotly(env.heat))
         reg.heat = suppressWarnings(plotly::ggplotly(reg.heat))
-        sfi = suppressWarnings(plotly::ggplotly(sfi))
+        #sfi = suppressWarnings(plotly::ggplotly(sfi))
       }
 
-      outs = list(sfi, probs, env.heat, reg.heat)
-      names(outs) = c("risk.plot", 'psp_env_reg.mat', 'psp_env.plot','psp_reg.plot')
+      outs = list(probs, env.heat, reg.heat)
+      names(outs) = c('psp_env_reg.mat', 'psp_env.plot','psp_reg.plot')
 
       return(outs)
 
 
     }else{
 
-      # Eskridge
-
-      Vi = apply(matrix(mod$map$gl, num.gen, num.env,
-                        dimnames = list(name.gen, name.env)), 1, sd)
-      Zi = stats::quantile(mod$post$g, probs = .95)
-      Risk = mod$map$g - (Zi * Vi)
-      Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
-        dplyr::arrange(desc(Risk))
-      Risk$gen = factor(Risk$gen, levels = Risk$gen)
-
-      sfi = ggplot(Risk, aes(x = gen, y = Risk))+
-        geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
-        geom_point(color = '#781c1e', size = 2)+
-        labs(x = 'Genotypes', y = 'Safety-first Index')+
-        theme(axis.text.x = element_text(angle = 90))
+      # # Eskridge
+      #
+      # Vi = apply(matrix(mod$map$gl, num.gen, num.env,
+      #                   dimnames = list(name.gen, name.env)), 1, sd)
+      # Zi = stats::quantile(mod$post$g, probs = .95)
+      # Risk = mod$map$g - (Zi * Vi)
+      # Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
+      #   dplyr::arrange(desc(Risk))
+      # Risk$gen = factor(Risk$gen, levels = Risk$gen)
+      #
+      # sfi = ggplot(Risk, aes(x = gen, y = Risk))+
+      #   geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
+      #   geom_point(color = '#781c1e', size = 2)+
+      #   labs(x = 'Genotypes', y = 'Safety-first Index')+
+      #   theme(axis.text.x = element_text(angle = 90))
 
 
       # Probability of superior performance
@@ -294,11 +279,11 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       if(interactive){
         requireNamespace('plotly')
         env.heat = suppressWarnings(plotly::ggplotly(env.heat))
-        sfi = suppressWarnings(plotly::ggplotly(sfi))
+        #sfi = suppressWarnings(plotly::ggplotly(sfi))
       }
 
-      outs = list(sfi, probs, env.heat)
-      names(outs) = c("risk.plot", 'psp_env.mat', 'psp_env.plot')
+      outs = list(probs, env.heat)
+      names(outs) = c('psp_env.mat', 'psp_env.plot')
 
       return(outs)
     }
@@ -308,24 +293,24 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
     # Eskridge
 
-    name.reg = levels(factor(data[,reg]))
-    num.reg = nlevels(factor(data[,reg]))
-
-    V1 = apply(matrix(mod$map$gl, num.gen, num.env,
-                      dimnames = list(name.gen, name.env)), 1, sd)
-    V2 = apply(matrix(mod$map$gm, num.gen, num.reg,
-                      dimnames = list(name.gen, name.reg)), 1, sd)
-    Zi = stats::quantile(mod$post$g, probs = .05)
-    Risk = mod$map$g - (Zi * V1+V2)
-    Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
-      dplyr::arrange(desc(Risk))
-    Risk$gen = factor(Risk$gen, levels = Risk$gen)
-
-    sfi = ggplot(Risk, aes(x = gen, y = Risk))+
-      geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
-      geom_point(color = '#781c1e', size = 2)+
-      labs(x = 'Genotypes', y = 'Safety-first Index')+
-      theme(axis.text.x = element_text(angle = 90))
+    # name.reg = levels(factor(data[,reg]))
+    # num.reg = nlevels(factor(data[,reg]))
+    #
+    # V1 = apply(matrix(mod$map$gl, num.gen, num.env,
+    #                   dimnames = list(name.gen, name.env)), 1, sd)
+    # V2 = apply(matrix(mod$map$gm, num.gen, num.reg,
+    #                   dimnames = list(name.gen, name.reg)), 1, sd)
+    # Zi = stats::quantile(mod$post$g, probs = .05)
+    # Risk = mod$map$g - (Zi * V1+V2)
+    # Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
+    #   dplyr::arrange(desc(Risk))
+    # Risk$gen = factor(Risk$gen, levels = Risk$gen)
+    #
+    # sfi = ggplot(Risk, aes(x = gen, y = Risk))+
+    #   geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
+    #   geom_point(color = '#781c1e', size = 2)+
+    #   labs(x = 'Genotypes', y = 'Safety-first Index')+
+    #   theme(axis.text.x = element_text(angle = 90))
 
     # Probabiliies of superior performance within environments
 

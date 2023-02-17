@@ -33,7 +33,7 @@ We know you did not come here for this, so let us go to the next step.
 
 The second step is to fit a Multi-environment Bayesian model using the `bayes_met` function, using the `rstan` language implemented within it. There are some importantat details that we would like to stress here:
 
-1- The function lets you define which is the prior and hyperprior of each effect of the model. This is controlled by building a vector with the following structure: c("Name of the effect in your data frame", "Desired prior", "Desired hyperprior"). For example, for the genetic and environmental effects:
+1-    The function lets you define which is the prior and hyperprior of each effect of the model. This is controlled by building a vector with the following structure: c("Name of the effect in your data frame", "Desired prior", "Desired hyperprior"). For example, for the genetic and environmental effects:
 
 ```{r echo=TRUE}
 
@@ -45,19 +45,19 @@ env = c("Location", "normal", "cauchy")
 When you provide the function with these vectors, you are saying that "the column in my data frame that has the information of genotypes is called 'Hybrid', and this effect will have a prior following the normal distribution, and a hyperprior following the half-cauchy distribution". 
 
 
-2- Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
+2-    Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
 
 ```{r}
-knitr::include_graphics("img/scheme.svg")
+knitr::include_graphics("img/desenho.png")
 ```
 
 Note that when you consider the Region information, and when the trials are lattices, you *must* build a list, not a vector.
 
-3- Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
+3-    Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
 
-4- You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 4000 iterations, 4 cores and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
+4-    You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 4000 iterations, 4 cores and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
 
-5- You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
+5-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
 
 Without further ado, let us see how the six models can be fitted using `bayes_met`. We used the "maize" data, which is contained within the package.
 
@@ -173,9 +173,9 @@ outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
 
 This function has some novelties: 
 
-1- `mod` is the model fitted using `bayes_met`
+*   `mod` is the model fitted using `bayes_met`
 
-2- `effects` indicates which effects `mod` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
+*   `effects` indicates which effects `mod` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
 
 \item \code{r} : replicate effect
 
@@ -189,37 +189,99 @@ This function has some novelties:
 
 \item \code{gl} : genotype-by-location effect
 
-\item \code{gm} : genotype-by-region effect
+\item \code{gm} : genotype-by-region effect (if `region` is available)
 
-If the model do not have a given effect, just remove it from the `effects` vector. 
+The models will surely have `r`, `l`, `g` and `gl`. The other effects may or may not be necessary, depending on the situation
 
-3- `nenv` indicates the number of environments
+*   `nenv` indicates the number of environments
 
-4- `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan` or not. Note that these plots are built in ggplot2, so they are customizable.
+*   `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan::stan_diag()` or not.
 
-The function provides the maximum a posteriori values
+The function provides a list with the posterior of each effect and the data generated by the model, a dataframe with the variances of each effect, a list of with the maximum posterior values of each effect, a matrix containing some useful quality parameters of the model. It also provide a density plot comparing the generated data and the real data:
 
+```{r echo=TRUE}
+outs$den_plot
+```
 
+Note that this plots was built using `ggplot2` package. In fact, all the plots of this package are built using `ggplot2`, so they are all customizable. All you have to do is keep editing the object that contains the plot with `+` and the function of your preference. For example, if you wanted to change the position of the legend, you would do something like this:
 
+```{r echo=TRUE}
+library(ggplot2)
+outs$den_plot + 
+  theme(legend.position = 'right')
+```
 
-
+Finally (and optionally), the function provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. More information about these plots in `?rstan::stan_diag`.
 
 
 ## Step four - `marg_prob`
 
+Using the outputs extracted by `extr_outs`, we can finally calculate the probability of superior performance of the evaluated genotypes. This is exactly what `marg_prob` will do:
+
+```{r echo=TRUE}
+margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location",
+                  increase = TRUE,extr_outs = outs, int = .2,
+                  save.df = FALSE, interactive = FALSE)
+```
+
+You already know what `data`, `trait`, `gen`, and `env` mean. The new commands of this function are:
+
+*   `increase`: The selection is for increasing (`TRUE`, default) or decreasing (`FALSE`) the trait mean? 
+
+*   `extr_outs`: An object that contains the outputs extracted by `extr_outs`.
+
+*   `int`: The selection intensity. Please, a numeric between 0 and 1.
+
+*   `save.df`: If you want to save the data frames with the marginal and pairwise probabilities of superior performance, set this to `TRUE`. Otherwise, `FALSE` (default).
+
+*   `interactive`: If you want to convert the ggplots into ggplotlys, i.e. make them interactive plots, set this to `TRUE`. Otherwise, `FALSE` (default).
+
+The function provides a caterpillar plot with the genotypes' performance and their respective confidence interval: 
+
+```{r echo=TRUE}
+margs$g_hpd
+```
+
+Then, it calculates the marginal probability of superior performance, providing a data frame and a bar plot:
+
+```{r echo=TRUE}
+margs$marg_prob.plot
+```
+
+Finally, it calculates the pairwise probability of superior performance, also providing a data frame and a plot. For this case, the plot is heat map:
+
+```{r echo=TRUE}
+margs$pair_prob.plot
+```
+
+The heat map indicates what is the probability of the genotypes at the _x_-axis having higher performance than the ones at the _y_-axis.
+
+## Step five (and last) - `cond_prob`
+
+Now that we have an overview about the probability of superior performance of the the evaluated genotypes, we can calculate this parameter within each environment. This is what `cond_prob` will do:
+
+```{r echo=TRUE}
+conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location", 
+                  extr_outs = outs, reg = "Region", int = .2,increase = T,
+                  save.df = FALSE, interactive = FALSE)
+```
+
+The only difference from `marg_prob` is that in `cond_prob` you will indicate what is the column in you data frame that refers to the region information. If there is no such column, set `reg` to `NULL`
+
+The function provides a matrix with the probability of superior performance in each environment. This matrix is used to build a heat map:
+
+```{r echo=TRUE}
+conds$psp_env.plot
+```
+
+If `reg` is not `NULL`, the function will provide the probability of superior performance within regions: 
+
+```{r echo=TRUE}
+conds$psp_reg.plot
+```
 
 
+We hope this package is useful for you. Feel free to contact us if there any issues or suggestions for improvement. 
 
-
-
-
-
-
-
-
-
-
-
-
-
+_FIM_
 

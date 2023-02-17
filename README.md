@@ -31,24 +31,25 @@ A basic workflow using the available data is:
 library(ProbSup)
 
 mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
-          rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-          reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-          res.het = T,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
-          iter = 100, cores = 2, chain = 2) 
+        gen = c("Hybrid", "normal", "cauchy"), 
+        env = c("Location", "normal", "cauchy"),
+        rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+        reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+        res.het = T,
+        sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
+        gli.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
+        iter = 100, cores = 2, chain = 2) 
 # You may want to increase the number of iterations, cores and chains
 
 outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
 
-margs_pair = marg_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location", increase = T,
+margs_pair = marg_prob(data = maize, trait = "GY", gen = "Hybrid", 
+                       env = "Location", increase = T,
                        extr_outs = outs, int = .2, save.df = F, interactive = F)
 
-conds = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location", 
-                  extr_outs = outs, reg = "Region", int = .2,increase = T
+conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location", 
+                  extr_outs = outs, reg = "Region", int = .2,increase = T,
                   save.df = F, interactive = F)
 ```
