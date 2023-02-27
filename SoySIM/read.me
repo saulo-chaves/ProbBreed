@@ -1,0 +1,20 @@
+Saulo and Kaio:
+
+This folder contains the soybean simulated data. The complete description of the simulator will be available in a preprint 
+version of the manuscript in March 2023. I will publish it in bioRxiv prior submission, so we can cite accordingly. =)
+
+In summary, the simulated data represents F4:7 soybean lines phenotyped in MET (8 locations within year). I simulated >40 years of
+breeding operation across 1,200 breeding programs, but for your paper, we only need one year of trial information. Thus, the .rds file 
+contains one year (year 18) of simulated data for each simulation run (= seed). The details are the following:
+
+ID: experimental line name 
+trueG: true additive genetic value (summation) under Fisher's infinitesimal model (1,000 loci)
+trueGY: true additive QTL effect (summation) for genotype by location interaction. Both locations
+        and years for GL and GY were simulated with correlated QTL effects.
+trueGL, trueGLY: similar to trueGY.
+trueError: true residual deviation in a plot level.
+trueLY, Y, L: true fixed deviation for location-year combination, year, and location.
+pheno: adjusted phenotype in a plot level.
+Y, L, rep: year (=18), locations (1,...,8), and rep. I did not simulate block effect, so you can consider the data derived from a
+          randomized design.
+seed: simulation run. 
