@@ -175,6 +175,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         tapply(x, rep(name.gen, num.sim), mean)
       })
 
+      probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
+
       env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
         tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
@@ -183,7 +185,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
-        scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
+        scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
       reg.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
@@ -193,7 +195,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
-        scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
+        scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
       if(save.df){
         utils::write.csv(probs, file = paste0(getwd(),'/psp_env_reg.mat.csv'), row.names = F)
@@ -263,6 +265,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         tapply(x, rep(name.gen, num.sim), mean)
       })
 
+      probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
+
       env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))]),
                             names_to = 'envir') %>%
@@ -271,7 +275,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
-        scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
+        scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
 
       if(save.df){
@@ -356,6 +360,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                  tapply(x, rep(name.gen, num.sim), mean)
                  })
 
+   probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
+
    env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
      tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
      tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
@@ -364,7 +370,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
            legend.position = 'right', legend.direction = 'vertical')+
-     scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
+     scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
    reg.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
      tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
@@ -374,7 +380,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
            legend.position = 'right', legend.direction = 'vertical')+
-     scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
+     scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
    if(save.df){
      utils::write.csv(probs, file = paste0(getwd(),'/psp_env_reg.mat.csv'), row.names = F)
@@ -444,6 +450,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       tapply(x, rep(name.gen, num.sim), mean)
     })
 
+    probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
+
     env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
       tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))]),
                   names_to = 'envir') %>%
@@ -452,7 +460,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
       theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
             legend.position = 'right', legend.direction = 'vertical')+
-      scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))
+      scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
 
     if(save.df){
