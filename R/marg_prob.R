@@ -99,9 +99,7 @@
 marg_prob = function(data, trait, gen, env, extr_outs, int = .2, increase = T,
                      save.df = FALSE, interactive = FALSE){
 
-  requireNamespace('ggplot2')
-  requireNamespace('dplyr')
-
+  data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
   mod = extr_outs
   name.gen = levels(factor(data[,gen]))
   num.gen = nlevels(factor(data[,gen]))
@@ -190,8 +188,6 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2, increase = T,
   }
 
   if(interactive){
-
-    requireNamespace('plotly')
 
     g_hpd = plotly::ggplotly(g_hpd)
     psps.bar = plotly::ggplotly(ggplot(prob_g, aes(x = .data$ID, y = .data$prob))+

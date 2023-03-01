@@ -100,6 +100,8 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
   requireNamespace('ggplot2')
   requireNamespace('dplyr')
+  df = data
+  data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
   mod = extr_outs
   name.gen = levels(factor(data[,gen]))
   num.gen = nlevels(factor(data[,gen]))
@@ -131,7 +133,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       #   labs(x = 'Genotypes', y = 'Safety-first Index')+
       #   theme(axis.text.x = element_text(angle = 90))
 
-      # Probabiliies of superior performance within environments
+      # Probabilities of superior performance within environments
 
       colnames(mod$post$g) = paste0(name.gen, '_')
       colnames(mod$post$gm) = paste(rep(name.gen,  times = num.reg),
@@ -381,11 +383,11 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
    if(interactive){
      env.heat = suppressWarnings(plotly::ggplotly(env.heat))
      reg.heat = suppressWarnings(plotly::ggplotly(reg.heat))
-     sfi = suppressWarnings(plotly::ggplotly(sfi))
+     # sfi = suppressWarnings(plotly::ggplotly(sfi))
    }
 
-   outs = list(sfi, probs, env.heat, reg.heat)
-   names(outs) = c("risk.plot", 'psp_env_reg.mat', 'psp_env.plot','psp_reg.plot')
+   outs = list(probs, env.heat, reg.heat)
+   names(outs) = c('psp_env_reg.mat', 'psp_env.plot','psp_reg.plot')
 
    return(outs)
 
@@ -394,19 +396,19 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
     # Eskridge
 
-    Vi = apply(matrix(mod$map$gl, num.gen, num.env,
-                      dimnames = list(name.gen, name.env)), 1, sd)
-    Zi = stats::quantile(mod$post$g, probs = .05)
-    Risk = mod$map$g - (Zi * Vi)
-    Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
-      dplyr::arrange(desc(Risk))
-    Risk$gen = factor(Risk$gen, levels = Risk$gen)
-
-    sfi = ggplot(Risk, aes(x = gen, y = Risk))+
-      geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
-      geom_point(color = '#781c1e', size = 2)+
-      labs(x = 'Genotypes', y = 'Safety-first Index')+
-      theme(axis.text.x = element_text(angle = 90))
+    # Vi = apply(matrix(mod$map$gl, num.gen, num.env,
+    #                   dimnames = list(name.gen, name.env)), 1, sd)
+    # Zi = stats::quantile(mod$post$g, probs = .05)
+    # Risk = mod$map$g - (Zi * Vi)
+    # Risk = as.data.frame(Risk) %>% tibble::rownames_to_column(var = 'gen') %>%
+    #   dplyr::arrange(desc(Risk))
+    # Risk$gen = factor(Risk$gen, levels = Risk$gen)
+    #
+    # sfi = ggplot(Risk, aes(x = gen, y = Risk))+
+    #   geom_segment(aes(x = gen, xend = gen, y = 0, yend = Risk), linewidth = 1)+
+    #   geom_point(color = '#781c1e', size = 2)+
+    #   labs(x = 'Genotypes', y = 'Safety-first Index')+
+    #   theme(axis.text.x = element_text(angle = 90))
 
 
     # Probability of superior performance
@@ -460,11 +462,11 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
     if(interactive){
       requireNamespace('plotly')
       env.heat = suppressWarnings(plotly::ggplotly(env.heat))
-      sfi = suppressWarnings(plotly::ggplotly(sfi))
+      # sfi = suppressWarnings(plotly::ggplotly(sfi))
     }
 
-    outs = list(sfi, probs, env.heat)
-    names(outs) = c("risk.plot", 'psp_env.mat', 'psp_env.plot')
+    outs = list(probs, env.heat)
+    names(outs) = c('psp_env.mat', 'psp_env.plot')
 
     return(outs)
   }

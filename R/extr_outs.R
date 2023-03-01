@@ -76,7 +76,7 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
   requireNamespace('rstan')
 
   # Data
-  data = data
+  data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
 
   # Extract stan results
   out <- rstan::extract(model, permuted = TRUE)

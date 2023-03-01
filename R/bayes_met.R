@@ -98,9 +98,7 @@ bayes_met = function(data, gen, env, rept, trait, hyperparam = 'default',
               length(env) == 3 & length(sigma.dist) == 2 & length(mu.dist) == 2 &
               length(gli.dist) == 2)
 
-
-data = data
-trait = trait
+  data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
 
 if(res.het){
   if(is.null(reg)){
