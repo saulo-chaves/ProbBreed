@@ -1,4 +1,4 @@
-Package: ProbSup
+Package: ProbBreed
 Title: Probability of superior performance of genotypes evaluated at Multi-Environment Trials (METs)
 Version: 0.0.0.9000
 Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),

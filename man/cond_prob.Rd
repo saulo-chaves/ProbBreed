@@ -51,11 +51,8 @@ command.}
 \value{
 The function returns a list with:
 \itemize{
-\item \code{psp_env_reg.mat} : a matrix containing the probability of superior
-performance within environments and regions. Exists only if a string is provided
-for "reg"
-\item \code{psp_env.mat} : a matrix containing the probability of superior
-performance within environments. Exists only "reg" is NULL
+\item \code{conds_prob} : a matrix containing the probability of superior
+performance within environments (and regions, if available).
 \item \code{psp_env.plot} : a heatmap representing the probability of superior
 performance of each genotype, within each environment
 \item \code{psp_reg.plot} : a heatmap representing the probability of superior

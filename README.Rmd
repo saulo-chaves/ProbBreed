@@ -13,20 +13,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# ProbSup
+# ProbBreed
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-ProbSup employs Bayesian statistics to analyze multi-environment trials' data, and uses its outputs to computate the marginal, pairwise, and conditional probability of superior performance of the genotypes. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y. This is a work in progress.
+ProbBreed employs Bayesian statistics to analyze multi-environment trials' data, and uses its outputs to computate the marginal, pairwise, and conditional probability of superior performance of the genotypes. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y. This is a work in progress.
 
 ## Installation
 
-You can install the development version of ProbSup from [GitHub](https://github.com/) with:
+You can install the development version of ProbBreed from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("saulo-chaves/ProbSup")
+devtools::install_github("saulo-chaves/ProbBreed")
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ devtools::install_github("saulo-chaves/ProbSup")
 A basic workflow using the available data is:
 
 ```{r example, eval=FALSE, echo=TRUE}
-library(ProbSup)
+library(ProbBreed)
 
 mod = bayes_met(data = maize, 
         gen = c("Hybrid", "normal", "cauchy"), 
