@@ -1,12 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ProbSup
+# ProbBreed
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-ProbSup employs Bayesian statistics to analyze multi-environment trials’
+ProbBreed employs Bayesian statistics to analyze multi-environment trials’
 data, and uses its outputs to computate the marginal, pairwise, and
 conditional probability of superior performance of the genotypes. The
 method is thoroughly described at
@@ -15,12 +15,12 @@ progress.
 
 ## Installation
 
-You can install the development version of ProbSup from
+You can install the development version of ProbBreed from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("saulo-chaves/ProbSup")
+devtools::install_github("saulo-chaves/ProbBreed")
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ devtools::install_github("saulo-chaves/ProbSup")
 A basic workflow using the available data is:
 
 ``` r
-library(ProbSup)
+library(ProbBreed)
 
 mod = bayes_met(data = maize, 
         gen = c("Hybrid", "normal", "cauchy"), 
