@@ -8,7 +8,6 @@
 ##' Multi-environment trials using `rstan`, the `R` interface to `Stan`.
 ##'
 ##'
-##'
 ##' @param data  A dataframe containing the observations
 ##' @param gen,env  A string vector. The first element is the name of the
 ##' column that corresponds to the evaluated genotype or environment.

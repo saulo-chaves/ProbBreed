@@ -1,11 +1,11 @@
 ## Function extr_outs
 ##
 ##' @title
-##' Extracting outputs from [ProbSup::bayes_met()] objects
+##' Extracting outputs from [ProbBreed::bayes_met()] objects
 ##'
 ##' @description
 ##' This function extracts outputs of the Bayesian model fitted
-##' using [ProbSup::bayes_met()], and provides some diagnostics about the model
+##' using [ProbBreed::bayes_met()], and provides some diagnostics about the model
 ##'
 ##' @param data A dataframe containing the observations
 ##' @param trait A character representing the name of the column that

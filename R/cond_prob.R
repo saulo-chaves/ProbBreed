@@ -43,11 +43,8 @@
 ##' command.
 ##' @return The function returns a list with:
 ##' \itemize{
-##' \item \code{psp_env_reg.mat} : a matrix containing the probability of superior
-##' performance within environments and regions. Exists only if a string is provided
-##' for "reg"
-##' \item \code{psp_env.mat} : a matrix containing the probability of superior
-##' performance within environments. Exists only "reg" is NULL
+##' \item \code{conds_prob} : a matrix containing the probability of superior
+##' performance within environments (and regions, if available).
 ##' \item \code{psp_env.plot} : a heatmap representing the probability of superior
 ##' performance of each genotype, within each environment
 ##' \item \code{psp_reg.plot} : a heatmap representing the probability of superior
@@ -198,7 +195,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
       if(save.df){
-        utils::write.csv(probs, file = paste0(getwd(),'/psp_env_reg.mat.csv'), row.names = F)
+        utils::write.csv(probs, file = paste0(getwd(),'/conds_prob.csv'), row.names = F)
       }
 
       if(interactive){
@@ -208,7 +205,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       }
 
       outs = list(probs, env.heat, reg.heat)
-      names(outs) = c('psp_env_reg.mat', 'psp_env.plot','psp_reg.plot')
+      names(outs) = c('conds_prob', 'psp_env.plot','psp_reg.plot')
 
       return(outs)
 
@@ -279,7 +276,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
 
       if(save.df){
-        utils::write.csv(probs, file = paste0(getwd(),'/psp_env.mat.csv'), row.names = F)
+        utils::write.csv(probs, file = paste0(getwd(),'/conds_prob.csv'), row.names = F)
       }
 
       if(interactive){
@@ -289,7 +286,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       }
 
       outs = list(probs, env.heat)
-      names(outs) = c('psp_env.mat', 'psp_env.plot')
+      names(outs) = c('conds_prob', 'psp_env.plot')
 
       return(outs)
     }
@@ -383,7 +380,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
    if(save.df){
-     utils::write.csv(probs, file = paste0(getwd(),'/psp_env_reg.mat.csv'), row.names = F)
+     utils::write.csv(probs, file = paste0(getwd(),'/conds_prob.csv'), row.names = F)
    }
 
    if(interactive){
@@ -393,7 +390,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
    }
 
    outs = list(probs, env.heat, reg.heat)
-   names(outs) = c('psp_env_reg.mat', 'psp_env.plot','psp_reg.plot')
+   names(outs) = c('conds_prob', 'psp_env.plot','psp_reg.plot')
 
    return(outs)
 
@@ -464,7 +461,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
 
     if(save.df){
-      utils::write.csv(probs, file = paste0(getwd(),'/psp_env.mat.csv'), row.names = F)
+      utils::write.csv(probs, file = paste0(getwd(),'/conds_prob.csv'), row.names = F)
     }
 
     if(interactive){
@@ -474,7 +471,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
     }
 
     outs = list(probs, env.heat)
-    names(outs) = c('psp_env.mat', 'psp_env.plot')
+    names(outs) = c('conds_prob', 'psp_env.plot')
 
     return(outs)
   }
