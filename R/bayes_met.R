@@ -26,11 +26,11 @@
 ##' @param hyperparam A numeric representing the global hyperparameter. If no number
 ##' is give (so hyperparam = 'default'), the function will use max(trait) * 10
 ##' as the global hyperparameter.
-##' @param sigma.dist,mu.dist,gli.dist A string vector containing the prior
+##' @param sigma.dist,mu.dist,gei.dist A string vector containing the prior
 ##' probability distribution (1st element) and the hyperprior (2nd element)
 ##' of the residual effects (`sigma.dist`, which the default is `c("cauchy","cauchy")`),
 ##' intercept (`mu.dist`, which the default is `c("normal", "normal")`), or the
-##' genotype-by-environment interaction (`gli.dist`, which the default is also
+##' genotype-by-environment interaction (`gei.dist`, which the default is also
 ##' `c("normal", "normal")`).
 ##' @param reg A list containing two string vectors. The first vector have the name
 ##' of the column that contain the information of region in the first position, the
@@ -69,7 +69,7 @@
 ##'                 env = c("Location", "normal", "cauchy"),
 ##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
 ##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
-##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
 ##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
 ##'                 res.het = F,
 ##'                 iter = 100, cores = 2, chain = 2)
@@ -78,7 +78,7 @@
 ##' # Bad
 ##' mod = bayes_met(data = maize, gen = "Hybrid", env = "Location",
 ##'                 rept = "Rep", trait = "GY", hyperparam = "default",
-##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
 ##'                 reg = "Region", sigma.dist = c("cauchy", "cauchy"),
 ##'                 res.het = F,
 ##'                 iter = 100, cores = 2, chain = 2)
@@ -88,14 +88,14 @@
 
 bayes_met = function(data, gen, env, rept, trait, hyperparam = 'default',
                     sigma.dist = c('cauchy', 'cauchy'), mu.dist = c('normal','cauchy'),
-                    gli.dist = c('normal','cauchy'), reg = NULL, res.het = F,
+                    gei.dist = c('normal','cauchy'), reg = NULL, res.het = F,
                     iter = 4000, cores = 4, chain = 4,...){
 
   requireNamespace('rstan')
 
   stopifnot("Provide the prior distribution and the hyperprior" = length(gen) == 3 &
               length(env) == 3 & length(sigma.dist) == 2 & length(mu.dist) == 2 &
-              length(gli.dist) == 2)
+              length(gei.dist) == 2)
 
   data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
 
@@ -208,8 +208,8 @@ if(res.het){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -349,8 +349,8 @@ if(res.het){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -503,8 +503,8 @@ if(res.het){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -652,8 +652,8 @@ if(res.het){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
     s_m ~ ",reg[[1]][3],"(0, phi);
@@ -819,8 +819,8 @@ if(res.het){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
     s_m ~ ",reg[[1]][3],"(0, phi);
@@ -999,8 +999,8 @@ if(res.het){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
     s_m ~ ",reg[[1]][3],"(0, phi);
@@ -1141,8 +1141,8 @@ if(is.null(reg)){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -1282,8 +1282,8 @@ if(is.null(reg)){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -1436,8 +1436,8 @@ if(is.null(reg)){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -1579,8 +1579,8 @@ if(is.null(reg)){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
     s_m ~ ",reg[[1]][3],"(0, phi);
@@ -1740,8 +1740,8 @@ if(is.null(reg)){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
     s_m ~ ",reg[[1]][3],"(0, phi);
@@ -1914,8 +1914,8 @@ if(is.null(reg)){
     l ~ ",env[2],"(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gli.dist[2],"(0, phi);
-    gl ~ ",gli.dist[1],"(0, s_gl);
+    s_gl ~ ",gei.dist[2],"(0, phi);
+    gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
     s_m ~ ",reg[[1]][3],"(0, phi);

@@ -2,7 +2,7 @@
 % Please edit documentation in R/extr_outs.R
 \name{extr_outs}
 \alias{extr_outs}
-\title{Extracting outputs from \code{\link[ProbBreed:bayes_met]{ProbBreed::bayes_met()}} objects}
+\title{Extracting outputs from \code{\link[=bayes_met]{bayes_met()}} objects}
 \usage{
 extr_outs(
   data,
@@ -64,7 +64,7 @@ real data. Note that this plot is customizable using the \code{ggplot2} library
 }
 \description{
 This function extracts outputs of the Bayesian model fitted
-using \code{\link[ProbBreed:bayes_met]{ProbBreed::bayes_met()}}, and provides some diagnostics about the model
+using \code{\link[=bayes_met]{bayes_met()}}, and provides some diagnostics about the model
 }
 \examples{
 \dontrun{
