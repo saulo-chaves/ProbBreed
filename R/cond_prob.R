@@ -76,7 +76,7 @@
 ##'                 env = c("Location", "normal", "cauchy"),
 ##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
 ##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
-##'                 mu.dist = c("normal", "normal"), gli.dist = c("normal", "cauchy"),
+##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
 ##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
 ##'                 res.het = T,
 ##'                 iter = 100, cores = 2, chain = 2)
@@ -179,7 +179,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
         ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
-        labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+        labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
@@ -189,7 +189,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
         ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
-        labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+        labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
@@ -269,7 +269,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                             names_to = 'envir') %>%
         ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
-        labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+        labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
@@ -364,7 +364,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
      ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
-     labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+     labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
            legend.position = 'right', legend.direction = 'vertical')+
      scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
@@ -374,7 +374,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
      ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
-     labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+     labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
            legend.position = 'right', legend.direction = 'vertical')+
      scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
@@ -454,7 +454,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                   names_to = 'envir') %>%
       ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
       geom_tile(colour = 'white')+
-      labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
+      labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
       theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
             legend.position = 'right', legend.direction = 'vertical')+
       scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))

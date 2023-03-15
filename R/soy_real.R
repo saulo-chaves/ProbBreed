@@ -1,0 +1,32 @@
+##' Soybean real data set
+##'
+##' A part of the data set used by Krause et al. (2023) regarding the USDA Northen
+##' Region Uniform Soybean Tests. It contains 823 observations from 179 genotypes
+##' evaluated at 16 environments and 3 breeding regions. Note that these data comprise
+##' only the adjusted means (eBLUEs). The original data, available at the package
+##' `SoyURT`, has 4,257 experimental genotypes evaluated at 63 locations and
+##' 31 years resulting in 591 location-year combinations (environments) with
+##' 39,006 yield values.
+##'
+##' @format ## `soy_real`
+##'  A data frame with 823 rows and 6 columns:
+##'  \describe{
+##'    \item{environment}{16 evaluated environments}
+##'    \item{region}{Regions containing the evaluated environments: 1, 2 and 3}
+##'    \item{check}{A complementar information indicating whether a genotype is a
+##'                 check or not}
+##'    \item{G}{179 evaluated genotypes}
+##'    \item{eBLUE}{823 Adjusted means (phenotypes)}
+##'    \item{SE}{Standard error of the adjusted means}
+##'  }
+##'
+##' @source
+##'  \describe{
+##'  Using soybean historical field trial data to study genotype by environment
+##'  variation and identify mega-environments with the integration of genetic
+##'  and non-genetic factors. Matheus D Krause, Kaio O G Dias, Asheesh K Singh,
+##'  William D Beavis. bioRxiv 2022.04.11.487885;
+##'  doi: https://doi.org/10.1101/2022.04.11.487885
+##'  }
+##'
+"soy_real"

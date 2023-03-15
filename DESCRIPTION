@@ -19,7 +19,7 @@ Description: Run a MET model employing Bayesian statistics,
             made using 'ggplot2' package, and can be customized using the very
             'ggplot2'.
 License: MIT + file LICENSE
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 Imports: dplyr,
     ggplot2,
     rstan,
