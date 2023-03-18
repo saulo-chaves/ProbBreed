@@ -1,151 +1,346 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg width="182.85204mm" height="139.21432mm" viewBox="0 0 182.85203 139.21432" version="1.1" id="svg2042" inkscape:version="1.1 (c68e22c387, 2021-05-23)" sodipodi:docname="desenho.svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-    <sodipodi:namedview id="namedview2044" pagecolor="#ffffff" bordercolor="#111111" borderopacity="1" inkscape:pageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="1" inkscape:document-units="mm" showgrid="false" inkscape:zoom="0.60221134" inkscape:cx="241.60953" inkscape:cy="296.40757" inkscape:window-width="1366" inkscape:window-height="705" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="g2380" />
-    <defs id="defs2039">
-        <clipPath id="clip0">
-            <rect x="21" y="7" width="1009" height="662" id="rect2103" />
-        </clipPath>
-    </defs>
-    <g inkscape:label="Camada 1" inkscape:groupmode="layer" id="layer1" transform="translate(48.708956,-8.6815453)">
-        <g clip-path="url(#clip0)" transform="matrix(0.26458333,0,0,0.26458333,-54.225779,6.8783661)" id="g2380">
-            <path d="m 226.22929,19.128696 c 0,-6.508047 4.89444,-11.783925 10.93271,-11.783925 h 155.01547 c 6.03828,0 10.93272,5.275878 10.93272,11.783925 v 47.134669 c 0,6.508048 -4.89444,11.783965 -10.93272,11.783965 H 237.162 c -6.03827,0 -10.93271,-5.275917 -10.93271,-11.783965 z" stroke="#ffffff" stroke-width="1.02022" stroke-miterlimit="8" fill="#767171" fill-rule="evenodd" id="path2108" />
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2110" x="269.6456" y="45.715408" style="stroke-width:0.765169">I</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2112" x="277.42508" y="45.715408" style="stroke-width:0.765169">have</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2114" x="311.01062" y="45.715408" style="stroke-width:0.765169">only</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2116" x="341.74518" y="45.715408" style="stroke-width:0.765169">means</text>
-            <path d="m 226.22929,105.85161 c 0,-6.580893 4.94971,-11.916153 11.05505,-11.916153 h 154.77079 c 6.10534,0 11.05506,5.33526 11.05506,11.916153 v 47.66462 c 0,6.5809 -4.94972,11.91616 -11.05506,11.91616 H 237.28434 c -6.10534,0 -11.05505,-5.33526 -11.05505,-11.91616 z" stroke="#ffffff" stroke-width="1.02022" stroke-miterlimit="8" fill="#767171" fill-rule="evenodd" id="path2118" />
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2120" x="274.24811" y="112.2851" style="stroke-width:0.765169">My</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2122" x="297.96832" y="112.2851" style="stroke-width:0.765169">trials</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2124" x="332.01834" y="112.2851" style="stroke-width:0.765169">are in a</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2126" x="255.39893" y="129.88399" style="stroke-width:0.765169">Randomized</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2128" x="338.16495" y="129.88399" style="stroke-width:0.765169">complete</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2130" x="283.20517" y="146.7177" style="stroke-width:0.765169">blocks</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2132" x="327.33014" y="146.7177" style="stroke-width:0.765169">design</text>
-            <path d="m 225.49228,193.10488 c 0,-6.50861 4.89445,-11.78429 10.93272,-11.78429 h 155.75321 c 6.03754,0 10.93198,5.27568 10.93198,11.78429 v 47.13474 c 0,6.50781 -4.89444,11.78349 -10.93198,11.78349 H 236.425 c -6.03827,0 -10.93272,-5.27568 -10.93272,-11.78349 z" stroke="#ffffff" stroke-width="1.02022" stroke-miterlimit="8" fill="#767171" fill-rule="evenodd" id="path2134" />
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2136" x="251.5769" y="204.87053" style="stroke-width:0.765169">My</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2138" x="275.29715" y="204.87053" style="stroke-width:0.765169">trials</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2140" x="309.34717" y="204.87053" style="stroke-width:0.765169">are in a</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2142" x="359.53229" y="204.87053" style="stroke-width:0.765169">Lattice</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2144" x="305.2359" y="222.46942" style="stroke-width:0.765169">design</text>
-            <path d="m 21.342319,109.02925 c 0,-5.70386 4.289656,-10.327331 9.581269,-10.327331 H 162.10996 c 5.29169,0 9.58105,4.623471 9.58105,10.327331 v 41.30934 c 0,5.70387 -4.28936,10.32733 -9.58105,10.32733 H 30.923588 c -5.291613,0 -9.581269,-4.62346 -9.581269,-10.32733 z" stroke="#000000" stroke-width="1.02022" stroke-miterlimit="8" fill="#d0cece" fill-rule="evenodd" id="path2146" />
-            <text font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2148" x="57.187439" y="121.46712" style="stroke-width:0.765169">I</text>
-            <text font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2150" x="64.966606" y="121.46712" style="stroke-width:0.765169">have</text>
-            <text font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2152" x="98.552315" y="121.46712" style="stroke-width:0.765169">Region</text>
-            <text font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2154" x="63.08429" y="139.06601" style="stroke-width:0.765169">information</text>
-            <path d="m 21.342319,387.86728 c 0,-5.70387 4.289656,-10.32733 9.581269,-10.32733 H 162.10996 c 5.29169,0 9.58105,4.62346 9.58105,10.32733 v 41.30934 c 0,5.70386 -4.28936,10.32733 -9.58105,10.32733 H 30.923588 c -5.291613,0 -9.581269,-4.62347 -9.581269,-10.32733 z" stroke="#000000" stroke-width="1.02022" stroke-miterlimit="8" fill="#d0cece" fill-rule="evenodd" id="path2156" />
-            <text font-family="Calibri, Calibri_MSFontService, sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2158" x="40.488926" y="389.27621" style="stroke-width:0.765169">I do</text>
-            <text font-family="Calibri, Calibri_MSFontService, sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2160" x="65.48439" y="389.27621" style="stroke-width:0.765169">not</text>
-            <text font-family="Calibri, Calibri_MSFontService, sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2162" x="88.566856" y="389.27621" style="stroke-width:0.765169">have</text>
-            <text font-family="Calibri, Calibri_MSFontService, sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2164" x="119.43913" y="389.27621" style="stroke-width:0.765169">Region</text>
-            <text font-family="Calibri, Calibri_MSFontService, sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2166" x="65.555862" y="406.87512" style="stroke-width:0.765169">information</text>
-            <path d="m 171.69101,130.26331 h 27.26147 V 43.093992 l -0.24564,0.264539 h 22.10245 v -0.529872 h -22.34817 v 87.169851 l 0.24572,-0.2648 h -27.01583 z m 48.13556,-83.991677 l 5.89603,-3.177641 l -5.89603,-3.177641 z" id="path2168" style="stroke-width:0.765169" />
-            <path d="m 171.69101,129.41938 h 27.22418 v 87.2771 l -0.24542,-0.26454 h 22.06515 v 0.52908 h -22.31057 v -87.2771 l 0.24542,0.26454 h -26.97876 z m 48.06149,84.09946 l 5.89603,3.17764 l -5.89603,3.17764 z" id="path2170" style="stroke-width:0.765169" />
-            <path d="m 171.69101,129.41938 h 49.11098 v 0.52908 h -49.11098 z m 48.12782,-2.9131 l 5.89603,3.17764 l -5.89603,3.17764 z" id="path2172" style="stroke-width:0.765169" />
-            <path d="m 226.22929,295.58381 c 0,-6.5086 4.89444,-11.78428 10.93271,-11.78428 h 155.01547 c 6.03828,0 10.93272,5.27568 10.93272,11.78428 v 47.13395 c 0,6.50861 -4.89444,11.78429 -10.93272,11.78429 H 237.162 c -6.03827,0 -10.93271,-5.27568 -10.93271,-11.78429 z" stroke="#ffffff" stroke-width="1.02022" stroke-miterlimit="8" fill="#767171" fill-rule="evenodd" id="path2174" />
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2176" x="269.6456" y="311.99417" style="stroke-width:0.765169">I</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2178" x="277.42508" y="311.99417" style="stroke-width:0.765169">have</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2180" x="311.01062" y="311.99417" style="stroke-width:0.765169">only</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2182" x="341.74518" y="311.99417" style="stroke-width:0.765169">means</text>
-            <path d="m 226.22929,384.55777 c 0,-6.50861 4.89444,-11.78429 10.93271,-11.78429 h 155.01547 c 6.03828,0 10.93272,5.27568 10.93272,11.78429 v 47.13395 c 0,6.5086 -4.89444,11.78428 -10.93272,11.78428 H 237.162 c -6.03827,0 -10.93271,-5.27568 -10.93271,-11.78428 z" stroke="#ffffff" stroke-width="1.02022" stroke-miterlimit="8" fill="#767171" fill-rule="evenodd" id="path2184" />
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2186" x="274.41873" y="380.85938" style="stroke-width:0.765169">My</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2188" x="298.13898" y="380.85938" style="stroke-width:0.765169">trials</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2190" x="332.18896" y="380.85938" style="stroke-width:0.765169">are in a</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2192" x="255.56955" y="398.45825" style="stroke-width:0.765169">Randomized</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2194" x="338.33557" y="398.45825" style="stroke-width:0.765169">complete</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2196" x="283.37579" y="415.29196" style="stroke-width:0.765169">blocks</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2198" x="327.50079" y="415.29196" style="stroke-width:0.765169">design</text>
-            <path d="m 225.49228,473.53172 c 0,-6.5086 4.89445,-11.78428 10.93272,-11.78428 h 155.75321 c 6.03754,0 10.93198,5.27568 10.93198,11.78428 v 47.13475 c 0,6.50781 -4.89444,11.78349 -10.93198,11.78349 H 236.425 c -6.03827,0 -10.93272,-5.27568 -10.93272,-11.78349 z" stroke="#ffffff" stroke-width="1.02022" stroke-miterlimit="8" fill="#767171" fill-rule="evenodd" id="path2200" />
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2202" x="251.43152" y="474.97513" style="stroke-width:0.765169">My</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2204" x="275.15176" y="474.97513" style="stroke-width:0.765169">trials</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2206" x="309.20178" y="474.97513" style="stroke-width:0.765169">are in a</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2208" x="359.38614" y="474.97513" style="stroke-width:0.765169">Lattice</text>
-            <text fill="#ffffff" font-family="'Segoe UI', 'Segoe UI_MSFontService', sans-serif" font-weight="400" font-size="14.5382px" transform="scale(0.96319098,1.0382157)" id="text2210" x="305.08975" y="492.57404" style="stroke-width:0.765169">design</text>
-            <path d="m 171.69101,409.07274 h 27.26147 V 319.548 l -0.24564,0.26453 h 22.10245 v -0.52907 h -22.34817 v 89.52448 l 0.24572,-0.2648 h -27.01583 z m 48.13556,-86.3471 l 5.89603,-3.17764 l -5.89603,-3.17765 z" id="path2212" style="stroke-width:0.765169" />
-            <path d="m 171.79854,408.5434 h 27.15417 v 89.1662 l -0.24543,-0.26454 h 21.99514 v 0.52988 h -22.2413 v -89.167 l 0.24616,0.26454 h -26.90874 z m 47.92072,85.98856 l 5.89603,3.17764 l -5.89603,3.17764 z" id="path2214" style="stroke-width:0.765169" />
-            <path d="m 171.79908,409.073 l 49.27599,-0.0908 l -5.1e-4,-0.5296 l -49.27602,0.0908 z m 48.29608,2.82388 l 5.89301,-3.18849 l -5.89898,-3.16677 z" id="path2216" style="stroke-width:0.765169" />
-            <path d="m 447.28774,19.217137 c 0,-6.582287 4.12657,-11.9183616 9.21659,-11.9183616 h 245.77573 c 5.08755,0 9.21659,5.3360746 9.21659,11.9183616 v 47.672732 c 0,6.582365 -4.12904,11.918401 -9.21659,11.918401 H 456.50433 c -5.09002,0 -9.21659,-5.336036 -9.21659,-11.918401 z" stroke="#ffffff" stroke-width="0.931616" stroke-miterlimit="8" fill-rule="evenodd" id="path2218" />
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2220" x="474.3956" y="25.055847" style="stroke-width:0.765169">rept</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2222" x="500.24255" y="25.373497" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">= NULL</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2224" x="474.3956" y="51.071587" style="stroke-width:0.765169">reg</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2226" x="500.85471" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">=</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2228" x="513.521" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">list</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2230" x="530.50848" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">(c(“</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2232" x="549.89252" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">Region</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2234" x="586.62067" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2236" x="645.02826" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2238" x="701.14117" y="51.07159" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”),</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2240" x="535.86469" y="64.07946" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">c(“Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2242" x="592.48718" y="64.07946" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2244" x="648.5993" y="64.07946" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”))</text>
-            <path d="m 447.28774,193.09143 c 0,-6.50975 4.08049,-11.78635 9.11459,-11.78635 h 245.98218 c 5.03226,0 9.11214,5.2766 9.11214,11.78635 v 47.1422 c 0,6.50974 -4.07988,11.78635 -9.11214,11.78635 H 456.40233 c -5.0341,0 -9.11459,-5.27661 -9.11459,-11.78635 z" stroke="#ffffff" stroke-width="0.931616" stroke-miterlimit="8" fill-rule="evenodd" id="path2246" />
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2248" x="472.8653" y="186.50648" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">rept</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2250" x="499.90256" y="186.50648" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">=</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2252" x="511.3793" y="186.50648" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">list</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2254" x="527.70264" y="186.50648" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">(c(“Rep”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2256" x="626.1546" y="186.50648" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2258" x="682.26678" y="186.50648" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”),</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2260" x="560.60486" y="199.51434" style="stroke-width:0.765169">c(“Block”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2262" x="662.37238" y="199.51434" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2264" x="718.4845" y="199.51434" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”))</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2266" x="474.3956" y="225.53009" style="stroke-width:0.765169">reg</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2268" x="499.90173" y="225.53009" style="stroke-width:0.765169">=</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2270" x="512.65405" y="225.53009" style="stroke-width:0.765169">list</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2272" x="528.97815" y="225.53009" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">(c(“</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2274" x="548.36218" y="225.53009" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">Region</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2276" x="583.56" y="225.53009" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2278" x="641.96759" y="225.53009" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2280" x="698.08051" y="225.53009" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”),</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2282" x="534.33435" y="237.7728" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">c(“Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2284" x="590.95685" y="237.7728" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2286" x="647.06897" y="237.7728" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”))</text>
-            <path d="m 447.28774,105.82287 c 0,-6.582047 4.12657,-11.918236 9.21659,-11.918236 h 245.77573 c 5.08755,0 9.21659,5.336189 9.21659,11.918236 v 47.67298 c 0,6.58204 -4.12904,11.91823 -9.21659,11.91823 H 456.50433 c -5.09002,0 -9.21659,-5.33619 -9.21659,-11.91823 z" stroke="#ffffff" stroke-width="0.931616" stroke-miterlimit="8" fill-rule="evenodd" id="path2288" />
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2290" x="474.3956" y="108.45925" style="stroke-width:0.765169">rept</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2292" x="500.15656" y="108.45925" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">= c(“Block”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2294" x="614.67706" y="108.45925" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2296" x="670.78925" y="108.45925" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”)</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2298" x="477.4563" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">reg</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2300" x="500.3782" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">=</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2302" x="512.65405" y="134.47499" style="stroke-width:0.765169">list</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2304" x="530.50848" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">(c(“</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2306" x="549.89252" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">Region</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2308" x="585.09033" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2310" x="643.49792" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2312" x="699.61084" y="134.47499" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”),</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2314" x="535.86469" y="147.48286" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">c(“Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2316" x="592.48718" y="147.48286" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2318" x="648.5993" y="147.48286" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”))</text>
-            <path d="m 447.28774,295.58831 c 0,-6.50974 4.08049,-11.78635 9.11459,-11.78635 h 245.98218 c 5.03226,0 9.11214,5.27661 9.11214,11.78635 v 47.14221 c 0,6.50974 -4.07988,11.78635 -9.11214,11.78635 H 456.40233 c -5.0341,0 -9.11459,-5.27661 -9.11459,-11.78635 z" stroke="#ffffff" stroke-width="0.931616" stroke-miterlimit="8" fill-rule="evenodd" id="path2320" />
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2322" x="474.3956" y="297.45596" style="stroke-width:0.765169">rept</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2324" x="499.90256" y="297.45596" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">= NULL</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2326" x="474.3956" y="323.47171" style="stroke-width:0.765169">reg</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2328" x="499.90173" y="323.47171" style="stroke-width:0.765169">= NULL</text>
-            <path d="m 447.28774,473.5674 c 0,-6.50975 4.08049,-11.78635 9.11459,-11.78635 h 245.98218 c 5.03226,0 9.11214,5.2766 9.11214,11.78635 v 47.14221 c 0,6.50975 -4.07988,11.78635 -9.11214,11.78635 H 456.40233 c -5.0341,0 -9.11459,-5.2766 -9.11459,-11.78635 z" stroke="#ffffff" stroke-width="0.931616" stroke-miterlimit="8" fill-rule="evenodd" id="path2330" />
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2332" x="474.3956" y="462.73242" style="stroke-width:0.765169">rept</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2334" x="500.15656" y="462.73245" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">=</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2336" x="509.84894" y="462.73245" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">list</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2338" x="526.1723" y="462.73245" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">(c(“Rep”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2340" x="624.62427" y="462.73245" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2342" x="680.73639" y="462.73245" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”),</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2344" x="531.5285" y="475.7403" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">c(“Block”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2346" x="633.29596" y="475.7403" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2348" x="689.40808" y="475.7403" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”))</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2350" x="474.3956" y="501.75604" style="stroke-width:0.765169">reg</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2352" x="499.90173" y="501.75604" style="stroke-width:0.765169">= NULL</text>
-            <path d="m 447.28774,384.57786 c 0,-6.50975 4.08049,-11.78635 9.11459,-11.78635 h 245.98218 c 5.03226,0 9.11214,5.2766 9.11214,11.78635 v 47.1422 c 0,6.50974 -4.07988,11.78635 -9.11214,11.78635 H 456.40233 c -5.0341,0 -9.11459,-5.27661 -9.11459,-11.78635 z" stroke="#ffffff" stroke-width="0.931616" stroke-miterlimit="8" fill-rule="evenodd" id="path2354" />
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2356" x="474.3956" y="383.15488" style="stroke-width:0.765169">rept</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2358" x="500.15656" y="383.15488" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">= c(“Block”, “Prior”, “</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2360" x="614.67706" y="383.15488" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">hyperprior</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" id="text2362" x="670.78925" y="383.15488" transform="scale(0.96319098,1.0382157)" style="stroke-width:0.765169">”)</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2364" x="474.3956" y="409.17062" style="stroke-width:0.765169">reg</text>
-            <text fill="#ffffff" font-family="'Source Code Pro', 'Source Code Pro_MSFontService', sans-serif" font-weight="400" font-size="10.7124px" transform="scale(0.96319098,1.0382157)" id="text2366" x="499.90173" y="409.17062" style="stroke-width:0.765169">= NULL</text>
-            <path d="m 403.1124,42.828419 l 38.71628,0.313792 l -0.004,0.529554 l -38.71555,-0.313712 z m 37.75375,-2.606937 l 5.87319,3.225306 l -5.91741,3.129739 z" id="path2368" style="stroke-width:0.765169" />
-            <path d="m 403.11019,129.41938 l 38.79072,0.0215 l -7.4e-4,0.52908 l -38.78998,-0.0214 z m 37.80903,-2.89244 l 5.89455,3.18081 l -5.8975,3.17447 z" id="path2370" style="stroke-width:0.765169" />
-            <path d="m 403.11166,216.01011 l 38.79072,0.27407 l -0.004,0.52987 l -38.78998,-0.27486 z m 37.82598,-2.64539 l 5.87613,3.21895 l -5.91519,3.13634 z" id="path2372" style="stroke-width:0.765169" />
-            <path d="m 403.11019,319.81279 l 38.71613,-7e-5 v -0.52961 l -38.71613,8e-5 z m 37.73341,2.91277 l 5.89603,-3.17765 l -5.89603,-3.17763 z" id="path2374" style="stroke-width:0.765169" />
-            <path d="m 403.10795,408.05022 l 38.62643,0.1276 l 0.002,-0.52961 l -38.62644,-0.1276 z m 37.63173,3.03716 l 5.90913,-3.15814 l -5.88284,-3.19708 z" id="path2376" style="stroke-width:0.765169" />
-            <path d="m 403.11019,497.7607 l 38.93082,-7e-5 v -0.52961 l -38.93082,8e-5 z m 37.94818,2.91277 l 5.89603,-3.17765 l -5.89603,-3.17763 z" id="path2378" style="stroke-width:0.765169" />
-        </g>
-    </g>
-</svg>
+<svg
+   width="182.86198mm"
+   height="139.20531mm"
+   viewBox="0 0 182.86198 139.20531"
+   version="1.1"
+   id="svg5"
+   xml:space="preserve"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="desenho.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0544998"
+     inkscape:cx="250.82982"
+     inkscape:cy="260.78715"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1897"><inkscape:page
+       x="0"
+       y="0"
+       width="182.86198"
+       height="139.20531"
+       id="page352" /><inkscape:page
+       x="194.81195"
+       y="-34.779011"
+       width="182.85205"
+       height="139.21432"
+       id="page354" /></sodipodi:namedview><defs
+     id="defs2"><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath160"><path
+         d="M 0,0 H 519 V 395 H 0 Z"
+         id="path158" /></clipPath><clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1580"><g
+         id="g1588"
+         transform="matrix(2.8346458,0,0,2.8346457,-71.414785,-98.572529)"><g
+           id="g1586"><g
+             id="g1584"><path
+               d="M 25.233412,34.822529 H 208.28521 V 174.12142 H 25.233412 Z"
+               id="path1582"
+               style="stroke-width:0.352778" /></g></g></g></clipPath></defs><g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-25.188051,-34.779011)" /><g
+     id="g156"
+     clip-path="url(#clipPath1580)"
+     transform="matrix(0.35277776,0,0,0.35277778,0.00549715,-0.0048133)"><g
+       id="g162"><g
+         id="g1897"><g
+           id="g164"><path
+             d="m 154.035,9.234 c 0,-4.879 3.668,-8.836 8.199,-8.836 h 116.262 c 4.527,0 8.199,3.957 8.199,8.836 v 35.352 c 0,4.883 -3.672,8.84 -8.199,8.84 H 162.234 c -4.531,0 -8.199,-3.957 -8.199,-8.84 z"
+             style="fill:#767171;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path166" /></g><text
+           xml:space="preserve"
+           transform="scale(0.96319097,1.0382157)"
+           style="font-variant:normal;font-weight:normal;font-size:10.9036px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.963191"
+           id="text170"
+           x="198.55144"
+           y="29.020796"><tspan
+             sodipodi:role="line"
+             id="tspan168"
+             x="198.55144"
+             y="29.020796"
+             style="stroke-width:0.963191">Only-means</tspan></text><g
+           id="g172"><path
+             d="m 154.035,74.277 c 0,-4.937 3.711,-8.937 8.289,-8.937 h 116.078 c 4.578,0 8.293,4 8.293,8.937 v 35.75 c 0,4.934 -3.715,8.938 -8.293,8.938 H 162.324 c -4.578,0 -8.289,-4.004 -8.289,-8.938 z"
+             style="fill:#767171;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path174" /></g><text
+           xml:space="preserve"
+           transform="scale(0.96319098,1.0382157)"
+           style="font-variant:normal;font-weight:normal;font-size:10.9036px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.963191"
+           id="text182"
+           x="213.62466"
+           y="92.293671"><tspan
+             sodipodi:role="line"
+             id="tspan180"
+             x="213.62466"
+             y="92.293671"
+             style="stroke-width:0.963191">RCBD</tspan></text><g
+           id="g184"><path
+             d="m 153.48,139.719 c 0,-4.883 3.672,-8.84 8.2,-8.84 h 116.816 c 4.527,0 8.199,3.957 8.199,8.84 v 35.347 c 0,4.883 -3.672,8.84 -8.199,8.84 H 161.68 c -4.528,0 -8.2,-3.957 -8.2,-8.84 z"
+             style="fill:#767171;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path186" /></g><text
+           xml:space="preserve"
+           transform="scale(0.96319098,1.0382157)"
+           style="font-variant:normal;font-weight:normal;font-size:10.9036px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.963191"
+           id="text192"
+           x="219.16663"
+           y="155.95363"><tspan
+             sodipodi:role="line"
+             id="tspan190"
+             x="219.16663"
+             y="155.95363"
+             style="stroke-width:0.963191">IBD</tspan></text><g
+           id="g194"><path
+             d="m 0.367,76.66 c 0,-4.277 3.219,-7.746 7.188,-7.746 h 98.39 c 3.969,0 7.184,3.469 7.184,7.746 v 30.981 c 0,4.281 -3.215,7.746 -7.184,7.746 H 7.555 c -3.969,0 -7.188,-3.465 -7.188,-7.746 z"
+             style="fill:#d0cece;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path196" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773681,0,0,1,25.67358,89.470426)"
+           style="font-variant:normal;font-weight:normal;font-size:11.3203px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text202"><tspan
+             x="0 6.0563827 12.452375 18.203108 23.625551 32.172409 38.613682 44.5229 51.17926 53.918785 60.541183"
+             y="0"
+             sodipodi:role="line"
+             id="tspan198">IhaveRegion</tspan><tspan
+             x="4.5916548 7.3311772 13.72717 17.259117 23.881516 27.809673 37.556488 43.30722 47.133495 49.87302 56.495419"
+             y="13.70359"
+             sodipodi:role="line"
+             id="tspan200">information</tspan></text><g
+           id="g204"><path
+             d="m 0.367,285.789 c 0,-4.277 3.219,-7.746 7.188,-7.746 h 98.39 c 3.969,0 7.184,3.469 7.184,7.746 v 30.981 c 0,4.281 -3.215,7.746 -7.184,7.746 H 7.555 c -3.969,0 -7.188,-3.465 -7.188,-7.746 z"
+             style="fill:#d0cece;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path206" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773681,0,0,1,13.610687,298.00313)"
+           style="font-variant:normal;font-weight:normal;font-size:11.3203px;font-family:Calibri;-inkscape-font-specification:Calibri;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text212"><tspan
+             x="0 2.8414056 5.3998027 11.342981 19.448345 25.391525 31.357344 37.402405 43.345585 48.575584 53.567852 61.412849 67.356026 72.982239 78.302795 80.895157 86.860977"
+             y="0"
+             sodipodi:role="line"
+             id="tspan208">I donothaveRegion</tspan><tspan
+             x="19.518667 22.111027 27.986282 31.20126 37.16708 41.10656 50.14019"
+             y="13.703601"
+             sodipodi:role="line"
+             id="tspan210">information</tspan></text><path
+           d="m 113.129,92.586 h 20.445 V 27.211 l -0.183,0.195 h 16.578 v -0.394 h -16.762 v 65.375 l 0.184,-0.199 h -20.262 z m 36.101,-62.992 4.422,-2.383 -4.422,-2.387 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path222" /><path
+           d="m 113.129,91.953 h 20.418 v 65.457 l -0.184,-0.199 h 16.551 v 0.398 H 133.18 V 92.152 l 0.183,0.2 h -20.234 z m 36.047,63.074 4.422,2.383 -4.422,2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path224" /><path
+           d="m 112.90897,92.07873 h 36.836 v 0.399 h -36.836 z m 36.098,-2.183 4.421,2.382 -4.421,2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path226" /><g
+           id="g228"><path
+             d="m 154.035,216.578 c 0,-4.883 3.668,-8.84 8.199,-8.84 h 116.262 c 4.527,0 8.199,3.957 8.199,8.84 v 35.348 c 0,4.883 -3.672,8.84 -8.199,8.84 H 162.234 c -4.531,0 -8.199,-3.957 -8.199,-8.84 z"
+             style="fill:#767171;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path230" /></g><text
+           xml:space="preserve"
+           transform="scale(0.96319095,1.0382157)"
+           style="font-variant:normal;font-weight:normal;font-size:10.9036px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.963191"
+           id="text234"
+           x="198.55185"
+           y="229.07239"><tspan
+             sodipodi:role="line"
+             id="tspan232"
+             x="198.55185"
+             y="229.07239"
+             style="stroke-width:0.963191">Only-means</tspan></text><g
+           id="g236"><path
+             d="m 154.035,283.309 c 0,-4.883 3.668,-8.84 8.199,-8.84 h 116.262 c 4.527,0 8.199,3.957 8.199,8.84 v 35.347 c 0,4.883 -3.672,8.84 -8.199,8.84 H 162.234 c -4.531,0 -8.199,-3.957 -8.199,-8.84 z"
+             style="fill:#767171;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path238" /></g><text
+           xml:space="preserve"
+           transform="scale(0.96319098,1.0382157)"
+           style="font-variant:normal;font-weight:normal;font-size:10.9036px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.963191"
+           id="text246"
+           x="213.62561"
+           y="293.72443"><tspan
+             sodipodi:role="line"
+             id="tspan244"
+             x="213.62561"
+             y="293.72443"
+             style="stroke-width:0.963191">RCBD</tspan></text><g
+           id="g248"><path
+             d="m 153.48,350.039 c 0,-4.883 3.672,-8.84 8.2,-8.84 h 116.816 c 4.527,0 8.199,3.957 8.199,8.84 v 35.348 c 0,4.883 -3.672,8.84 -8.199,8.84 H 161.68 c -4.528,0 -8.2,-3.957 -8.2,-8.84 z"
+             style="fill:#767171;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.765165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path250" /></g><text
+           xml:space="preserve"
+           transform="scale(0.96319098,1.0382157)"
+           style="font-variant:normal;font-weight:normal;font-size:10.9036px;font-family:'Segoe UI';-inkscape-font-specification:SegoeUI;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.963191"
+           id="text256"
+           x="219.16724"
+           y="358.53207"><tspan
+             sodipodi:role="line"
+             id="tspan254"
+             x="219.16724"
+             y="358.53207"
+             style="stroke-width:0.963191">IBD</tspan></text><path
+           d="m 113.129,301.691 h 20.445 v -67.14 l -0.183,0.195 h 16.578 v -0.394 h -16.762 v 67.144 l 0.184,-0.199 h -20.262 z m 36.101,-64.757 4.422,-2.383 -4.422,-2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path258" /><path
+           d="m 113.211,301.297 h 20.367 v 66.875 l -0.187,-0.199 h 16.496 v 0.398 h -16.68 v -66.875 l 0.184,0.195 h -20.18 z m 35.941,64.492 4.422,2.383 -4.422,2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path260" /><path
+           d="m 113.211,301.695 36.957,-0.07 v -0.398 l -36.957,0.07 z m 36.223,2.117 4.418,-2.394 -4.422,-2.375 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path262" /><g
+           id="g264"><path
+             d="m 319.828,9.301 c 0,-4.938 3.094,-8.938 6.91,-8.938 H 511.07 c 3.817,0 6.914,4 6.914,8.938 v 35.754 c 0,4.937 -3.097,8.941 -6.914,8.941 H 326.738 c -3.816,0 -6.91,-4.004 -6.91,-8.941 z"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.698712;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path266" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773688,0,0,1,327.06193,14.398656)"
+           style="font-variant:normal;font-weight:normal;font-size:8.34134px;font-family:Verdana;-inkscape-font-specification:Verdana;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text276"><tspan
+             x="0 3.5534096 8.5165052 13.713158"
+             y="0"
+             sodipodi:role="line"
+             id="tspan268">rept</tspan><tspan
+             x="20.126036 26.949249 29.87706 36.116379 42.213898 46.851681"
+             y="0.2473415"
+             sodipodi:role="line"
+             id="tspan270">= NULL</tspan><tspan
+             x="0 3.5534096 8.5165052 20.58642 30.445881 32.731407 35.016933 39.354427 43.658558 47.445526 51.78302 55.569988 58.739697 64.328392 69.291489 74.488136 76.773666 81.828514 87.308777 90.27829 93.306198 96.234001 100.05434 105.08416 108.63757 110.9231 115.97795 119.64814 122.61765 125.64556 128.57336 132.71068 137.89899 142.82872 148.02536 152.98846 156.54187 161.73853 165.29193 167.57745 172.63231 176.35255 180.17288 183.95984"
+             y="20.257458"
+             sodipodi:role="line"
+             id="tspan272">reg=list(c(“Region”, “Prior”, “hyperprior”),</tspan><tspan
+             x="47.863625 52.201122 55.988087 59.808422 64.838249 68.391655 70.677185 75.732033 79.410561 82.371735 85.399643 88.327454 91.880859 97.077515 102.00725 107.2039 112.16699 115.72041 120.91705 124.47047 126.75599 131.81084 135.52274 139.34306 143.13004"
+             y="30.386194"
+             sodipodi:role="line"
+             id="tspan274">c(“Prior”, “hyperprior”))</tspan></text><g
+           id="g278"><path
+             d="m 319.828,139.707 c 0,-4.883 3.059,-8.84 6.836,-8.84 h 184.484 c 3.778,0 6.836,3.957 6.836,8.84 v 35.355 c 0,4.883 -3.058,8.84 -6.836,8.84 H 326.664 c -3.777,0 -6.836,-3.957 -6.836,-8.84 z"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.698712;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path280" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773688,0,0,1,325.95645,140.11409)"
+           style="font-variant:normal;font-weight:normal;font-size:8.34134px;font-family:Verdana;-inkscape-font-specification:Verdana;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text290"><tspan
+             x="0 3.5534096 8.5165052 13.713158 21.036852 29.970425 32.255951 34.541477 38.878971 42.665939 46.452908 50.790401 54.57737 58.397701 63.994736 68.957832 74.154488 77.115662 80.143562 83.071373 86.891708 91.921532 95.474945 97.760468 102.81532 106.49385 109.45502 112.48293 115.41074 119.23107 124.41104 129.34077 134.53743 139.50052 143.05392 148.25058 151.80399 154.08952 159.14436 162.86461 166.68494 170.47191"
+             y="0"
+             sodipodi:role="line"
+             id="tspan282">rept=list(c(“Rep”, “Prior”, “hyperprior”),</tspan><tspan
+             x="68.319443 72.656944 76.443909 80.264236 85.978058 88.26358 93.318436 97.65593 102.58566 105.54683 108.57474 111.50255 115.32288 120.35271 123.90611 126.19164 131.24649 134.92502 137.89453 140.92244 143.85025 147.43703 152.62534 157.55507 162.75172 167.71481 171.26823 176.46487 180.0183 182.30382 187.35867 191.0789 194.89923 198.6862"
+             y="10.128719"
+             sodipodi:role="line"
+             id="tspan284">c(“Block”, “Prior”, “hyperprior”))</tspan><tspan
+             x="1.1915851 4.7449946 9.7080898 21.035625 30.970158 33.255684 35.54121 39.878708 43.665672 47.452641 51.790134 55.577103 58.738468 64.327164 69.29026 74.486916 76.772438 81.827293 86.114738 89.084251 92.11216 95.03997 98.860298 103.89013 107.44353 109.72906 114.78391 118.4541 121.42361 124.45152 127.37933 131.51663 136.70494 141.63467 146.83133 151.79442 155.34784 160.54449 164.0979 166.38342 171.43828 175.15851 178.97884 182.76581"
+             y="30.386189"
+             sodipodi:role="line"
+             id="tspan286">reg=list(c(“Region”, “Prior”, “hyperprior”),</tspan><tspan
+             x="47.863602 52.201096 55.988064 59.808395 64.838219 68.391632 70.677155 75.73201 79.410538 82.371712 85.39962 88.327423 91.880836 97.077492 102.00722 107.20387 112.16697 115.72038 120.91703 124.47044 126.75597 131.81082 135.52271 139.34305 143.13"
+             y="39.919121"
+             sodipodi:role="line"
+             id="tspan288">c(“Prior”, “hyperprior”))</tspan></text><g
+           id="g292"><path
+             d="m 319.828,74.254 c 0,-4.934 3.094,-8.938 6.91,-8.938 H 511.07 c 3.817,0 6.914,4.004 6.914,8.938 v 35.758 c 0,4.933 -3.097,8.937 -6.914,8.937 H 326.738 c -3.816,0 -6.91,-4.004 -6.91,-8.937 z"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.698712;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path294" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773688,0,0,1,327.06193,79.341698)"
+           style="font-variant:normal;font-weight:normal;font-size:8.34134px;font-family:Verdana;-inkscape-font-specification:Verdana;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text302"><tspan
+             x="0 3.5534096 8.5165052 13.713158 20.044233 26.867447 29.795256 34.132751 37.91972 41.740051 47.453865 49.739391 54.794243 59.131737 64.06147 67.030983 70.058891 72.986702 76.80703 81.836861 85.390266 87.675797 92.730644 96.400833 99.370346 102.39825 105.32607 109.08801 114.27631 119.20605 124.4027 129.3658 132.9192 138.11586 141.66927 143.95479 149.00964 152.72987 156.55022"
+             y="0"
+             sodipodi:role="line"
+             id="tspan296">rept= c(“Block”, “Prior”, “hyperprior”)</tspan><tspan
+             x="2.3832533 5.9366632 10.899758 20.217031 29.776205 32.061729 34.347256 38.684753 43.664532 47.451496 51.788994 55.575958 58.737328 64.334366 69.297462 74.49411 76.77964 81.834488 86.113594 89.083107 92.111015 95.038826 98.859154 103.88898 107.44239 109.72792 114.78277 118.4613 121.42247 124.45038 127.37819 131.51549 136.71214 141.64188 146.83853 151.80162 155.35503 160.55168 164.1051 166.39062 171.44547 175.15736 178.97769 182.76466"
+             y="20.257462"
+             sodipodi:role="line"
+             id="tspan298">reg=list(c(“Region”, “Prior”, “hyperprior”),</tspan><tspan
+             x="47.863636 52.20113 55.988098 59.80843 64.838257 68.391663 70.677193 75.73204 79.410568 82.371742 85.399651 88.327461 91.880867 97.077522 102.00726 107.2039 112.167 115.72041 120.91706 124.47047 126.756 131.81085 135.52275 139.34308 143.13005"
+             y="30.386198"
+             sodipodi:role="line"
+             id="tspan300">c(“Prior”, “hyperprior”))</tspan></text><g
+           id="g304"><path
+             d="m 319.828,216.578 c 0,-4.879 3.059,-8.84 6.836,-8.84 h 184.484 c 3.778,0 6.836,3.961 6.836,8.84 v 35.36 c 0,4.882 -3.058,8.839 -6.836,8.839 H 326.664 c -3.777,0 -6.836,-3.957 -6.836,-8.839 z"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.698712;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path306" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773688,0,0,1,327.06193,226.50621)"
+           style="font-variant:normal;font-weight:normal;font-size:8.34134px;font-family:Verdana;-inkscape-font-specification:Verdana;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text312"><tspan
+             x="0 3.5534096 8.5165052 13.713158 19.852383 26.675596 29.603405 35.842724 41.940243 46.578026"
+             y="0"
+             sodipodi:role="line"
+             id="tspan308">rept= NULL</tspan><tspan
+             x="0 3.5534096 8.5165052 19.84404 26.667253 29.595064 35.834385 41.9319 46.569683"
+             y="20.257471"
+             sodipodi:role="line"
+             id="tspan310">reg= NULL</tspan></text><g
+           id="g314"><path
+             d="m 319.828,350.062 c 0,-4.878 3.059,-8.839 6.836,-8.839 h 184.484 c 3.778,0 6.836,3.961 6.836,8.839 v 35.36 c 0,4.883 -3.058,8.84 -6.836,8.84 H 326.664 c -3.777,0 -6.836,-3.957 -6.836,-8.84 z"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.698712;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path316" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773688,0,0,1,327.06193,355.20067)"
+           style="font-variant:normal;font-weight:normal;font-size:8.34134px;font-family:Verdana;-inkscape-font-specification:Verdana;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text324"><tspan
+             x="0 3.5534096 8.5165052 13.713158 20.044233 27.593143 29.87867 32.164196 36.50169 40.288658 44.075626 48.41312 52.200089 56.02042 61.609116 66.572212 71.76886 74.73838 77.766281 80.694092 84.514427 89.54425 93.097664 95.383186 100.43804 104.10823 107.07774 110.10565 113.03345 116.85379 122.03376 126.96349 132.16014 137.12325 140.67665 145.87331 149.42671 151.71223 156.76709 160.47899 164.29932 168.08629"
+             y="0"
+             sodipodi:role="line"
+             id="tspan318">rept=list(c(“Rep”, “Prior”, “hyperprior”),</tspan><tspan
+             x="44.487213 48.824707 52.611675 56.432007 62.145821 64.431351 69.486198 73.823692 78.753426 81.7146 84.7425 87.670311 91.490646 96.52047 100.07388 102.35941 107.41426 111.09279 114.0623 117.09021 120.01802 123.60479 128.79311 133.72284 138.91949 143.88258 147.43599 152.63264 156.18605 158.47159 163.52643 167.24667 171.067 174.85397"
+             y="10.128735"
+             sodipodi:role="line"
+             id="tspan320">c(“Block”, “Prior”, “hyperprior”))</tspan><tspan
+             x="0 3.5534096 8.5165052 19.84404 26.667253 29.595064 35.834385 41.9319 46.569683"
+             y="30.386206"
+             sodipodi:role="line"
+             id="tspan322">reg= NULL</tspan></text><g
+           id="g326"><path
+             d="m 319.828,283.32 c 0,-4.879 3.059,-8.84 6.836,-8.84 h 184.484 c 3.778,0 6.836,3.961 6.836,8.84 v 35.36 c 0,4.882 -3.058,8.84 -6.836,8.84 H 326.664 c -3.777,0 -6.836,-3.958 -6.836,-8.84 z"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.698712;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:8;stroke-dasharray:none;stroke-opacity:1"
+             id="path328" /></g><text
+           xml:space="preserve"
+           transform="matrix(0.92773688,0,0,1,327.06193,293.23668)"
+           style="font-variant:normal;font-weight:normal;font-size:8.34134px;font-family:Verdana;-inkscape-font-specification:Verdana;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text334"><tspan
+             x="0 3.5534096 8.5165052 13.713158 20.044233 26.867447 29.795256 34.132751 37.91972 41.740051 47.453865 49.739391 54.794243 59.131737 64.06147 67.030983 70.058891 72.986702 76.80703 81.836861 85.390266 87.675797 92.730644 96.400833 99.370346 102.39825 105.32607 109.08801 114.27631 119.20605 124.4027 129.3658 132.9192 138.11586 141.66927 143.95479 149.00964 152.72987 156.55022"
+             y="0"
+             sodipodi:role="line"
+             id="tspan330">rept= c(“Block”, “Prior”, “hyperprior”)</tspan><tspan
+             x="0 3.5534096 8.5165052 19.84404 26.667253 29.595064 35.834385 41.9319 46.569683"
+             y="20.257471"
+             sodipodi:role="line"
+             id="tspan332">reg= NULL</tspan></text><path
+           d="m 286.695,27.012 29.039,0.234 -0.004,0.395 -29.035,-0.235 z m 28.317,-1.957 4.406,2.418 -4.441,2.347 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path336" /><path
+           d="m 286.695,91.953 29.094,0.016 -0.004,0.398 -29.09,-0.015 z m 28.356,-2.168 4.422,2.383 -4.422,2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path338" /><path
+           d="m 286.695,156.895 29.094,0.207 -0.004,0.398 -29.094,-0.207 z m 28.371,-1.981 4.407,2.414 -4.438,2.352 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path340" /><path
+           d="m 286.695,234.75 h 29.035 v -0.398 h -29.035 z m 28.301,2.184 4.422,-2.383 -4.422,-2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path342" /><path
+           d="m 286.691,300.926 28.973,0.097 v -0.398 l -28.969,-0.098 z m 28.227,2.277 4.43,-2.367 -4.41,-2.398 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path344" /><path
+           d="m 286.695,368.211 h 29.196 v -0.399 h -29.196 z m 28.461,2.184 4.422,-2.383 -4.422,-2.383 z"
+           style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path346" /></g></g></g></svg>

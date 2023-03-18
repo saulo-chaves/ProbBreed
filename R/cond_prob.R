@@ -133,19 +133,20 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       # Probabilities of superior performance within environments
 
       colnames(mod$post$g) = paste0(name.gen, '_')
-      colnames(mod$post$gm) = paste(rep(name.gen,  times = num.reg),
-                                    rep(name.reg,  each = num.gen), sep = '_')
-      name.env.reg = sort(paste(unique(data[,c(env,reg)])[,1],
-                                unique(data[,c(env,reg)])[,2], sep = '_'))
-      colnames(mod$post$gl) = paste(rep(name.gen,  times = num.env),
-                                    rep(name.env.reg,  each = num.gen), sep = '_')
+      colnames(mod$post$gm) = paste('Gen',rep(name.gen,  times = num.reg),
+                                    'Reg',rep(name.reg,  each = num.gen), sep = '_')
+      name.env.reg = sort(paste('Env',unique(data[,c(env,reg)])[,1],
+                                'Reg',unique(data[,c(env,reg)])[,2], sep = '_'))
+      colnames(mod$post$gl) = paste('Gen',rep(name.gen,  times = num.env),
+                                    'Env',rep(name.env.reg,  each = num.gen), sep = '_')
 
 
       posgge = matrix(mod$post$g, nrow = num.sim, ncol = num.env * num.gen) + mod$post$gl
       for (i in name.reg) {
-        posgge[,grep(i, colnames(posgge))] = posgge[,grep(i, colnames(posgge))] +
-          matrix(mod$post$gm[,grep(i, colnames(mod$post$gm))],
-                 nrow = num.sim, ncol = num.gen * length(name.env.reg[grep(i, name.env.reg)]))
+        posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] =
+          posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] +
+          matrix(mod$post$gm[,grep(i, do.call(rbind,strsplit(colnames(mod$post$gm),'Reg'))[,2])],
+                 nrow = num.sim, ncol = num.gen * length(name.env.reg[grep(i, do.call(rbind,strsplit(name.env.reg,'Reg'))[,2])]))
       }
 
       supprob = function(vector, num.gen, int){
@@ -177,6 +178,9 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
         tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+        dplyr::mutate(
+          envir = sub('Env_',"",.data$envir)
+        ) %>%
         ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
         labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
@@ -187,9 +191,12 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       reg.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
         tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+        dplyr::mutate(
+          envir = sub('Env_',"",.data$envir)
+        ) %>%
         ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
-        labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
+        labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jm] %in% Omega[m]))))+
         theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
               legend.position = 'right', legend.direction = 'vertical')+
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))

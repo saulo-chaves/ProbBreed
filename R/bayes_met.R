@@ -1087,7 +1087,7 @@ if(is.null(reg)){
     parameters{
     // Residual standard deviation parameter/hyperparameters
     real<lower=0> s_sigma;
-    real<lower=0> sigma[p4];
+    real<lower=0> sigma;
 
     // Mean parameter/hyperparameters
     real<lower=0> s_mu;
@@ -1114,13 +1114,9 @@ if(is.null(reg)){
     // Declaring variables to receive input
     vector[n] expectation;
 
-    // Declaring the vector with the residual standard deviations
-    vector<lower=0>[n] sigma_vec;
-
     // Computing the expectation of the likelihood function
     expectation = mu + Z3*g + Z4*l + Z5*gl;
 
-    sigma_vec = to_vector(sigma[index]);
   }
   model{
 
@@ -1145,9 +1141,10 @@ if(is.null(reg)){
     gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
+    y ~ normal(expectation, sigma);
+
     // Generating data from the model
-    y_gen ~ normal(expectation, sigma_vec);
+    y_gen ~ normal(expectation, sigma);
 
   }
 
@@ -1155,7 +1152,7 @@ if(is.null(reg)){
     real y_log_like[n];
       for (j in 1:n) {
       // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
+      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
 } ")
@@ -1221,7 +1218,7 @@ if(is.null(reg)){
     parameters{
     // Residual standard deviation parameter/hyperparameters
     real<lower=0> s_sigma;
-    real<lower=0> sigma[p4];
+    real<lower=0> sigma;
 
     // Mean parameter/hyperparameters
     real<lower=0> s_mu;
@@ -1251,13 +1248,9 @@ if(is.null(reg)){
     // Declaring variables to receive input
     vector[n] expectation;
 
-    // Declaring the vector with the residual standard deviations
-    vector<lower=0>[n] sigma_vec;
-
     // Computing the expectation of the likelihood function
     expectation = mu + Z1*r + Z3*g + Z4*l + Z5*gl;
 
-    sigma_vec = to_vector(sigma[index]);
   }
   model{
 
@@ -1286,9 +1279,9 @@ if(is.null(reg)){
     gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
+    y ~ normal(expectation, sigma);
     // Generating data from the model
-    y_gen ~ normal(expectation, sigma_vec);
+    y_gen ~ normal(expectation, sigma);
 
   }
 
@@ -1296,7 +1289,7 @@ if(is.null(reg)){
     real y_log_like[n];
       for (j in 1:n) {
       // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
+      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
 } ")
@@ -1367,11 +1360,12 @@ if(is.null(reg)){
     parameters{
     // Residual standard deviation parameter/hyperparameters
     real<lower=0> s_sigma;
-    real<lower=0> sigma[p4];
+    real<lower=0> sigma;
 
     // Mean parameter/hyperparameters
     real<lower=0> s_mu;
     real mu;
+
     // Replication parameter/hyperparameters
     real<lower=0> s_r;
     vector[p1] r;
@@ -1401,13 +1395,9 @@ if(is.null(reg)){
     // Declaring variables to receive input
     vector[n] expectation;
 
-    // Declaring the vector with the residual standard deviations
-    vector<lower=0>[n] sigma_vec;
-
     // Computing the expectation of the likelihood function
     expectation = mu + Z1*r + Z2*b + Z3*g + Z4*l + Z5*gl;
 
-    sigma_vec = to_vector(sigma[index]);
   }
   model{
 
@@ -1440,9 +1430,9 @@ if(is.null(reg)){
     gl ~ ",gei.dist[1],"(0, s_gl);
 
     // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
+    y ~ normal(expectation, sigma);
     // Generating data from the model
-    y_gen ~ normal(expectation, sigma_vec);
+    y_gen ~ normal(expectation, sigma);
 
   }
 
@@ -1450,7 +1440,7 @@ if(is.null(reg)){
     real y_log_like[n];
       for (j in 1:n) {
       // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
+      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
 } ")
@@ -1591,7 +1581,7 @@ if(is.null(reg)){
     gm ~ ",reg[[2]][1],"(0, s_gm);
 
     // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
+    y ~ normal(expectation, sigma);
     // Generating data from the model
     y_gen ~ normal(expectation, sigma);
 
@@ -1752,7 +1742,7 @@ if(is.null(reg)){
     gm ~ ",reg[[2]][1],"(0, s_gm);
 
     // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
+    y ~ normal(expectation, sigma);
     // Generating data from the model
     y_gen ~ normal(expectation, sigma);
 
