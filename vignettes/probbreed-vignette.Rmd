@@ -35,20 +35,20 @@ The second step is to fit a Multi-environment Bayesian model using the `bayes_me
 **1**-    The function lets you define which is the prior and hyperprior of each effect of the model. This is controlled by building a vector with the following structure: c("Name of the effect in your data frame", "Desired prior", "Desired hyperprior"). For example, for the genetic and environmental effects:
 
 ```{r echo=TRUE}
-gen = c("Hybrid", "normal", "cauchy")
-env = c("Location", "normal", "cauchy")
+gen = c("Gen", "normal", "cauchy")
+env = c("Env", "normal", "cauchy")
 ```
 
 When you provide the function with these vectors, you are saying that "the column in my data frame that has the information of genotypes is called 'Hybrid', and this effect will have a prior following the normal distribution, and a hyperprior following the half-cauchy distribution". 
 
 
-**2**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, lattice, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
+**2**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, incomplete block, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
 
 ```{r out.width = "100%", echo=FALSE}
-knitr::include_graphics("img/desenho.svg")
+knitr::include_graphics("img/desenho.png")
 ```
 
-Note that when you consider the Region information, and when the trials are lattices, you **must** build a list, not a vector.
+Note that when you consider the Region information, and when the trials are in incomplete block design, you **must** build a list, not a vector.
 
 **3**-    Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
 
@@ -56,105 +56,131 @@ Note that when you consider the Region information, and when the trials are latt
 
 **5**-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
 
-Without further ado, let us see how the six models can be fitted using `bayes_met`. We used the "maize" data, which is contained within the package.
+Without further ado, let us see how the six models can be fitted using `bayes_met`. The following models are only for didactic purposes, and will not provide a valid output. 
 
 ### Without Region and only means
 
 ```{r eval=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
           rept = NULL,
           reg = NULL,
-          res.het = T,
+          res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
 ```
 
-### Without Region and randomized complete blocks
+### Without Region and only means
 
 ```{r eval=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
-          rept = c("Block", "normal", "cauchy"),
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
+          rept = NULL,
           reg = NULL,
-          res.het = T,
+          res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
 ```
 
-### Without Region and lattice
+### Without Region and randomized complete blocks design
 
 ```{r eval=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
-          rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
+          rept = c("Repetition", "normal", "cauchy"),
           reg = NULL,
-          res.het = T,
+          res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
+          iter = 4000, cores = 4, chain = 4)
+```
+
+### Without Region and incomplete blocks design
+
+```{r eval=FALSE}
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
+          rept = list(c("Repetition", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+          reg = NULL,
+          res.het = F,
+          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4) 
 ```
 
 ### With Region and only means
 
 ```{r eval=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
           rept = NULL,
-          res.het = T,
+          res.het = F,
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
 ```
 
-### With Region and randomized complete blocks
+### With Region and randomized complete blocks design
 
 ```{r eval=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
-          rept = c("Block", "normal", "cauchy"),
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
+          rept = c("Repetition", "normal", "cauchy"),
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-          res.het = T,
+          res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4)
 ```
 
-### With Region and lattice
+### With Region and incomplete blocks design
 
 ```{r eval=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
-          rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+mod = bayes_met(data = MyData, 
+          gen = c("Genotype", "normal", "cauchy"), 
+          env = c("Environment", "normal", "cauchy"),
+          rept = list(c("Repetition", "normal", "cauchy"), c("Block", "normal", "cauchy")),
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-          res.het = T,
+          res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
+          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
           iter = 4000, cores = 4, chain = 4) 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-mod = bayes_met(data = maize, 
-          gen = c("Hybrid", "normal", "cauchy"), 
-          env = c("Location", "normal", "cauchy"),
-          rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-          reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-          res.het = T,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "GY", hyperparam = "default",
-          iter = 100, cores = 2, chain = 2) 
+For the next steps, we will use the "soy" data, which is contained within the package. This data set has the adjusted means of 39 genotypes that were evaluted at 14 environments, in 3 breeding regions. 
+
+```{r echo=FALSE}
+head(soy)
 ```
 
-We will take this last model as an example for the next steps. We will run this model only with 100 iterations, for the sake of reproducibility.
+
+Note that we do not have experimental design in this case, so the correct model has `rept = NULL`
+
+```{r echo=TRUE, warning=FALSE, message=FALSE}
+mod = bayes_met(data = soy,
+                 gen = c("Gen", "normal", "cauchy"),
+                 env = c("Env", "normal", "cauchy"),
+                 rept = NULL,
+                 reg = list(c("Reg", "normal", "cauchy"),
+                            c("normal", "cauchy")),
+                 res.het = F,
+                 sigma.dist = c("cauchy", "cauchy"),
+                 mu.dist = c("normal", "cauchy"),
+                 gei.dist = c("normal", "normal"),
+                 trait = "eBLUE", hyperparam = "default",
+                 iter = 100, cores = 4, chain = 4)
+```
+
+We ran this model only with 100 iterations, for the sake of reproducibility. 
 
 ## Step three - `extr_outs`
 
@@ -162,9 +188,10 @@ After fitting the model, the next step is to extract some outputs. The `extr_out
 
 Using the `mod` object from the previous step:
 ```{r echo=TRUE, warning=FALSE, results='hide', fig.width=8}
-outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
-                 effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-                 nenv = 16, res.het = TRUE, check.stan.diag = FALSE)
+outs = extr_outs(data = soy, trait = 'eBLUE', gen = 'Gen', model = mod,
+                 effects = c('l','g','gl','m','gm'),
+                 nenv = length(unique(soy$Env)),
+                 res.het = F, check.stan.diag = F)
 
 ```
 
@@ -211,9 +238,10 @@ outs$den_plot +
 Finally (and optionally), the function provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. More information about these plots in `?rstan::stan_diag`.
 
 ```{r echo=TRUE, warning=FALSE, results='hide',fig.width=6, fig.height=6}
-outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
-                 effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+outs = extr_outs(data = soy, trait = 'eBLUE', gen = 'Gen', model = mod,
+                 effects = c('l','g','gl','m','gm'),
+                 nenv = length(unique(soy$Env)),
+                 res.het = F, check.stan.diag = T)
 
 ```
 
@@ -222,12 +250,12 @@ outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
 Using the outputs extracted by `extr_outs`, we can finally calculate the probability of superior performance of the evaluated genotypes. This is exactly what `marg_prob` will do:
 
 ```{r echo=TRUE}
-margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location",
-                  increase = TRUE,extr_outs = outs, int = .2,
-                  save.df = FALSE, interactive = FALSE)
+margs = marg_prob(data = soy, trait = 'eBLUE', gen = 'Gen', env = 'Env',
+                 extr_outs = outs, int = .2, increase = T,
+                 save.df = F, interactive = F)
 ```
 
-You already know what `data`, `trait`, `gen`, and `env` mean. The new commands of this function are:
+`data`, `trait`, `gen`, and `env` were previously described. The new commands of this function are:
 
 *   `increase`: The selection is for increasing (`TRUE`, default) or decreasing (`FALSE`) the trait mean? 
 
@@ -257,16 +285,16 @@ Finally, it calculates the pairwise probability of superior performance, also pr
 margs$pair_prob.plot
 ```
 
-The heat map indicates what is the probability of the genotypes at the _x_-axis having higher performance than the ones at the _y_-axis.
+The heat map indicates what is the probability of the genotypes at the _x_-axis having better performance than the ones at the _y_-axis.
 
 ## Step five (the last) - `cond_prob`
 
 Now that we have an overview about the probability of superior performance of the the evaluated genotypes, we can calculate this parameter within each environment. This is what `cond_prob` will do:
 
 ```{r echo=TRUE}
-conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location", 
-                  extr_outs = outs, reg = "Region", int = .2,increase = T,
-                  save.df = FALSE, interactive = FALSE)
+conds = cond_prob(data = soy, trait = 'eBLUE', gen = 'Gen', env = 'Env',
+                  extr_outs = outs, int = .2, increase = T, reg = 'Reg',
+                  save.df = F, interactive = F)
 ```
 
 The only difference from `marg_prob` is that in `cond_prob` you will indicate what is the column in you data frame that refers to the region information. If there is no such column, set `reg` to `NULL`

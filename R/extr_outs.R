@@ -53,19 +53,24 @@
 ##'
 ##' @examples
 ##' \dontrun{
-##' mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
-##'                 env = c("Location", "normal", "cauchy"),
-##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
-##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
-##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-##'                 res.het = T,
-##'                 iter = 100, cores = 2, chain = 2)
-##'                 #Do not forget to increase the number of iterations, cores and chains
+##' mod = bayes_met(data = soy,
+##'                 gen = c("Gen", "normal", "cauchy"),
+##'                 env = c("Env", "normal", "cauchy"),
+##'                 rept = NULL,
+##'                 reg = list(c("Reg", "normal", "cauchy"),
+##'                            c("normal", "cauchy")),
+##'                 res.het = F,
+##'                 sigma.dist = c("cauchy", "cauchy"),
+##'                 mu.dist = c("normal", "cauchy"),
+##'                 gei.dist = c("normal", "normal"),
+##'                 trait = "eBLUE", hyperparam = "default",
+##'                 iter = 100, cores = 4, chain = 4)
+##'                 #Remember, increase the number of iterations, cores and chains
 ##'
-##' outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
-##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+##' outs = extr_outs(data = soy, trait = "eBLUE", gen = "Gen", model = mod,
+##'                  effects = c('l','g','gl','m','gm'),
+##'                  nenv = length(unique(soy$Env)), res.het = FALSE,
+##'                  check.stan.diag = TRUE)
 ##'                  }
 ##' @export
 

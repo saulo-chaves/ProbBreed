@@ -72,22 +72,27 @@
 ##'
 ##' @examples
 ##' \dontrun{
-##' mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
-##'                 env = c("Location", "normal", "cauchy"),
-##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
-##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
-##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-##'                 res.het = T,
-##'                 iter = 100, cores = 2, chain = 2)
-##'                 #Reiterating: increase the number of iterations, cores and chains
+##' mod = bayes_met(data = soy,
+##'                 gen = c("Gen", "normal", "cauchy"),
+##'                 env = c("Env", "normal", "cauchy"),
+##'                 rept = NULL,
+##'                 reg = list(c("Reg", "normal", "cauchy"),
+##'                            c("normal", "cauchy")),
+##'                 res.het = F,
+##'                 sigma.dist = c("cauchy", "cauchy"),
+##'                 mu.dist = c("normal", "cauchy"),
+##'                 gei.dist = c("normal", "normal"),
+##'                 trait = "eBLUE", hyperparam = "default",
+##'                 iter = 100, cores = 4, chain = 4)
+##'                 #Remember, increase the number of iterations, cores and chains
 ##'
-##' outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
-##'                  effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-##'                  nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+##' outs = extr_outs(data = soy, trait = "eBLUE", gen = "Gen", model = mod,
+##'                  effects = c('l','g','gl','m','gm'),
+##'                  nenv = length(unique(soy$Env)), res.het = FALSE,
+##'                  check.stan.diag = TRUE)
 ##'
-##' conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid", env = "Location",
-##'                   extr_outs = outs, reg = "Region", int = .2,
+##' conds = cond_prob(data = soy, trait = "eBLUE", gen = "Gen", env = "Env",
+##'                   extr_outs = outs, reg = "Reg", int = .2,
 ##'                   increase = TRUE, save.df = TRUE, interactive = TRUE)
 ##'                   }
 
@@ -177,7 +182,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
       env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
-        tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+        tidyr::separate(.data$name, into = c('envir','region'), sep = '_Reg_') %>%
         dplyr::mutate(
           envir = sub('Env_',"",.data$envir)
         ) %>%
@@ -190,10 +195,9 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
       reg.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
-        tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
-        dplyr::mutate(
-          envir = sub('Env_',"",.data$envir)
-        ) %>%
+        tidyr::separate(.data$name, into = c('envir','region'), sep = '_Reg_') %>%
+        dplyr::group_by(.data$gen,.data$region) %>%
+        dplyr::summarise(value = mean(value, na.rm=T), .groups = 'drop') %>%
         ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
         labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jm] %in% Omega[m]))))+
@@ -325,19 +329,20 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
     # Probabiliies of superior performance within environments
 
     colnames(mod$post$g) = paste0(name.gen, '_')
-    colnames(mod$post$gm) = paste(rep(name.gen,  times = num.reg),
-                                  rep(name.reg,  each = num.gen), sep = '_')
-    name.env.reg = sort(paste(unique(data[,c(env,reg)])[,1],
-                              unique(data[,c(env,reg)])[,2], sep = '_'))
-    colnames(mod$post$gl) = paste(rep(name.gen,  times = num.env),
-                                  rep(name.env.reg,  each = num.gen), sep = '_')
+    colnames(mod$post$gm) = paste('Gen',rep(name.gen,  times = num.reg),
+                                  'Reg',rep(name.reg,  each = num.gen), sep = '_')
+    name.env.reg = sort(paste('Env',unique(data[,c(env,reg)])[,1],
+                              'Reg',unique(data[,c(env,reg)])[,2], sep = '_'))
+    colnames(mod$post$gl) = paste('Gen',rep(name.gen,  times = num.env),
+                                  'Env',rep(name.env.reg,  each = num.gen), sep = '_')
 
 
     posgge = matrix(mod$post$g, nrow = num.sim, ncol = num.env * num.gen) + mod$post$gl
     for (i in name.reg) {
-      posgge[,grep(i, colnames(posgge))] = posgge[,grep(i, colnames(posgge))] +
-        matrix(mod$post$gm[,grep(i, colnames(mod$post$gm))],
-               nrow = num.sim, ncol = num.gen * length(name.env.reg[grep(i, name.env.reg)]))
+      posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] =
+        posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] +
+        matrix(mod$post$gm[,grep(i, do.call(rbind,strsplit(colnames(mod$post$gm),'Reg'))[,2])],
+               nrow = num.sim, ncol = num.gen * length(name.env.reg[grep(i, do.call(rbind,strsplit(name.env.reg,'Reg'))[,2])]))
     }
 
    supprob = function(vector, num.gen, int){
@@ -368,7 +373,10 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
    env.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
      tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
-     tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+     tidyr::separate(.data$name, into = c('envir','region'), sep = '_Reg_') %>%
+     dplyr::mutate(
+       envir = sub('Env_',"",.data$envir)
+     ) %>%
      ggplot(aes(x = .data$envir, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
      labs(x = 'Environments', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
@@ -378,10 +386,12 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
    reg.heat = as.data.frame(probs) %>% tibble::rownames_to_column(var = 'gen') %>%
      tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
-     tidyr::separate(.data$name, into = c('envir','region'), sep = '_') %>%
+     tidyr::separate(.data$name, into = c('envir','region'), sep = '_Reg_') %>%
+     dplyr::group_by(.data$gen,.data$region) %>%
+     dplyr::summarise(value = mean(value, na.rm=T), .groups = 'drop') %>%
      ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
-     labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jk] %in% Omega[k]))))+
+     labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jm] %in% Omega[m]))))+
      theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
            legend.position = 'right', legend.direction = 'vertical')+
      scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))

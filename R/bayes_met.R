@@ -65,21 +65,25 @@
 ##' @examples
 ##' \dontrun{
 ##' # Good
-##' mod = bayes_met(data = maize, gen = c("Hybrid", "normal", "cauchy"),
-##'                 env = c("Location", "normal", "cauchy"),
-##'                 rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-##'                 trait = "GY", hyperparam = "default", sigma.dist = c("cauchy", "cauchy"),
-##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
-##'                 reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+##' mod = bayes_met(data = soy,
+##'                 gen = c("Gen", "normal", "cauchy"),
+##'                 env = c("Env", "normal", "cauchy"),
+##'                 rept = NULL,
+##'                 reg = list(c("Reg", "normal", "cauchy"),
+##'                            c("normal", "cauchy")),
 ##'                 res.het = F,
-##'                 iter = 100, cores = 2, chain = 2)
+##'                 sigma.dist = c("cauchy", "cauchy"),
+##'                 mu.dist = c("normal", "cauchy"),
+##'                 gei.dist = c("normal", "normal"),
+##'                 trait = "eBLUE", hyperparam = "default",
+##'                 iter = 100, cores = 4, chain = 4)
 ##'                 #You may want to increase the number of iterations, cores and chains
 ##'
 ##' # Bad
-##' mod = bayes_met(data = maize, gen = "Hybrid", env = "Location",
-##'                 rept = "Rep", trait = "GY", hyperparam = "default",
+##' mod = bayes_met(data = maize, gen = "Gen", env = "Env",
+##'                 rept = NULL, trait = "eBLUE", hyperparam = "default",
 ##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
-##'                 reg = "Region", sigma.dist = c("cauchy", "cauchy"),
+##'                 reg = "Reg", sigma.dist = c("cauchy", "cauchy"),
 ##'                 res.het = F,
 ##'                 iter = 100, cores = 2, chain = 2)
 ##'                 #Do not forget the priors and hyperpriors!
