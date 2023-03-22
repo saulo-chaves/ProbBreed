@@ -17,7 +17,7 @@ marg_prob(
 )
 }
 \arguments{
-\item{data}{A dataframe containing the observations}
+\item{data}{A data frame containing the observations}
 
 \item{trait}{A character representing the name of the column that
 corresponds to the analysed variable}
@@ -33,7 +33,7 @@ corresponds to the environments}
 \item{int}{An integer representing the selection intensity
 (superior limit = 1)}
 
-\item{increase}{Logical: TRUE if genotypes with higher trait values are better.
+\item{increase}{Logical: \code{TRUE} if genotypes with higher trait values are better.
 FALSE otherwise.}
 
 \item{save.df}{A logical value indicating if the data frames with the marginal
@@ -41,7 +41,7 @@ probability of each genotype and the pairwise probabilities should be saved at
 the work directory.}
 
 \item{interactive}{A logical value indicating if the plots should be interactive.
-If TRUE, the function loads the \code{plotly} package and uses the \link[plotly:ggplotly]{plotly::ggplotly}
+If \code{TRUE}, the function loads the \code{plotly} package and uses the \link[plotly:ggplotly]{plotly::ggplotly}
 command.}
 }
 \value{

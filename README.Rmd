@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-ProbBreed employs Bayesian statistics to analyze multi-environment trials' data, and uses its outputs to computate the marginal, pairwise, and conditional probability of superior performance of the genotypes. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y. This is a work in progress.
+ProbBreed employs Bayesian statistics to analyze multi-environment trials' data, and uses its outputs to estimate the marginal, pairwise, and conditional probability of superior performance of the genotypes. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y. This is a work in progress.
 
 ## Installation
 
@@ -36,28 +36,50 @@ A basic workflow using the available data is:
 ```{r example, eval=FALSE, echo=TRUE}
 library(ProbBreed)
 
-mod = bayes_met(data = maize, 
-        gen = c("Hybrid", "normal", "cauchy"), 
-        env = c("Location", "normal", "cauchy"),
-        rept = list(c("Rep", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-        reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-        res.het = T,
-        sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-        gei.dist = c("normal", "normal"), trait = "GY", hyperparam = "default",
-        iter = 100, cores = 2, chain = 2) 
+mod = bayes_met(data = soy,
+                gen = c("Gen", "normal", "cauchy"),
+                env = c("Env", "normal", "cauchy"),
+                rept = NULL,
+                reg = list(c("Reg", "normal", "cauchy"), c("normal", "cauchy")),
+                res.het = F,
+                sigma.dist = c("cauchy", "cauchy"),
+                mu.dist = c("normal", "cauchy"),
+                gei.dist = c("normal", "normal"),
+                trait = "eBLUE", 
+                hyperparam = "default",
+                iter = 100, cores = 4, chain = 4)
 # You may want to increase the number of iterations, cores and chains
 
-outs = extr_outs(data = maize, trait = "GY", gen = "Hybrid", model = mod,
-                 effects = c("r", "b", "l", "m", "g", "gl", "gm"),
-                 nenv = 16, res.het = TRUE, check.stan.diag = TRUE)
+outs = extr_outs(data = soy, 
+                 trait = "eBLUE", 
+                 gen = "Gen", 
+                 model = mod, 
+                 effects = c('l','g','gl','m','gm'),
+                 nenv = length(unique(soy$Env)), 
+                 res.het = FALSE,
+                 probs = c(0.05, 0.95)
+                 check.stan.diag = TRUE)
 
-margs = marg_prob(data = maize, trait = "GY", gen = "Hybrid", 
-                       env = "Location", increase = T,
-                       extr_outs = outs, int = .2, save.df = F, interactive = F)
+margs = marg_prob(data = soy, 
+                  trait = "eBLUE",
+                  gen = "Gen", 
+                  env = "Env",
+                  extr_outs = outs, 
+                  int = 0.2,
+                  increase = TRUE, 
+                  save.df = FALSE, 
+                  interactive = FALSE)
 
-conds = cond_prob(data = maize, trait = "GY", gen = "Hybrid",env = "Location", 
-                  extr_outs = outs, reg = "Region", int = .2,increase = T,
-                  save.df = F, interactive = F)
+conds = cond_prob(data = soy, 
+                  trait = "eBLUE",
+                  gen = "Gen", 
+                  env = "Env",
+                  reg = "Reg",
+                  extr_outs = outs, 
+                  int = 0.2,
+                  increase = TRUE, 
+                  save.df = FALSE, 
+                  interactive = FALSE)
 
 
 ```

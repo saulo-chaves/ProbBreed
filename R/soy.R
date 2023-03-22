@@ -8,7 +8,7 @@
 ##' 31 years resulting in 591 location-year combinations (environments) with
 ##' 39,006 yield values.
 ##'
-##' @format ## `soy_real`
+##' @format ## `soy`
 ##'  A data frame with 823 rows and 6 columns:
 ##'  \describe{
 ##'    \item{environment}{14 evaluated environments}

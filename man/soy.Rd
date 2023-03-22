@@ -5,7 +5,7 @@
 \alias{soy}
 \title{Soybean real data set}
 \format{
-\subsection{\code{soy_real}}{
+\subsection{\code{soy}}{
 
 A data frame with 823 rows and 6 columns:
 \describe{

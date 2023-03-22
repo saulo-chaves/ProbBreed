@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 options(rmarkdown.html_vignette.check_title = FALSE)
+library(gt)
+library(tidyverse)
 ```
 
 
@@ -52,7 +54,7 @@ Note that when you consider the Region information, and when the trials are in i
 
 **3**-    Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
 
-**4**-    You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 4000 iterations, 4 cores and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
+**4**-    You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 2000 iterations, and you must provide the number of cores and chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
 
 **5**-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
 
@@ -69,7 +71,7 @@ mod = bayes_met(data = MyData,
           res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4)
+          iter = 2000, cores = 4, chain = 4)
 ```
 
 ### Without Region and only means
@@ -83,7 +85,7 @@ mod = bayes_met(data = MyData,
           res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4)
+          iter = 2000, cores = 4, chain = 4)
 ```
 
 ### Without Region and randomized complete blocks design
@@ -97,7 +99,7 @@ mod = bayes_met(data = MyData,
           res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4)
+          iter = 2000, cores = 4, chain = 4)
 ```
 
 ### Without Region and incomplete blocks design
@@ -111,7 +113,7 @@ mod = bayes_met(data = MyData,
           res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4) 
+          iter = 2000, cores = 4, chain = 4) 
 ```
 
 ### With Region and only means
@@ -125,7 +127,7 @@ mod = bayes_met(data = MyData,
           reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4)
+          iter = 2000, cores = 4, chain = 4)
 ```
 
 ### With Region and randomized complete blocks design
@@ -139,7 +141,7 @@ mod = bayes_met(data = MyData,
           res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4)
+          iter = 2000, cores = 4, chain = 4)
 ```
 
 ### With Region and incomplete blocks design
@@ -153,7 +155,7 @@ mod = bayes_met(data = MyData,
           res.het = F,
           sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
           gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 4000, cores = 4, chain = 4) 
+          iter = 2000, cores = 4, chain = 4) 
 ```
 
 For the next steps, we will use the "soy" data, which is contained within the package. This data set has the adjusted means of 39 genotypes that were evaluted at 14 environments, in 3 breeding regions. 
@@ -167,17 +169,17 @@ Note that we do not have experimental design in this case, so the correct model 
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE}
 mod = bayes_met(data = soy,
-                 gen = c("Gen", "normal", "cauchy"),
-                 env = c("Env", "normal", "cauchy"),
-                 rept = NULL,
-                 reg = list(c("Reg", "normal", "cauchy"),
-                            c("normal", "cauchy")),
-                 res.het = F,
-                 sigma.dist = c("cauchy", "cauchy"),
-                 mu.dist = c("normal", "cauchy"),
-                 gei.dist = c("normal", "normal"),
-                 trait = "eBLUE", hyperparam = "default",
-                 iter = 100, cores = 4, chain = 4)
+                gen = c("Gen", "normal", "cauchy"),
+                env = c("Env", "normal", "cauchy"),
+                rept = NULL,
+                reg = list(c("Reg", "normal", "cauchy"),
+                           c("normal", "cauchy")),
+                res.het = F,
+                sigma.dist = c("cauchy", "cauchy"),
+                mu.dist = c("normal", "cauchy"),
+                gei.dist = c("normal", "normal"),
+                trait = "eBLUE", hyperparam = "default",
+                iter = 100, cores = 4, chain = 4)
 ```
 
 We ran this model only with 100 iterations, for the sake of reproducibility. 
@@ -191,7 +193,8 @@ Using the `mod` object from the previous step:
 outs = extr_outs(data = soy, trait = 'eBLUE', gen = 'Gen', model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
-                 res.het = F, check.stan.diag = F)
+                 res.het = F, 
+                 probs = c(0.025, 0.975) ,check.stan.diag = F)
 
 ```
 
@@ -219,9 +222,19 @@ The models will surely have `r`, `l`, `g` and `gl`. The other effects may or may
 
 * `nenv` indicates the number of environments
 
+* `probs` are the probabilities that the function will consider to calculate the quantiles (provide values between 0 and 1)
+
 * `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan::stan_diag()` or not.
 
-The function provides a list with the posterior of each effect and the data generated by the model, a dataframe with the variances of each effect, a list of with the maximum posterior values of each effect, a matrix containing some useful quality parameters of the model. It also provide a density plot comparing the generated data and the real data:
+The function provides a list with the posterior of each effect and the data generated by the model, a dataframe with the variances of each effect, a list of with the maximum posterior values of each effect, a matrix containing some useful quality parameters of the model (See below):
+
+```{r echo=TRUE}
+outs$variances
+
+outs$ppcheck
+```
+
+It also provide a density plot comparing the generated data and the real data:
 
 ```{r echo=TRUE, fig.retina=2, fig.width=6, fig.height=6}
 outs$den_plot

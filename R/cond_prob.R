@@ -21,7 +21,7 @@
 ##' is an indicator variable mapping success (1) if \eqn{g_{jk}^{(s)}} exists in \eqn{\Omega},
 ##' and failure (0) otherwise.
 ##'
-##' @param data A dataframe containing the observations
+##' @param data A data frame containing the observations
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable
 ##' @param gen A character representing the name of the column that
@@ -29,17 +29,17 @@
 ##' @param env A character representing the name of the column that
 ##' corresponds to the environments
 ##' @param reg A character representing the name of the column that
-##' corresponds to the regions. NULL otherwise (default)
+##' corresponds to the regions. `NULL` otherwise (default)
 ##' @param extr_outs An object from the `extr_outs` function
 ##' @param int A number representing the selection intensity
 ##' (superior limit = 1)
-##' @param increase Logical: TRUE if genotypes with higher trait values are better.
+##' @param increase Logical: `TRUE` if genotypes with higher trait values are better.
 ##' FALSE otherwise.
 ##' @param save.df A logical value indicating if the data frames with the marginal
 ##' probability of each genotype and the pairwise probabilities should be saved at
 ##' the work directory.
 ##' @param interactive A logical value indicating if the plots should be interactive.
-##' If TRUE, the function loads the `plotly` package and uses the [plotly::ggplotly()]
+##' If `TRUE`, the function loads the `plotly` package and uses the [plotly::ggplotly()]
 ##' command.
 ##' @return The function returns a list with:
 ##' \itemize{
@@ -197,7 +197,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
         tidyr::separate(.data$name, into = c('envir','region'), sep = '_Reg_') %>%
         dplyr::group_by(.data$gen,.data$region) %>%
-        dplyr::summarise(value = mean(value, na.rm=T), .groups = 'drop') %>%
+        dplyr::summarise(value = mean(.data$value, na.rm=T), .groups = 'drop') %>%
         ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
         geom_tile(colour = 'white')+
         labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jm] %in% Omega[m]))))+
@@ -388,7 +388,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
      tidyr::pivot_longer(cols = c(colnames(probs)[1]:colnames(probs)[length(colnames(probs))])) %>%
      tidyr::separate(.data$name, into = c('envir','region'), sep = '_Reg_') %>%
      dplyr::group_by(.data$gen,.data$region) %>%
-     dplyr::summarise(value = mean(value, na.rm=T), .groups = 'drop') %>%
+     dplyr::summarise(value = mean(.data$valuevalue, na.rm=T), .groups = 'drop') %>%
      ggplot(aes(x = .data$region, y = reorder(.data$gen, .data$value), fill = .data$value))+
      geom_tile(colour = 'white')+
      labs(x = 'Regions', y = 'Genotypes', fill = expression(bold(Pr(g[jm] %in% Omega[m]))))+

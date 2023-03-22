@@ -31,7 +31,7 @@
 ##' Applied Genetics</i>, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
 ##'
 ##'
-##' @param data A dataframe containing the observations
+##' @param data A data frame containing the observations
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable
 ##' @param gen A character representing the name of the column that
@@ -41,13 +41,13 @@
 ##' @param extr_outs An object from the `extr_outs` function
 ##' @param int An integer representing the selection intensity
 ##' (superior limit = 1)
-##' @param increase Logical: TRUE if genotypes with higher trait values are better.
+##' @param increase Logical: `TRUE` if genotypes with higher trait values are better.
 ##' FALSE otherwise.
 ##' @param save.df A logical value indicating if the data frames with the marginal
 ##' probability of each genotype and the pairwise probabilities should be saved at
 ##' the work directory.
 ##' @param interactive A logical value indicating if the plots should be interactive.
-##' If TRUE, the function loads the `plotly` package and uses the [plotly::ggplotly]
+##' If `TRUE`, the function loads the `plotly` package and uses the [plotly::ggplotly]
 ##' command.
 ##' @return The function returns a list with:
 ##' \itemize{

@@ -23,7 +23,7 @@ bayes_met(
 )
 }
 \arguments{
-\item{data}{A dataframe containing the observations}
+\item{data}{A data frame containing the observations}
 
 \item{gen, env}{A string vector. The first element is the name of the
 column that corresponds to the evaluated genotype or environment.
@@ -31,19 +31,19 @@ The second element is the  prior probability distribution of this parameter.
 The third element is the hyperprior of this parameter. This order must be followed.}
 
 \item{rept}{A vector, a list or \code{NULL}. If the trial is randomized in complete blocks,
-rept will be a vector with the first element representing the name of the column
+\code{rept} will be a vector with the first element representing the name of the column
 that corresponds to the blocks, the second element being the prior probability
 distribution of the block parameter, and the third element representing the
 hyperprior of this parameter. If the trial is randomized in a lattice,
-rept will be a list containing two vectors with the same structure previously
+\code{rept} will be a list containing two vectors with the same structure previously
 mentioned: a vector for replicate effects, and a vector for block effects.
-If the data do not have replicates, rept will be \code{NULL}.}
+If the data do not have replicates, \code{rept} will be \code{NULL}.}
 
 \item{trait}{A character representing the name of the column that
 corresponds to the analysed variable.}
 
 \item{hyperparam}{A numeric representing the global hyperparameter. If no number
-is give (so hyperparam = 'default'), the function will use max(trait) * 10
+is given (so \code{hyperparam = 'default'}), the function will use \code{max(trait) * 10}
 as the global hyperparameter.}
 
 \item{sigma.dist, mu.dist, gei.dist}{A string vector containing the prior
@@ -59,10 +59,10 @@ prior probability of this parameter in the second position, and its hyperprior
 in the third position. The second vector have the the prior probability and
 hyperprior of the genotype-by-region interaction effects, in the first and
 second position, respectively. If there are no information about regions in
-the dataset, reg = NULL (default).}
+the data set, \code{reg = NULL} (default).}
 
 \item{res.het}{Logical, indicating if the model should consider heterogeneous
-residual variances. Default is FALSE.}
+residual variances. Default is \code{FALSE}.}
 
 \item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of iterations for each chain
@@ -104,7 +104,7 @@ mod = bayes_met(data = soy,
                 #You may want to increase the number of iterations, cores and chains
 
 # Bad
-mod = bayes_met(data = maize, gen = "Gen", env = "Env",
+mod = bayes_met(data = soy, gen = "Gen", env = "Env",
                 rept = NULL, trait = "eBLUE", hyperparam = "default",
                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
                 reg = "Reg", sigma.dist = c("cauchy", "cauchy"),

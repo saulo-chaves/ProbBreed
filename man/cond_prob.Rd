@@ -18,7 +18,7 @@ cond_prob(
 )
 }
 \arguments{
-\item{data}{A dataframe containing the observations}
+\item{data}{A data frame containing the observations}
 
 \item{trait}{A character representing the name of the column that
 corresponds to the analysed variable}
@@ -30,14 +30,14 @@ corresponds to the evaluated genotypes}
 corresponds to the environments}
 
 \item{reg}{A character representing the name of the column that
-corresponds to the regions. NULL otherwise (default)}
+corresponds to the regions. \code{NULL} otherwise (default)}
 
 \item{extr_outs}{An object from the \code{extr_outs} function}
 
 \item{int}{A number representing the selection intensity
 (superior limit = 1)}
 
-\item{increase}{Logical: TRUE if genotypes with higher trait values are better.
+\item{increase}{Logical: \code{TRUE} if genotypes with higher trait values are better.
 FALSE otherwise.}
 
 \item{save.df}{A logical value indicating if the data frames with the marginal
@@ -45,7 +45,7 @@ probability of each genotype and the pairwise probabilities should be saved at
 the work directory.}
 
 \item{interactive}{A logical value indicating if the plots should be interactive.
-If TRUE, the function loads the \code{plotly} package and uses the \code{\link[plotly:ggplotly]{plotly::ggplotly()}}
+If \code{TRUE}, the function loads the \code{plotly} package and uses the \code{\link[plotly:ggplotly]{plotly::ggplotly()}}
 command.}
 }
 \value{

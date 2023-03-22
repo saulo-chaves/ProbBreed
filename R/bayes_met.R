@@ -8,23 +8,23 @@
 ##' Multi-environment trials using `rstan`, the `R` interface to `Stan`.
 ##'
 ##'
-##' @param data  A dataframe containing the observations
+##' @param data  A data frame containing the observations
 ##' @param gen,env  A string vector. The first element is the name of the
 ##' column that corresponds to the evaluated genotype or environment.
 ##' The second element is the  prior probability distribution of this parameter.
 ##' The third element is the hyperprior of this parameter. This order must be followed.
 ##' @param rept  A vector, a list or `NULL`. If the trial is randomized in complete blocks,
-##' rept will be a vector with the first element representing the name of the column
+##' `rept` will be a vector with the first element representing the name of the column
 ##' that corresponds to the blocks, the second element being the prior probability
 ##' distribution of the block parameter, and the third element representing the
 ##' hyperprior of this parameter. If the trial is randomized in a lattice,
-##' rept will be a list containing two vectors with the same structure previously
+##' `rept` will be a list containing two vectors with the same structure previously
 ##' mentioned: a vector for replicate effects, and a vector for block effects.
-##' If the data do not have replicates, rept will be `NULL`.
+##' If the data do not have replicates, `rept` will be `NULL`.
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable.
 ##' @param hyperparam A numeric representing the global hyperparameter. If no number
-##' is give (so hyperparam = 'default'), the function will use max(trait) * 10
+##' is given (so `hyperparam = 'default'`), the function will use `max(trait) * 10`
 ##' as the global hyperparameter.
 ##' @param sigma.dist,mu.dist,gei.dist A string vector containing the prior
 ##' probability distribution (1st element) and the hyperprior (2nd element)
@@ -38,14 +38,14 @@
 ##' in the third position. The second vector have the the prior probability and
 ##' hyperprior of the genotype-by-region interaction effects, in the first and
 ##' second position, respectively. If there are no information about regions in
-##' the dataset, reg = NULL (default).
+##' the data set, `reg = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
-##' residual variances. Default is FALSE.
+##' residual variances. Default is `FALSE`.
 ##' @param chain Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of Markov chains. The default is 4.
 ##' @param iter Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of iterations for each chain
-##' (including warmup). The default is 4000.
+##' (including warmup). The default is 2000.
 ##' @param cores Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of cores to use when executing the
 ##' chains in parallel (defaults to 1).
@@ -80,7 +80,7 @@
 ##'                 #You may want to increase the number of iterations, cores and chains
 ##'
 ##' # Bad
-##' mod = bayes_met(data = maize, gen = "Gen", env = "Env",
+##' mod = bayes_met(data = soy, gen = "Gen", env = "Env",
 ##'                 rept = NULL, trait = "eBLUE", hyperparam = "default",
 ##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
 ##'                 reg = "Reg", sigma.dist = c("cauchy", "cauchy"),
@@ -93,7 +93,7 @@
 bayes_met = function(data, gen, env, rept, trait, hyperparam = 'default',
                     sigma.dist = c('cauchy', 'cauchy'), mu.dist = c('normal','cauchy'),
                     gei.dist = c('normal','cauchy'), reg = NULL, res.het = F,
-                    iter = 4000, cores = 4, chain = 4,...){
+                    iter = 2000, cores, chain,...){
 
   requireNamespace('rstan')
 
