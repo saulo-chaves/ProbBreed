@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-ProbBreed employs Bayesian statistics to analyze multi-environment
+ProbBreed employs Bayesian statistics to analyse multi-environment
 trials’ data, and uses its outputs to estimate the marginal, pairwise,
 and conditional probability of superior performance of the genotypes.
 The method is thoroughly described at
@@ -51,6 +51,7 @@ outs = extr_outs(data = soy,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)), 
                  res.het = FALSE,
+                 probs = c(0.05, 0.95)
                  check.stan.diag = TRUE)
 
 margs = marg_prob(data = soy, 
