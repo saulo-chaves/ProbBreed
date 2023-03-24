@@ -10,8 +10,7 @@ ProbBreed employs Bayesian statistics to analyse multi-environment
 trials’ data, and uses its outputs to estimate the marginal, pairwise,
 and conditional probability of superior performance of the genotypes.
 The method is thoroughly described at
-<https://doi.org/10.1007/s00122-022-04041-y>. This is a work in
-progress.
+<https://doi.org/10.1007/s00122-022-04041-y>. 
 
 ## Installation
 
