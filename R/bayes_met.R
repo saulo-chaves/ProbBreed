@@ -11,33 +11,17 @@
 ##' @param data  A data frame containing the observations
 ##' @param gen,env  A string vector. The first element is the name of the
 ##' column that corresponds to the evaluated genotype or environment.
-##' The second element is the  prior probability distribution of this parameter.
-##' The third element is the hyperprior of this parameter. This order must be followed.
 ##' @param rept  A vector, a list or `NULL`. If the trial is randomized in complete blocks,
 ##' `rept` will be a vector with the first element representing the name of the column
-##' that corresponds to the blocks, the second element being the prior probability
-##' distribution of the block parameter, and the third element representing the
-##' hyperprior of this parameter. If the trial is randomized in a lattice,
+##' that corresponds to the blocks. If the trial is randomized in a lattice,
 ##' `rept` will be a list containing two vectors with the same structure previously
 ##' mentioned: a vector for replicate effects, and a vector for block effects.
 ##' If the data do not have replicates, `rept` will be `NULL`.
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed variable.
-##' @param hyperparam A numeric representing the global hyperparameter. If no number
-##' is given (so `hyperparam = 'default'`), the function will use `max(trait) * 10`
-##' as the global hyperparameter.
-##' @param sigma.dist,mu.dist,gei.dist A string vector containing the prior
-##' probability distribution (1st element) and the hyperprior (2nd element)
-##' of the residual effects (`sigma.dist`, which the default is `c("cauchy","cauchy")`),
-##' intercept (`mu.dist`, which the default is `c("normal", "normal")`), or the
-##' genotype-by-environment interaction (`gei.dist`, which the default is also
-##' `c("normal", "normal")`).
-##' @param reg A list containing two string vectors. The first vector have the name
-##' of the column that contain the information of region in the first position, the
-##' prior probability of this parameter in the second position, and its hyperprior
-##' in the third position. The second vector have the the prior probability and
-##' hyperprior of the genotype-by-region interaction effects, in the first and
-##' second position, respectively. If there are no information about regions in
+##' @param reg A list containing a string vector with the name
+##' of the column that contain the information of region in the first position.
+##' If there are no information about regions in
 ##' the data set, `reg = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
 ##' residual variances. Default is `FALSE`.
@@ -64,74 +48,47 @@
 ##'
 ##' @examples
 ##' \dontrun{
-##' # Good
+##' # Model
 ##' mod = bayes_met(data = soy,
-##'                 gen = c("Gen", "normal", "cauchy"),
-##'                 env = c("Env", "normal", "cauchy"),
+##'                 gen = "Gen",
+##'                 env = "Env",
 ##'                 rept = NULL,
-##'                 reg = list(c("Reg", "normal", "cauchy"),
-##'                            c("normal", "cauchy")),
+##'                 reg = "Reg",
 ##'                 res.het = F,
-##'                 sigma.dist = c("cauchy", "cauchy"),
-##'                 mu.dist = c("normal", "cauchy"),
-##'                 gei.dist = c("normal", "normal"),
-##'                 trait = "eBLUE", hyperparam = "default",
+##'                 trait = "eBLUE", 
 ##'                 iter = 100, cores = 4, chain = 4)
 ##'                 #You may want to increase the number of iterations, cores and chains
-##'
-##' # Bad
-##' mod = bayes_met(data = soy, gen = "Gen", env = "Env",
-##'                 rept = NULL, trait = "eBLUE", hyperparam = "default",
-##'                 mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
-##'                 reg = "Reg", sigma.dist = c("cauchy", "cauchy"),
-##'                 res.het = F,
-##'                 iter = 100, cores = 2, chain = 2)
-##'                 #Do not forget the priors and hyperpriors!
 ##'                 }
 ##' @export
 
-bayes_met = function(data, gen, env, rept, trait, hyperparam = 'default',
-                    sigma.dist = c('cauchy', 'cauchy'), mu.dist = c('normal','cauchy'),
-                    gei.dist = c('normal','cauchy'), reg = NULL, res.het = F,
+bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
                     iter = 2000, cores, chain,...){
 
   requireNamespace('rstan')
-
-  stopifnot("Provide the prior distribution and the hyperprior" = length(gen) == 3 &
-              length(env) == 3 & length(sigma.dist) == 2 & length(mu.dist) == 2 &
-              length(gei.dist) == 2)
 
   data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
 
 if(res.het){
   if(is.null(reg)){
-    # Sem região
+    # no region effect
     if(is.null(rept)){
-      # média
       data[,gen[1]] = as.factor(data[,gen[1]])
       data[,env[1]] = as.factor(data[,env[1]])
-
       n = nrow(data)
-
       Z3 = model.matrix(~-1 + data[,gen[1]])
       Z4 = model.matrix(~-1 + data[,env[1]])
       Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
-
       y = data[,trait]
-
       index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-      if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+      phi = max(y) * 10
       df_stan = list(n = n, p3 = p3, p4 = p4,
                      p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5,
                      index = index, y = y, phi = phi)
 
-      stan_df = paste0("
+      stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -196,24 +153,24 @@ if(res.het){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -229,7 +186,7 @@ if(res.het){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
       }
 
-} ")
+} "
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
@@ -240,30 +197,23 @@ if(res.het){
       data[,gen[1]] = as.factor(data[,gen[1]])
       data[,env[1]] = as.factor(data[,env[1]])
       data[,rept[1]] = as.factor(data[,rept[1]])
-
       n = nrow(data)
-
       Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
       Z3 = model.matrix(~-1 + data[,gen[1]])
       Z4 = model.matrix(~-1 + data[,env[1]])
       Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-
       p1 <- ncol(Z1)
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
-
       y = data[,trait]
-
       index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-      if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+      phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4,
                      p5 = p5, Z1 = Z1, Z3 = Z3, Z4 = Z4,Z5 = Z5,
                      index = index, y = y, phi = phi)
 
-      stan_df = paste0("
+      stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -333,28 +283,28 @@ if(res.het){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[3],"(0, phi);
-    r ~ ",rept[2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -382,32 +332,25 @@ if(res.het){
       data[,env[1]] = as.factor(data[,env[1]])
       data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
       data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
-
       n = nrow(data)
-
       Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
       Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
       Z3 = model.matrix(~-1 + data[,gen[1]])
       Z4 = model.matrix(~-1 + data[,env[1]])
       Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-
       p1 <- ncol(Z1)
       p2 <- ncol(Z2)
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
-
       y = data[,trait]
-
       index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-      if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+      phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5,
                      Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5,
                      index = index, y = y, phi = phi)
 
-      stan_df = paste0("
+      stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -483,32 +426,32 @@ if(res.het){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[[1]][3],"(0, phi);
-    r ~ ",rept[[1]][2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for blocks
-    s_b ~ ",rept[[2]][3],"(0, phi);
-    b ~ ",rept[[2]][2],"(0, s_b);
+    s_b ~ cauchy(0, phi);
+    b ~ normal(0, s_b);   
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -538,32 +481,25 @@ if(res.het){
       data[,gen[1]] = as.factor(data[,gen[1]])
       data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
       data[,env[1]] = as.factor(data[,env[1]])
-
       n = nrow(data)
-
       Z3 = model.matrix(~-1 + data[,gen[1]])
       Z4 = model.matrix(~-1 + data[,env[1]])
       Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
       Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
       Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
-
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
       p6 <- ncol(Z6)
       p7 <- ncol(Z7)
-
       y = data[,trait]
-
       index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-      if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+      phi = max(y) * 10
       df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                      p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
                      Z7 = Z7, index = index, y = y, phi = phi)
 
-      stan_df = paste0("
+      stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -640,32 +576,32 @@ if(res.het){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
-
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
+    
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
-    s_m ~ ",reg[[1]][3],"(0, phi);
-    m ~ ",reg[[1]][2],"(0, s_m);
+    s_m ~ cauchy(0, phi);
+    m ~ normal(0, s_m);
 
     // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ ",reg[[2]][2],"(0, phi);
-    gm ~ ",reg[[2]][1],"(0, s_gm);
+    s_gm ~ cauchy(0, phi);
+    gm ~ normal(0, s_gm);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -681,7 +617,7 @@ if(res.het){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
       }
 
-} ")
+} "
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
@@ -693,34 +629,27 @@ if(res.het){
       data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
       data[,env[1]] = as.factor(data[,env[1]])
       data[,rept[1]] = as.factor(data[,rept[1]])
-
       n = nrow(data)
-
       Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
       Z3 = model.matrix(~-1 + data[,gen[1]])
       Z4 = model.matrix(~-1 + data[,env[1]])
       Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
       Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
       Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
-
       p1 <- ncol(Z1)
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
       p6 <- ncol(Z6)
       p7 <- ncol(Z7)
-
       y = data[,trait]
-
       index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-      if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+      phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                      p7 = p7, Z1 = Z1, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
                      Z7 = Z7, index = index, y = y, phi = phi)
 
-      stan_df = paste0("
+      stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -803,36 +732,36 @@ if(res.het){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[3],"(0, phi);
-    r ~ ",rept[2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
-    s_m ~ ",reg[[1]][3],"(0, phi);
-    m ~ ",reg[[1]][2],"(0, s_m);
+    s_m ~ cauchy(0, phi);
+    m ~ normal(0, s_m);
 
     // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ ",reg[[2]][2],"(0, phi);
-    gm ~ ",reg[[2]][1],"(0, s_gm);
+    s_gm ~ cauchy(0, phi);
+    gm ~ normal(0, s_gm);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -848,7 +777,7 @@ if(res.het){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
       }
 
-} ")
+} "
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
@@ -861,9 +790,7 @@ if(res.het){
       data[,env[1]] = as.factor(data[,env[1]])
       data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
       data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
-
       n = nrow(data)
-
       Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
       Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
       Z3 = model.matrix(~-1 + data[,gen[1]])
@@ -871,7 +798,6 @@ if(res.het){
       Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
       Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
       Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
-
       p1 <- ncol(Z1)
       p2 <- ncol(Z2)
       p3 <- ncol(Z3)
@@ -879,18 +805,14 @@ if(res.het){
       p5 <- ncol(Z5)
       p6 <- ncol(Z6)
       p7 <- ncol(Z7)
-
       y = data[,trait]
-
       index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-      if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+      phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                      p7 = p7, Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
                      Z7 = Z7, index = index, y = y, phi = phi)
 
-      stan_df = paste0("
+      stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -979,40 +901,40 @@ if(res.het){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[[1]][3],"(0, phi);
-    r ~ ",rept[[1]][2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for blocks
-    s_b ~ ",rept[[2]][3],"(0, phi);
-    b ~ ",rept[[2]][2],"(0, s_b);
+    s_b ~ cauchy(0, phi);
+    b ~ normal(0, s_b);   
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
-    s_m ~ ",reg[[1]][3],"(0, phi);
-    m ~ ",reg[[1]][2],"(0, s_m);
+    s_m ~ cauchy(0, phi);
+    m ~ normal(0, s_m);
 
     // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ ",reg[[2]][2],"(0, phi);
-    gm ~ ",reg[[2]][1],"(0, s_gm);
+    s_gm ~ cauchy(0, phi);
+    gm ~ normal(0, s_gm);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -1028,7 +950,7 @@ if(res.het){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
       }
 
-} ")
+} "
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
@@ -1038,33 +960,24 @@ if(res.het){
 }else{
 
 if(is.null(reg)){
-  # Sem região
   if(is.null(rept)){
-    # média
     data[,gen[1]] = as.factor(data[,gen[1]])
     data[,env[1]] = as.factor(data[,env[1]])
-
     n = nrow(data)
-
     Z3 = model.matrix(~-1 + data[,gen[1]])
     Z4 = model.matrix(~-1 + data[,env[1]])
     Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
-
     y = data[,trait]
-
     index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-    if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+    phi = max(y) * 10
     df_stan = list(n = n, p3 = p3, p4 = p4,
                    p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5,
                    index = index, y = y, phi = phi)
 
-    stan_df = paste0("
+    stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -1125,24 +1038,24 @@ if(is.null(reg)){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
@@ -1159,41 +1072,34 @@ if(is.null(reg)){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
-} ")
+} "
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
   }else if(!is.list(rept)){
-  # DBC
+  # RCBD
     data[,gen[1]] = as.factor(data[,gen[1]])
     data[,env[1]] = as.factor(data[,env[1]])
     data[,rept[1]] = as.factor(data[,rept[1]])
-
     n = nrow(data)
-
     Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
     Z3 = model.matrix(~-1 + data[,gen[1]])
     Z4 = model.matrix(~-1 + data[,env[1]])
     Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-
     p1 <- ncol(Z1)
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
-
     y = data[,trait]
-
     index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-    if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+    phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4,
                    p5 = p5, Z1 = Z1, Z3 = Z3, Z4 = Z4,Z5 = Z5,
                     index = index, y = y, phi = phi)
 
-    stan_df = paste0("
+    stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -1259,28 +1165,28 @@ if(is.null(reg)){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[3],"(0, phi);
-    r ~ ",rept[2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
@@ -1296,44 +1202,37 @@ if(is.null(reg)){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
-} ")
+} "
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
   }else if(is.list(rept)){
-  # Látice
+  # IBD
     data[,gen[1]] = as.factor(data[,gen[1]])
     data[,env[1]] = as.factor(data[,env[1]])
     data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
     data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
-
     n = nrow(data)
-
     Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
     Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
     Z3 = model.matrix(~-1 + data[,gen[1]])
     Z4 = model.matrix(~-1 + data[,env[1]])
     Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-
     p1 <- ncol(Z1)
     p2 <- ncol(Z2)
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
-
     y = data[,trait]
-
     index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-    if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+    phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5,
                    Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5,
                    index = index, y = y, phi = phi)
 
-    stan_df = paste0("
+    stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -1406,32 +1305,32 @@ if(is.null(reg)){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[[1]][3],"(0, phi);
-    r ~ ",rept[[1]][2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for blocks
-    s_b ~ ",rept[[2]][3],"(0, phi);
-    b ~ ",rept[[2]][2],"(0, s_b);
+    s_b ~ cauchy(0, phi);
+    b ~ normal(0, s_b);  
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
@@ -1447,7 +1346,7 @@ if(is.null(reg)){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
-} ")
+} "
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
@@ -1455,38 +1354,29 @@ if(is.null(reg)){
 
   }
 }else{
-  # Com região
   if(is.null(rept)){
-    # média
     data[,gen[1]] = as.factor(data[,gen[1]])
     data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
     data[,env[1]] = as.factor(data[,env[1]])
-
     n = nrow(data)
-
     Z3 = model.matrix(~-1 + data[,gen[1]])
     Z4 = model.matrix(~-1 + data[,env[1]])
     Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
     Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
     Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
-
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
     p6 <- ncol(Z6)
     p7 <- ncol(Z7)
-
     y = data[,trait]
-
     index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-    if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+    phi = max(y) * 10
     df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                    p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
                    Z7 = Z7, index = index, y = y, phi = phi)
 
-    stan_df = paste0("
+    stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -1557,33 +1447,33 @@ if(is.null(reg)){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
-    s_m ~ ",reg[[1]][3],"(0, phi);
-    m ~ ",reg[[1]][2],"(0, s_m);
+    s_m ~ cauchy(0, phi);
+    m ~ normal(0, s_m);
 
     // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ ",reg[[2]][2],"(0, phi);
-    gm ~ ",reg[[2]][1],"(0, s_gm);
-
+    s_gm ~ cauchy(0, phi);
+    gm ~ normal(0, s_gm);
+    
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
     // Generating data from the model
@@ -1598,46 +1488,39 @@ if(is.null(reg)){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
-} ")
+} "
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
   } else if(!is.list(rept)){
-  # DBC
+  # RCDB
     data[,gen[1]] = as.factor(data[,gen[1]])
     data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
     data[,env[1]] = as.factor(data[,env[1]])
     data[,rept[1]] = as.factor(data[,rept[1]])
-
     n = nrow(data)
-
     Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
     Z3 = model.matrix(~-1 + data[,gen[1]])
     Z4 = model.matrix(~-1 + data[,env[1]])
     Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
     Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
     Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
-
     p1 <- ncol(Z1)
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
     p6 <- ncol(Z6)
     p7 <- ncol(Z7)
-
     y = data[,trait]
-
     index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-    if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+    phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                    p7 = p7, Z1 = Z1, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
                    Z7 = Z7, index = index, y = y, phi = phi)
 
-    stan_df = paste0("
+    stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -1714,36 +1597,36 @@ if(is.null(reg)){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[3],"(0, phi);
-    r ~ ",rept[2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
-    s_m ~ ",reg[[1]][3],"(0, phi);
-    m ~ ",reg[[1]][2],"(0, s_m);
+    s_m ~ cauchy(0, phi);
+    m ~ normal(0, s_m);
 
     // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ ",reg[[2]][2],"(0, phi);
-    gm ~ ",reg[[2]][1],"(0, s_gm);
+    s_gm ~ cauchy(0, phi);
+    gm ~ normal(0, s_gm);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
@@ -1759,22 +1642,20 @@ if(is.null(reg)){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
-} ")
+} "
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
   }else if(is.list(rept)){
-  # Látice
+  # IBD
     data[,gen[1]] = as.factor(data[,gen[1]])
     data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
     data[,env[1]] = as.factor(data[,env[1]])
     data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
     data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
-
     n = nrow(data)
-
     Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
     Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
     Z3 = model.matrix(~-1 + data[,gen[1]])
@@ -1782,7 +1663,6 @@ if(is.null(reg)){
     Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
     Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
     Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
-
     p1 <- ncol(Z1)
     p2 <- ncol(Z2)
     p3 <- ncol(Z3)
@@ -1790,18 +1670,14 @@ if(is.null(reg)){
     p5 <- ncol(Z5)
     p6 <- ncol(Z6)
     p7 <- ncol(Z7)
-
     y = data[,trait]
-
     index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
-
-    if(hyperparam == 'default'){phi = max(y) * 10}else{phi = hyperparam}
-
+    phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                    p7 = p7, Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
                    Z7 = Z7, index = index, y = y, phi = phi)
 
-    stan_df = paste0("
+    stan_df = "
   data{
     // Number of observations
     int<lower=1> n;
@@ -1884,40 +1760,40 @@ if(is.null(reg)){
   model{
 
     // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ ", sigma.dist[2],"(0, phi);
-    sigma ~ ",sigma.dist[1],"(0, s_sigma);
+    s_sigma ~ cauchy(0, phi);
+    sigma ~ cauchy(0, s_sigma); 
 
     // Conditional prior probabilities distributions for the mean
-    s_mu ~ ", mu.dist[2],"(0, phi);
-    mu ~ ",mu.dist[1],"(0, s_mu);
+    s_mu ~ cauchy(0, phi);
+    mu ~ normal(0, s_mu);
 
     // Conditional prior probabilities distributions for replications
-    s_r ~ ",rept[[1]][3],"(0, phi);
-    r ~ ",rept[[1]][2],"(0, s_r);
+    s_r ~ cauchy(0, phi);
+    r ~ normal(0, s_r);
 
     // Conditional prior probabilities distributions for blocks
-    s_b ~ ",rept[[2]][3],"(0, phi);
-    b ~ ",rept[[2]][2],"(0, s_b);
+    s_b ~ cauchy(0, phi);
+    b ~ normal(0, s_b);   
 
     // Conditional prior probabilities distributions for genotypes
-    s_g ~ ",gen[3],"(0, phi);
-    g ~ ",gen[2],"(0, s_g);
+    s_g ~ cauchy(0, phi);
+    g ~ normal(0, s_g);
 
     // Conditional prior probabilities distributions  for locations
-    s_l ~ ",env[3],"(0, phi);
-    l ~ ",env[2],"(0, s_l);
+    s_l ~ cauchy(0, phi);
+    l ~ normal(0, s_l);
 
     // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ ",gei.dist[2],"(0, phi);
-    gl ~ ",gei.dist[1],"(0, s_gl);
+    s_gl ~ cauchy(0, phi);
+    gl ~ normal(0, s_gl);
 
     // Conditional prior probabilities distributions  for Regions
-    s_m ~ ",reg[[1]][3],"(0, phi);
-    m ~ ",reg[[1]][2],"(0, s_m);
+    s_m ~ cauchy(0, phi);
+    m ~ normal(0, s_m);
 
     // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ ",reg[[2]][2],"(0, phi);
-    gm ~ ",reg[[2]][1],"(0, s_gm);
+    s_gm ~ cauchy(0, phi);
+    gm ~ normal(0, s_gm);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
@@ -1934,7 +1810,7 @@ if(is.null(reg)){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
 
-} ")
+} "
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
