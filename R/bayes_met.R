@@ -320,7 +320,7 @@ if(res.het){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
       }
 
-} ")
+} "
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
@@ -467,7 +467,7 @@ if(res.het){
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
       }
 
-} ")
+} "
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
