@@ -228,8 +228,6 @@ The function provides a list with the posterior of each effect, the data generat
 
 ```{r echo=TRUE, eval=FALSE}
 outs$variances
-
-outs$ppcheck
 ```
 
 ```{r echo=FALSE}
