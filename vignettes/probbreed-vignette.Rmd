@@ -181,7 +181,7 @@ mod = bayes_met(data = soy,
 ```
 
 ```{r echo=FALSE}
-load('../../Manuscript/real_dat.RData')
+load('G:/Meu Drive/Projetos/Probability_GEI/Manuscript/real_dat.RData')
 ```
 
 ## Step three - `extr_outs`
