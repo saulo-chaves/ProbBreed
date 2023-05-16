@@ -19,7 +19,7 @@ You can install the development version of ProbBreed from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("saulo-chaves/ProbBreed")
+devtools::install_github("saulo-chaves/ProbBreed", build_vignettes = T)
 ```
 
 ## Usage
