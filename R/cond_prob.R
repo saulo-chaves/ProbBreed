@@ -69,7 +69,7 @@
 ##' Applied Genetics</i>, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
 ##'
 ##' @import ggplot2 dplyr
-##' @importFrom utils write.csv
+##' @importFrom utils write.csv combn
 ##' @importFrom tidyr pivot_longer
 ##' @importFrom tidyr separate
 ##' @importFrom tibble rownames_to_column
@@ -163,7 +163,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
 
 
-      combs = data.frame(t(combn(paste('Gen', name.gen, sep = '_'), 2)))
+      combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_'), 2)))
       colnames(combs) = c('x', 'y')
       pwprobs = lapply(
         sapply(paste('Env', name.env, sep = '_'),
@@ -269,7 +269,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
       pwprobs.plots = lapply(pwprobs, function(x){
-        x |> ggplot(aes(x = x, y = y, fill = pwprob)) +
+        x |> ggplot(aes(x = .data$x, y = .data$y, fill = .data$pwprob)) +
           geom_tile() +
           labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
           scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
@@ -280,7 +280,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       })
 
       pwprobs.reg.plots = lapply(pwprobs.reg, function(x){
-        x |> ggplot(aes(x = x, y = y, fill = pwprob)) +
+        x |> ggplot(aes(x = .data$x, y = .data$y, fill = .data$pwprob)) +
           geom_tile() +
           labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
           scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
@@ -353,7 +353,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
 
 
-      combs = data.frame(t(combn(name.gen, 2)))
+      combs = data.frame(t(utils::combn(name.gen, 2)))
       colnames(combs) = c('x', 'y')
 
       pwprobs = lapply(
@@ -399,7 +399,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
         scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
       pwprobs.plots = lapply(pwprobs, function(x){
-        x |> ggplot(aes(x = x, y = y, fill = pwprob)) +
+        x |> ggplot(aes(x = .data$x, y = .data$y, fill = .data$pwprob)) +
           geom_tile() +
           labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] > g[j]))))+
           scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
@@ -478,7 +478,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
    probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
 
 
-   combs = data.frame(t(combn(paste('Gen', name.gen, sep = '_'), 2)))
+   combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_'), 2)))
    colnames(combs) = c('x', 'y')
    pwprobs = lapply(
      sapply(paste('Env', name.env, sep = '_'),
@@ -581,7 +581,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
 
 
    pwprobs.plots = lapply(pwprobs, function(x){
-     x |> ggplot(aes(x = x, y = y, fill = pwprob)) +
+     x |> ggplot(aes(x = .data$x, y = .data$y, fill = .data$pwprob)) +
        geom_tile() +
        labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] < g[j]))))+
        scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
@@ -592,7 +592,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
    })
 
    pwprobs.reg.plots = lapply(pwprobs.reg, function(x){
-     x |> ggplot(aes(x = x, y = y, fill = pwprob)) +
+     x |> ggplot(aes(x = .data$x, y = .data$y, fill = .data$pwprob)) +
        geom_tile() +
        labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] < g[j]))))+
        scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
@@ -665,7 +665,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
     probs = probs * ifelse(table(data[,gen],data[,env]) != 0, 1, NA)
 
 
-    combs = data.frame(t(combn(name.gen, 2)))
+    combs = data.frame(t(utils::combn(name.gen, 2)))
     colnames(combs) = c('x', 'y')
     pwprobs = lapply(
       sapply(name.env,
@@ -709,7 +709,7 @@ cond_prob = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       scale_fill_viridis_c(direction = -1, na.value = '#D3D7DC',limits = c(0,1))
 
     pwprobs.plots = lapply(pwprobs, function(x){
-      x |> ggplot(aes(x = x, y = y, fill = pwprob)) +
+      x |> ggplot(aes(x = .data$x, y = .data$y, fill = .data$pwprob)) +
         geom_tile() +
         labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[i] < g[j]))))+
         scale_fill_viridis_c(direction = -1, na.value = 'white',limits = c(0,1))+
