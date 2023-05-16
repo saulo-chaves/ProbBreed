@@ -12,6 +12,7 @@ extr_outs(
   effects,
   nenv,
   res.het = FALSE,
+  probs = c(0.025, 0.975),
   check.stan.diag = FALSE,
   ...
 )
@@ -44,6 +45,9 @@ incomplete blocks design)
 
 \item{res.het}{Are the residual heterogeneous? Default is FALSE}
 
+\item{probs}{A vector with two elements representing the probabilities that will
+be considered for computing the quantiles. Provide values between 0 and 1.}
+
 \item{check.stan.diag}{A logical value indicating whether the function should
 extract some diagnostic using native \code{rstan} functions.}
 
@@ -70,23 +74,19 @@ using \code{\link[=bayes_met]{bayes_met()}}, and provides some diagnostics about
 \examples{
 \dontrun{
 mod = bayes_met(data = soy,
-                gen = c("Gen", "normal", "cauchy"),
-                env = c("Env", "normal", "cauchy"),
+                gen = "Gen",
+                env = "Env",
                 rept = NULL,
-                reg = list(c("Reg", "normal", "cauchy"),
-                           c("normal", "cauchy")),
+                reg = "Reg",
                 res.het = F,
-                sigma.dist = c("cauchy", "cauchy"),
-                mu.dist = c("normal", "cauchy"),
-                gei.dist = c("normal", "normal"),
-                trait = "eBLUE", hyperparam = "default",
+                trait = "Y",
                 iter = 100, cores = 4, chain = 4)
                 #Remember, increase the number of iterations, cores and chains
 
-outs = extr_outs(data = soy, trait = "eBLUE", gen = "Gen", model = mod,
+outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)), res.het = FALSE,
-                 check.stan.diag = TRUE)
+                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
                  }
 }
 \seealso{

@@ -11,10 +11,10 @@
 ##' @format ## `soy`
 ##'  A data frame with 823 rows and 6 columns:
 ##'  \describe{
-##'    \item{environment}{14 evaluated environments}
-##'    \item{region}{Regions containing the evaluated environments: 1, 2 and 3}
-##'    \item{G}{39 evaluated genotypes}
-##'    \item{eBLUE}{435 Adjusted means (phenotypes)}
+##'    \item{Env}{14 evaluated environments}
+##'    \item{Reg}{Regions containing the evaluated environments: 1, 2 and 3}
+##'    \item{Gen}{39 evaluated genotypes}
+##'    \item{Y}{435 Adjusted means (phenotypes)}
 ##'  }
 ##'
 ##' @source

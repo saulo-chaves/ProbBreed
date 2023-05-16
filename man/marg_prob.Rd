@@ -83,25 +83,21 @@ the probability of a given genotype \if{html}{\out{<i>}}j\if{html}{\out{</i>}} b
 \examples{
 \dontrun{
 mod = bayes_met(data = soy,
-                gen = c("Gen", "normal", "cauchy"),
-                env = c("Env", "normal", "cauchy"),
+                gen = "Gen",
+                env = "Env",
                 rept = NULL,
-                reg = list(c("Reg", "normal", "cauchy"),
-                           c("normal", "cauchy")),
+                reg = "Reg",
                 res.het = F,
-                sigma.dist = c("cauchy", "cauchy"),
-                mu.dist = c("normal", "cauchy"),
-                gei.dist = c("normal", "normal"),
-                trait = "eBLUE", hyperparam = "default",
+                trait = "Y",
                 iter = 100, cores = 4, chain = 4)
                 #Remember, increase the number of iterations, cores and chains
 
-outs = extr_outs(data = soy, trait = "eBLUE", gen = "Gen", model = mod,
+outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)), res.het = FALSE,
-                 check.stan.diag = TRUE)
+                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
 
-margs = marg_prob(data = soy, trait = "eBLUE", gen = "Gen", env = "Env",
+margs = marg_prob(data = soy, trait = "Y", gen = "Gen", env = "Env",
                   increase = TRUE, extr_outs = outs, int = .2,
                   save.df = TRUE, interactive = TRUE)
                   }

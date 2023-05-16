@@ -10,14 +10,10 @@ bayes_met(
   env,
   rept,
   trait,
-  hyperparam = "default",
-  sigma.dist = c("cauchy", "cauchy"),
-  mu.dist = c("normal", "cauchy"),
-  gei.dist = c("normal", "cauchy"),
   reg = NULL,
   res.het = F,
-  iter = 4000,
-  cores = 4,
+  iter = 2000,
+  cores = 1,
   chain = 4,
   ...
 )
@@ -25,48 +21,28 @@ bayes_met(
 \arguments{
 \item{data}{A data frame containing the observations}
 
-\item{gen, env}{A string vector. The first element is the name of the
-column that corresponds to the evaluated genotype or environment.
-The second element is the  prior probability distribution of this parameter.
-The third element is the hyperprior of this parameter. This order must be followed.}
+\item{gen, env}{A string. The name of the
+column that corresponds to the evaluated genotype or environment.}
 
-\item{rept}{A vector, a list or \code{NULL}. If the trial is randomized in complete blocks,
-\code{rept} will be a vector with the first element representing the name of the column
-that corresponds to the blocks, the second element being the prior probability
-distribution of the block parameter, and the third element representing the
-hyperprior of this parameter. If the trial is randomized in a lattice,
-\code{rept} will be a list containing two vectors with the same structure previously
-mentioned: a vector for replicate effects, and a vector for block effects.
+\item{rept}{A string, a vector, or \code{NULL}. If the trial is randomized in complete blocks,
+\code{rept} will be a string representing the name of the column
+that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
+\code{rept} will be a string vector containing the name of the column that corresponds to
+the replicate and block effects on the first and second positions, respectively.
 If the data do not have replicates, \code{rept} will be \code{NULL}.}
 
-\item{trait}{A character representing the name of the column that
-corresponds to the analysed variable.}
+\item{trait}{A string. The name of the column that corresponds to the analysed variable.}
 
-\item{hyperparam}{A numeric representing the global hyperparameter. If no number
-is given (so \code{hyperparam = 'default'}), the function will use \code{max(trait) * 10}
-as the global hyperparameter.}
-
-\item{sigma.dist, mu.dist, gei.dist}{A string vector containing the prior
-probability distribution (1st element) and the hyperprior (2nd element)
-of the residual effects (\code{sigma.dist}, which the default is \code{c("cauchy","cauchy")}),
-intercept (\code{mu.dist}, which the default is \code{c("normal", "normal")}), or the
-genotype-by-environment interaction (\code{gei.dist}, which the default is also
-\code{c("normal", "normal")}).}
-
-\item{reg}{A list containing two string vectors. The first vector have the name
-of the column that contain the information of region in the first position, the
-prior probability of this parameter in the second position, and its hyperprior
-in the third position. The second vector have the the prior probability and
-hyperprior of the genotype-by-region interaction effects, in the first and
-second position, respectively. If there are no information about regions in
-the data set, \code{reg = NULL} (default).}
+\item{reg}{A string or NULL. If the data set has information about regions,
+\code{reg} will be a string with the name of the column that corresponds to the
+region information. Otherwise, \code{reg = NULL} (default).}
 
 \item{res.het}{Logical, indicating if the model should consider heterogeneous
 residual variances. Default is \code{FALSE}.}
 
 \item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of iterations for each chain
-(including warmup). The default is 4000.}
+(including warmup). The default is 2000.}
 
 \item{cores}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of cores to use when executing the
@@ -88,29 +64,16 @@ Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Sta
 }
 \examples{
 \dontrun{
-# Good
+# Model
 mod = bayes_met(data = soy,
-                gen = c("Gen", "normal", "cauchy"),
-                env = c("Env", "normal", "cauchy"),
+                gen = "Gen",
+                env = "Env",
                 rept = NULL,
-                reg = list(c("Reg", "normal", "cauchy"),
-                           c("normal", "cauchy")),
+                reg = "Reg",
                 res.het = F,
-                sigma.dist = c("cauchy", "cauchy"),
-                mu.dist = c("normal", "cauchy"),
-                gei.dist = c("normal", "normal"),
-                trait = "eBLUE", hyperparam = "default",
+                trait = "Y",
                 iter = 100, cores = 4, chain = 4)
                 #You may want to increase the number of iterations, cores and chains
-
-# Bad
-mod = bayes_met(data = soy, gen = "Gen", env = "Env",
-                rept = NULL, trait = "eBLUE", hyperparam = "default",
-                mu.dist = c("normal", "normal"), gei.dist = c("normal", "cauchy"),
-                reg = "Reg", sigma.dist = c("cauchy", "cauchy"),
-                res.het = F,
-                iter = 100, cores = 2, chain = 2)
-                #Do not forget the priors and hyperpriors!
                 }
 }
 \seealso{

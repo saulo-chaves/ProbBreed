@@ -10,7 +10,7 @@ ProbBreed employs Bayesian statistics to analyse multi-environment
 trials’ data, and uses its outputs to estimate the marginal, pairwise,
 and conditional probability of superior performance of the genotypes.
 The method is thoroughly described at
-<https://doi.org/10.1007/s00122-022-04041-y>. 
+<https://doi.org/10.1007/s00122-022-04041-y>.
 
 ## Installation
 
@@ -30,21 +30,16 @@ A basic workflow using the available data is:
 library(ProbBreed)
 
 mod = bayes_met(data = soy,
-                gen = c("Gen", "normal", "cauchy"),
-                env = c("Env", "normal", "cauchy"),
+                gen = "Gen",
+                env = "Env", 
                 rept = NULL,
-                reg = list(c("Reg", "normal", "cauchy"), c("normal", "cauchy")),
+                reg = "Reg",
                 res.het = F,
-                sigma.dist = c("cauchy", "cauchy"),
-                mu.dist = c("normal", "cauchy"),
-                gei.dist = c("normal", "normal"),
-                trait = "eBLUE", 
-                hyperparam = "default",
-                iter = 100, cores = 4, chain = 4)
-# You may want to increase the number of iterations, cores and chains
+                trait = "Y", 
+                iter = 2000, cores = 1, chain = 1)
 
 outs = extr_outs(data = soy, 
-                 trait = "eBLUE", 
+                 trait = "Y", 
                  gen = "Gen", 
                  model = mod, 
                  effects = c('l','g','gl','m','gm'),
@@ -54,7 +49,7 @@ outs = extr_outs(data = soy,
                  check.stan.diag = TRUE)
 
 margs = marg_prob(data = soy, 
-                  trait = "eBLUE",
+                  trait = "Y",
                   gen = "Gen", 
                   env = "Env",
                   extr_outs = outs, 
@@ -64,7 +59,7 @@ margs = marg_prob(data = soy,
                   interactive = FALSE)
 
 conds = cond_prob(data = soy, 
-                  trait = "eBLUE",
+                  trait = "Y",
                   gen = "Gen", 
                   env = "Env",
                   reg = "Reg",

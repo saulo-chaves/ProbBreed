@@ -9,20 +9,18 @@
 ##'
 ##'
 ##' @param data  A data frame containing the observations
-##' @param gen,env  A string vector. The first element is the name of the
+##' @param gen,env  A string. The name of the
 ##' column that corresponds to the evaluated genotype or environment.
-##' @param rept  A vector, a list or `NULL`. If the trial is randomized in complete blocks,
-##' `rept` will be a vector with the first element representing the name of the column
-##' that corresponds to the blocks. If the trial is randomized in a lattice,
-##' `rept` will be a list containing two vectors with the same structure previously
-##' mentioned: a vector for replicate effects, and a vector for block effects.
+##' @param rept  A string, a vector, or `NULL`. If the trial is randomized in complete blocks,
+##' `rept` will be a string representing the name of the column
+##' that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
+##' `rept` will be a string vector containing the name of the column that corresponds to
+##' the replicate and block effects on the first and second positions, respectively.
 ##' If the data do not have replicates, `rept` will be `NULL`.
-##' @param trait A character representing the name of the column that
-##' corresponds to the analysed variable.
-##' @param reg A list containing a string vector with the name
-##' of the column that contain the information of region in the first position.
-##' If there are no information about regions in
-##' the data set, `reg = NULL` (default).
+##' @param trait A string. The name of the column that corresponds to the analysed variable.
+##' @param reg A string or NULL. If the data set has information about regions,
+##' `reg` will be a string with the name of the column that corresponds to the
+##' region information. Otherwise, `reg = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
 ##' residual variances. Default is `FALSE`.
 ##' @param chain Inherited from [rstan::sampling()].
@@ -55,34 +53,39 @@
 ##'                 rept = NULL,
 ##'                 reg = "Reg",
 ##'                 res.het = F,
-##'                 trait = "eBLUE", 
+##'                 trait = "Y",
 ##'                 iter = 100, cores = 4, chain = 4)
 ##'                 #You may want to increase the number of iterations, cores and chains
 ##'                 }
 ##' @export
 
 bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
-                    iter = 2000, cores, chain,...){
+                    iter = 2000, cores = 1, chain = 4,...){
 
   requireNamespace('rstan')
 
   data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
 
-if(res.het){
+  stopifnot("gen is not in the data" = gen %in% colnames(data))
+  stopifnot("env is not in the data" = env %in% colnames(data))
+
+  if(res.het){
+  # Heterogeneous residual variances
   if(is.null(reg)){
     # no region effect
     if(is.null(rept)){
-      data[,gen[1]] = as.factor(data[,gen[1]])
-      data[,env[1]] = as.factor(data[,env[1]])
+      # Only means
+      data[,gen] = as.factor(data[,gen])
+      data[,env] = as.factor(data[,env])
       n = nrow(data)
-      Z3 = model.matrix(~-1 + data[,gen[1]])
-      Z4 = model.matrix(~-1 + data[,env[1]])
-      Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
+      Z3 = model.matrix(~-1 + data[,gen])
+      Z4 = model.matrix(~-1 + data[,env])
+      Z5 = model.matrix(~-1 + data[,gen]:data[,env])
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
       y = data[,trait]
-      index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
+      index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
       phi = max(y) * 10
       df_stan = list(n = n, p3 = p3, p4 = p4,
                      p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5,
@@ -154,7 +157,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -192,22 +195,23 @@ if(res.het){
 
       Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-    }else if(!is.list(rept)){
-      # DBC
-      data[,gen[1]] = as.factor(data[,gen[1]])
-      data[,env[1]] = as.factor(data[,env[1]])
-      data[,rept[1]] = as.factor(data[,rept[1]])
+    }else if(length(rept) == 1){
+      # RCB
+      stopifnot("rept is not in the data" = rept %in% colnames(data))
+      data[,gen] = as.factor(data[,gen])
+      data[,env] = as.factor(data[,env])
+      data[,rept] = as.factor(data[,rept])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
-      Z3 = model.matrix(~-1 + data[,gen[1]])
-      Z4 = model.matrix(~-1 + data[,env[1]])
-      Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
+      Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+      Z3 = model.matrix(~-1 + data[,gen])
+      Z4 = model.matrix(~-1 + data[,env])
+      Z5 = model.matrix(~-1 + data[,gen]:data[,env])
       p1 <- ncol(Z1)
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
       y = data[,trait]
-      index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
+      index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
       phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4,
                      p5 = p5, Z1 = Z1, Z3 = Z3, Z4 = Z4,Z5 = Z5,
@@ -284,7 +288,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -326,25 +330,26 @@ if(res.het){
 
       Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-    }else if(is.list(rept)){
-      # Látice
-      data[,gen[1]] = as.factor(data[,gen[1]])
-      data[,env[1]] = as.factor(data[,env[1]])
-      data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
-      data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
+    }else if(length(rept) == 2){
+      # incomplete blocks
+      stopifnot("rept are not in the data" = rept %in% colnames(data))
+      data[,gen] = as.factor(data[,gen])
+      data[,env] = as.factor(data[,env])
+      data[,rept[1]] = as.factor(data[,rept[1]])
+      data[,rept[2]] = as.factor(data[,rept[2]])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
-      Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
-      Z3 = model.matrix(~-1 + data[,gen[1]])
-      Z4 = model.matrix(~-1 + data[,env[1]])
-      Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
+      Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
+      Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+      Z3 = model.matrix(~-1 + data[,gen])
+      Z4 = model.matrix(~-1 + data[,env])
+      Z5 = model.matrix(~-1 + data[,gen]:data[,env])
       p1 <- ncol(Z1)
       p2 <- ncol(Z2)
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
       y = data[,trait]
-      index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
+      index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
       phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5,
                      Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5,
@@ -427,7 +432,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -439,7 +444,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for blocks
     s_b ~ cauchy(0, phi);
-    b ~ normal(0, s_b);   
+    b ~ normal(0, s_b);
 
     // Conditional prior probabilities distributions for genotypes
     s_g ~ cauchy(0, phi);
@@ -475,25 +480,25 @@ if(res.het){
 
     }
   }else{
-    # Com região
+    # With region effect
     if(is.null(rept)){
-      # média
-      data[,gen[1]] = as.factor(data[,gen[1]])
-      data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
-      data[,env[1]] = as.factor(data[,env[1]])
+      # Only means
+      data[,gen] = as.factor(data[,gen])
+      data[,reg] = as.factor(data[,reg])
+      data[,env] = as.factor(data[,env])
       n = nrow(data)
-      Z3 = model.matrix(~-1 + data[,gen[1]])
-      Z4 = model.matrix(~-1 + data[,env[1]])
-      Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-      Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
-      Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
+      Z3 = model.matrix(~-1 + data[,gen])
+      Z4 = model.matrix(~-1 + data[,env])
+      Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+      Z6 = model.matrix(~-1 + data[,reg])
+      Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
       p5 <- ncol(Z5)
       p6 <- ncol(Z6)
       p7 <- ncol(Z7)
       y = data[,trait]
-      index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
+      index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
       phi = max(y) * 10
       df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                      p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
@@ -577,8 +582,8 @@ if(res.het){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
-    
+    sigma ~ cauchy(0, s_sigma);
+
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
     mu ~ normal(0, s_mu);
@@ -623,19 +628,19 @@ if(res.het){
 
       Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-    } else if(!is.list(rept)){
-      # DBC
-      data[,gen[1]] = as.factor(data[,gen[1]])
-      data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
-      data[,env[1]] = as.factor(data[,env[1]])
-      data[,rept[1]] = as.factor(data[,rept[1]])
+    } else if(length(rept) == 1){
+      # RCB
+      data[,gen] = as.factor(data[,gen])
+      data[,reg] = as.factor(data[,reg])
+      data[,env] = as.factor(data[,env])
+      data[,rept] = as.factor(data[,rept])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
-      Z3 = model.matrix(~-1 + data[,gen[1]])
-      Z4 = model.matrix(~-1 + data[,env[1]])
-      Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-      Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
-      Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
+      Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+      Z3 = model.matrix(~-1 + data[,gen])
+      Z4 = model.matrix(~-1 + data[,env])
+      Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+      Z6 = model.matrix(~-1 + data[,reg])
+      Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
       p1 <- ncol(Z1)
       p3 <- ncol(Z3)
       p4 <- ncol(Z4)
@@ -643,7 +648,7 @@ if(res.het){
       p6 <- ncol(Z6)
       p7 <- ncol(Z7)
       y = data[,trait]
-      index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
+      index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
       phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                      p7 = p7, Z1 = Z1, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
@@ -733,7 +738,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -783,21 +788,22 @@ if(res.het){
 
       Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-    }else if(is.list(rept)){
-      # Látice
-      data[,gen[1]] = as.factor(data[,gen[1]])
-      data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
-      data[,env[1]] = as.factor(data[,env[1]])
-      data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
-      data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
+    }else if(length(rept) == 2){
+      # incomplete blocks
+      stopifnot("rept is are not in the data" = rept %in% colnames(data))
+      data[,gen] = as.factor(data[,gen])
+      data[,reg] = as.factor(data[,reg])
+      data[,env] = as.factor(data[,env])
+      data[,rept[1]] = as.factor(data[,rept[1]])
+      data[,rept[2]] = as.factor(data[,rept[2]])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
-      Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
-      Z3 = model.matrix(~-1 + data[,gen[1]])
-      Z4 = model.matrix(~-1 + data[,env[1]])
-      Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-      Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
-      Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
+      Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
+      Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+      Z3 = model.matrix(~-1 + data[,gen])
+      Z4 = model.matrix(~-1 + data[,env])
+      Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+      Z6 = model.matrix(~-1 + data[,reg])
+      Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
       p1 <- ncol(Z1)
       p2 <- ncol(Z2)
       p3 <- ncol(Z3)
@@ -806,7 +812,7 @@ if(res.het){
       p6 <- ncol(Z6)
       p7 <- ncol(Z7)
       y = data[,trait]
-      index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
+      index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
       phi = max(y) * 10
       df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                      p7 = p7, Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
@@ -902,7 +908,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -914,7 +920,7 @@ if(res.het){
 
     // Conditional prior probabilities distributions for blocks
     s_b ~ cauchy(0, phi);
-    b ~ normal(0, s_b);   
+    b ~ normal(0, s_b);
 
     // Conditional prior probabilities distributions for genotypes
     s_g ~ cauchy(0, phi);
@@ -958,24 +964,24 @@ if(res.het){
     }
   }
 }else{
-
+# Homogeneous variances
 if(is.null(reg)){
+  # No region information
   if(is.null(rept)){
-    data[,gen[1]] = as.factor(data[,gen[1]])
-    data[,env[1]] = as.factor(data[,env[1]])
+    # Only-means
+    data[,gen] = as.factor(data[,gen])
+    data[,env] = as.factor(data[,env])
     n = nrow(data)
-    Z3 = model.matrix(~-1 + data[,gen[1]])
-    Z4 = model.matrix(~-1 + data[,env[1]])
-    Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
+    Z3 = model.matrix(~-1 + data[,gen])
+    Z4 = model.matrix(~-1 + data[,env])
+    Z5 = model.matrix(~-1 + data[,gen]:data[,env])
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
     y = data[,trait]
-    index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
     phi = max(y) * 10
     df_stan = list(n = n, p3 = p3, p4 = p4,
-                   p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5,
-                   index = index, y = y, phi = phi)
+                   p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5, y = y, phi = phi)
 
     stan_df = "
   data{
@@ -998,8 +1004,6 @@ if(is.null(reg)){
     // Global hyperparameter
     real phi;
 
-    // Indexation vector for sigma
-   int index[n];
   }
     parameters{
     // Residual standard deviation parameter/hyperparameters
@@ -1039,7 +1043,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -1078,26 +1082,24 @@ if(is.null(reg)){
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-  }else if(!is.list(rept)){
-  # RCBD
-    data[,gen[1]] = as.factor(data[,gen[1]])
-    data[,env[1]] = as.factor(data[,env[1]])
-    data[,rept[1]] = as.factor(data[,rept[1]])
+  }else if(length(rept) == 1){
+  # RCB
+    data[,gen] = as.factor(data[,gen])
+    data[,env] = as.factor(data[,env])
+    data[,rept] = as.factor(data[,rept])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
-    Z3 = model.matrix(~-1 + data[,gen[1]])
-    Z4 = model.matrix(~-1 + data[,env[1]])
-    Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
+    Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+    Z3 = model.matrix(~-1 + data[,gen])
+    Z4 = model.matrix(~-1 + data[,env])
+    Z5 = model.matrix(~-1 + data[,gen]:data[,env])
     p1 <- ncol(Z1)
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
     y = data[,trait]
-    index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
     phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4,
-                   p5 = p5, Z1 = Z1, Z3 = Z3, Z4 = Z4,Z5 = Z5,
-                    index = index, y = y, phi = phi)
+                   p5 = p5, Z1 = Z1, Z3 = Z3, Z4 = Z4,Z5 = Z5, y = y, phi = phi)
 
     stan_df = "
   data{
@@ -1122,8 +1124,6 @@ if(is.null(reg)){
     // Global hyperparameter
     real phi;
 
-    // Indexation vector for sigma
-   int index[n];
   }
     parameters{
     // Residual standard deviation parameter/hyperparameters
@@ -1166,7 +1166,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -1208,29 +1208,27 @@ if(is.null(reg)){
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-  }else if(is.list(rept)){
-  # IBD
-    data[,gen[1]] = as.factor(data[,gen[1]])
-    data[,env[1]] = as.factor(data[,env[1]])
-    data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
-    data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
+  }else if(length(rept) == 2){
+  # incomplete blocks
+    data[,gen] = as.factor(data[,gen])
+    data[,env] = as.factor(data[,env])
+    data[,rept[1]] = as.factor(data[,rept[1]])
+    data[,rept[2]] = as.factor(data[,rept[2]])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
-    Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
-    Z3 = model.matrix(~-1 + data[,gen[1]])
-    Z4 = model.matrix(~-1 + data[,env[1]])
-    Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
+    Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
+    Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+    Z3 = model.matrix(~-1 + data[,gen])
+    Z4 = model.matrix(~-1 + data[,env])
+    Z5 = model.matrix(~-1 + data[,gen]:data[,env])
     p1 <- ncol(Z1)
     p2 <- ncol(Z2)
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
     y = data[,trait]
-    index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
     phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5,
-                   Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5,
-                   index = index, y = y, phi = phi)
+                   Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5, y = y, phi = phi)
 
     stan_df = "
   data{
@@ -1257,8 +1255,6 @@ if(is.null(reg)){
     // Global hyperparameter
     real phi;
 
-    // Indexation vector for sigma
-   int index[n];
   }
     parameters{
     // Residual standard deviation parameter/hyperparameters
@@ -1306,7 +1302,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -1318,7 +1314,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for blocks
     s_b ~ cauchy(0, phi);
-    b ~ normal(0, s_b);  
+    b ~ normal(0, s_b);
 
     // Conditional prior probabilities distributions for genotypes
     s_g ~ cauchy(0, phi);
@@ -1354,27 +1350,27 @@ if(is.null(reg)){
 
   }
 }else{
+  # With region information
   if(is.null(rept)){
-    data[,gen[1]] = as.factor(data[,gen[1]])
-    data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
-    data[,env[1]] = as.factor(data[,env[1]])
+    data[,gen] = as.factor(data[,gen])
+    data[,reg] = as.factor(data[,reg])
+    data[,env] = as.factor(data[,env])
     n = nrow(data)
-    Z3 = model.matrix(~-1 + data[,gen[1]])
-    Z4 = model.matrix(~-1 + data[,env[1]])
-    Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-    Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
-    Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
+    Z3 = model.matrix(~-1 + data[,gen])
+    Z4 = model.matrix(~-1 + data[,env])
+    Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+    Z6 = model.matrix(~-1 + data[,reg])
+    Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
     p5 <- ncol(Z5)
     p6 <- ncol(Z6)
     p7 <- ncol(Z7)
     y = data[,trait]
-    index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
     phi = max(y) * 10
     df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                    p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
-                   Z7 = Z7, index = index, y = y, phi = phi)
+                   Z7 = Z7, y = y, phi = phi)
 
     stan_df = "
   data{
@@ -1448,7 +1444,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -1473,7 +1469,7 @@ if(is.null(reg)){
     // Conditional prior probabilities distributions  for genotype by Region
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
-    
+
     // Specifying the likelihood
     y ~ normal(expectation, sigma);
     // Generating data from the model
@@ -1494,19 +1490,19 @@ if(is.null(reg)){
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-  } else if(!is.list(rept)){
+  } else if(length(rept) == 1){
   # RCDB
-    data[,gen[1]] = as.factor(data[,gen[1]])
-    data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
-    data[,env[1]] = as.factor(data[,env[1]])
-    data[,rept[1]] = as.factor(data[,rept[1]])
+    data[,gen] = as.factor(data[,gen])
+    data[,reg] = as.factor(data[,reg])
+    data[,env] = as.factor(data[,env])
+    data[,rept] = as.factor(data[,rept])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env[1]])
-    Z3 = model.matrix(~-1 + data[,gen[1]])
-    Z4 = model.matrix(~-1 + data[,env[1]])
-    Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-    Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
-    Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
+    Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+    Z3 = model.matrix(~-1 + data[,gen])
+    Z4 = model.matrix(~-1 + data[,env])
+    Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+    Z6 = model.matrix(~-1 + data[,reg])
+    Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
     p1 <- ncol(Z1)
     p3 <- ncol(Z3)
     p4 <- ncol(Z4)
@@ -1514,11 +1510,10 @@ if(is.null(reg)){
     p6 <- ncol(Z6)
     p7 <- ncol(Z7)
     y = data[,trait]
-    index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
     phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                    p7 = p7, Z1 = Z1, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
-                   Z7 = Z7, index = index, y = y, phi = phi)
+                   Z7 = Z7, y = y, phi = phi)
 
     stan_df = "
   data{
@@ -1598,7 +1593,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -1648,21 +1643,21 @@ if(is.null(reg)){
 
     Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
 
-  }else if(is.list(rept)){
-  # IBD
-    data[,gen[1]] = as.factor(data[,gen[1]])
-    data[,reg[[1]][1]] = as.factor(data[,reg[[1]][1]])
-    data[,env[1]] = as.factor(data[,env[1]])
-    data[,rept[[1]][1]] = as.factor(data[,rept[[1]][1]])
-    data[,rept[[2]][1]] = as.factor(data[,rept[[2]][1]])
+  }else if(length(rept) == 2){
+  # incomplete blocks
+    data[,gen] = as.factor(data[,gen])
+    data[,reg] = as.factor(data[,reg])
+    data[,env] = as.factor(data[,env])
+    data[,rept[1]] = as.factor(data[,rept[1]])
+    data[,rept[2]] = as.factor(data[,rept[2]])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept[[1]][1]]:data[,env[1]])
-    Z2 = model.matrix(~-1 + data[,rept[[2]][1]]:data[,env[1]])
-    Z3 = model.matrix(~-1 + data[,gen[1]])
-    Z4 = model.matrix(~-1 + data[,env[1]])
-    Z5 = model.matrix(~-1 + data[,gen[1]]:data[,env[1]])
-    Z6 = model.matrix(~-1 + data[,reg[[1]][1]])
-    Z7 = model.matrix(~-1 + data[,gen[1]]:data[,reg[[1]][1]])
+    Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
+    Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+    Z3 = model.matrix(~-1 + data[,gen])
+    Z4 = model.matrix(~-1 + data[,env])
+    Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+    Z6 = model.matrix(~-1 + data[,reg])
+    Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
     p1 <- ncol(Z1)
     p2 <- ncol(Z2)
     p3 <- ncol(Z3)
@@ -1671,11 +1666,10 @@ if(is.null(reg)){
     p6 <- ncol(Z6)
     p7 <- ncol(Z7)
     y = data[,trait]
-    index = rep(1:nlevels(data[,env[1]]), times = as.numeric(table(data[,env[1]])))
     phi = max(y) * 10
     df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                    p7 = p7, Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
-                   Z7 = Z7, index = index, y = y, phi = phi)
+                   Z7 = Z7, y = y, phi = phi)
 
     stan_df = "
   data{
@@ -1761,7 +1755,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for residual standard deviation
     s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma); 
+    sigma ~ cauchy(0, s_sigma);
 
     // Conditional prior probabilities distributions for the mean
     s_mu ~ cauchy(0, phi);
@@ -1773,7 +1767,7 @@ if(is.null(reg)){
 
     // Conditional prior probabilities distributions for blocks
     s_b ~ cauchy(0, phi);
-    b ~ normal(0, s_b);   
+    b ~ normal(0, s_b);
 
     // Conditional prior probabilities distributions for genotypes
     s_g ~ cauchy(0, phi);

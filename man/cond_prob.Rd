@@ -53,11 +53,18 @@ The function returns a list with:
 \itemize{
 \item \code{conds_prob} : a matrix containing the probability of superior
 performance within environments (and regions, if available).
+\item \code{conds_pwprob} : a list with the pairwise probabilities of superior
+performance within environments.
+\item \code{conds_pwprob.reg} : a list with the pairwise probabilities of superior
+performance within regions (if available).
 \item \code{psp_env.plot} : a heatmap representing the probability of superior
 performance of each genotype, within each environment
 \item \code{psp_reg.plot} : a heatmap representing the probability of superior
 performance of each genotype, within each region. Exists only if a string is
-provided for "reg"
+\item \code{pwprobs.plots} : a list containing a heatmap representing the pairwise
+probabilities of superior performance for each environment.
+\item \code{pwprobs.reg.plots} : a list containing a heatmap representing the pairwise
+probabilities of superior performance for each region (if available).
 }
 }
 \description{
@@ -81,25 +88,21 @@ and failure (0) otherwise.
 \examples{
 \dontrun{
 mod = bayes_met(data = soy,
-                gen = c("Gen", "normal", "cauchy"),
-                env = c("Env", "normal", "cauchy"),
+                gen = "Gen",
+                env = "Env",
                 rept = NULL,
-                reg = list(c("Reg", "normal", "cauchy"),
-                           c("normal", "cauchy")),
+                reg = "Reg",
                 res.het = F,
-                sigma.dist = c("cauchy", "cauchy"),
-                mu.dist = c("normal", "cauchy"),
-                gei.dist = c("normal", "normal"),
-                trait = "eBLUE", hyperparam = "default",
+                trait = "Y",
                 iter = 100, cores = 4, chain = 4)
                 #Remember, increase the number of iterations, cores and chains
 
-outs = extr_outs(data = soy, trait = "eBLUE", gen = "Gen", model = mod,
+outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)), res.het = FALSE,
-                 check.stan.diag = TRUE)
+                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
 
-conds = cond_prob(data = soy, trait = "eBLUE", gen = "Gen", env = "Env",
+conds = cond_prob(data = soy, trait = "Y", gen = "Gen", env = "Env",
                   extr_outs = outs, reg = "Reg", int = .2,
                   increase = TRUE, save.df = TRUE, interactive = TRUE)
                   }

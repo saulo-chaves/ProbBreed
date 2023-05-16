@@ -20,7 +20,7 @@ library(tidyverse)
 
 ## Introduction
 
-Welcome to ProbBreed. This guide will help you to fit the Bayesian model, extract the outputs and estimate the probabilities, which are used to build the plots. Feel free to contact us if there are any issues. Further details are found within each function documentation (e.g.: `?bayes_met`) and in the seminal paper by [Dias et al. (2022)](https://doi.org/10.1007/s00122-022-04041-y).
+Welcome to ProbBreed. This guide will help you fitting the Bayesian model, extracting the outputs and estimating the probabilities of superior performance, which are used to build the plots. Feel free to contact us if there are any issues. Further details are found within each function documentation (e.g.: `?bayes_met`) and in the seminal paper by [Dias et al. (2022)](https://doi.org/10.1007/s00122-022-04041-y).
 
 ## Step one
 
@@ -32,201 +32,200 @@ library(ProbBreed)
 
 ## Step two - `bayes_met`
 
-The second step is to fit a Multi-environment Bayesian model using the `bayes_met` function, and consequently, the `rstan` language implemented within it. There are some important details that we would like to stress here:
+The second step is to fit a multi-environment Bayesian model using the `bayes_met` function. This function has a set of predefined models that are used to run Bayesian analyses using `rstan`, the `R` interface to `Stan`. There are some important details that we would like to stress here:
 
-**1**-    The function lets you define which is the prior and hyperprior of each effect of the model. This is controlled by building a vector with the following structure: c("Name of the effect in your data frame", "Desired prior", "Desired hyperprior"). For example, for the genetic and environmental effects:
-
-```{r echo=TRUE}
-gen = c("Gen", "normal", "cauchy")
-env = c("Env", "normal", "cauchy")
-```
-
-When you provide the function with these vectors, you are saying that "the column in my data frame that has the information of genotypes is called 'Hybrid', and this effect will have a prior following the normal distribution, and a hyperprior following the half-cauchy distribution". 
-
-
-**2**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region, and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block, incomplete block, or no design whatsoever (only means). After choosing the model that fits your situation, you must build the vectors of region and replicates (and blocks) effects accordingly (See the figure below).
+**1**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region (or mega-environment, or any other factor of higher-level), and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: complete block design (CBD), incomplete block design (IBD), or no design whatsoever (only-means). After choosing the model that fits your situation, you must declare the arguments in the function accordingly (See the figure below).
 
 ```{r out.width = "100%", echo=FALSE}
 knitr::include_graphics("img/desenho.png")
 ```
 
-Note that when you consider the Region information, and when the trials are in incomplete block design, you **must** build a list, not a vector.
+In other words, you have the control of which predefined model you will use. All you have to do is correctly declare the arguments `reg` and `rept`, since `gen` and `env` will be always present. Note that if you desire to analyse a data in IBD, `rept` must be a vector of size two (i.e., two strings compile with `c()`).
 
-**3**-    Feel free to change the hyperparameter if you will. The "default" implemented in the function is the maximum value of the trait, multiplied by 10. 
+**2**-    You may  change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 2000 iterations (including warmup), 1 core and 1 chain. Be aware that the more iterations and chains, the more time the function will take to provide the results. At the same time, the higher is the probability of the model to reach more reliable results. The number of cores depends on the processing capacity of your machine. Choose wisely.
 
-**4**-    You may also change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 2000 iterations, and you must provide the number of cores and chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. Despite of this drawback, the more iterations, the higher is the probability of the model to reach more reliable results.
+**3**-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively. 
 
-**5**-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively.
-
-Without further ado, let us see how the six models can be fitted using `bayes_met`. The following models are only for didactic purposes, and will not provide a valid output. 
+Without further ado, let us see how the six models can be fitted using `bayes_met()`. The following models are only for didactic purposes, and will not provide a valid output. 
 
 ### Without Region and only means
 
-```{r eval=FALSE}
-mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
-          rept = NULL,
-          reg = NULL,
-          res.het = F,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4)
-```
+$$
+y_{ji} = \mu + l_j + g_i + gl_{ij} + \varepsilon_{ji} 
+$$
 
-### Without Region and only means
+where the $y_{ij}$ is the phenotypic record of the $\text i^{\text{th}}$ genotype in the $\text j^{\text{th}}$ environment. This observation is influenced by a grand mean ($\mu$), the main effects of the jth environment ($l_j$) and of the ith genotype ($g_i$), the interaction between these two effects ($gl_{ij}$), and non-explained effects ($\varepsilon_{ji}$). 
 
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
+          gen = "Genotype", 
+          env = "Environment",
           rept = NULL,
           reg = NULL,
           res.het = F,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4)
+          trait = "Phenotype",
+          iter = 2000, cores = 1, chain = 1)
 ```
 
 ### Without Region and randomized complete blocks design
 
+$$
+y_{jki} = \mu + l_j + b_{k(j)} + g_i + gl_{ij} + \varepsilon_{jki} 
+$$
+
+where the $y_{jki}$ is the phenotypic record of the $\text i^{\text{th}}$ genotype, allocated in the $\text k^{\text{th}}$ block, in the $\text j^{\text{th}}$ environment. All other effects were previously declared but $b_{k(j)}$, which is the effect of the $\text k^{\text{th}}$ block in the $\text j^{\text{th}}$ environment.
+
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
-          rept = c("Repetition", "normal", "cauchy"),
+          gen = "Genotype", 
+          env = "Environment",
+          rept = "Repetition",
           reg = NULL,
           res.het = F,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4)
+          trait = "Phenotype",
+          iter = 2000, cores = 1, chain = 1)
 ```
 
 ### Without Region and incomplete blocks design
 
+A lattice, for example: 
+
+$$
+y_{jtki} = \mu + l_j + r_{t(j)} + b_{k(jt)} + g_i + gl_{ij} + \varepsilon_{jtki} 
+$$
+
+where the $y_{jtki}$ is the phenotypic record of the $\text i^{\text{th}}$ genotype, allocated in the $\text k^{\text{th}}$ block of the $\text t^{\text{th}}$ repetition, in the $\text j^{\text{th}}$ environment. All other effects were previously declared but $r_{t(j)}$, which is the effect of the $\text t^{\text{th}}$ repetition in the $\text j^{\text{th}}$ environment. Note that the indices of $b$ also change. 
+
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
-          rept = list(c("Repetition", "normal", "cauchy"), c("Block", "normal", "cauchy")),
+          gen = "Genotype", 
+          env = "Environment",
+          rept = c("Repetition", "Block"),
           reg = NULL,
           res.het = F,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4) 
+          trait = "Phenotype",
+          iter = 2000, cores = 1, chain = 1)
 ```
 
 ### With Region and only means
 
+$$
+y_{hji} = \mu + m_h + e_j + g_i + ge_{ij} + gm_{ih} + \varepsilon_{hji} 
+$$
+
+All effects were previously declared but $m_h$ and $gm_{ih}$, which is the main effect of region and genotype-by-region interaction effect, respectively. 
+
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
+          gen = "Genotype", 
+          env = "Environment",
           rept = NULL,
           res.het = F,
-          reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4)
+          reg = "Region",
+          trait = "Phenotype",
+          iter = 2000, cores = 1, chain = 1)
 ```
 
 ### With Region and randomized complete blocks design
 
+$$
+y_{hjki} = \mu + m_h + l_j + b_{k(hj)} + g_i + gl_{ij} + gm_{ih} + \varepsilon_{jki} 
+$$
+
+
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
-          rept = c("Repetition", "normal", "cauchy"),
-          reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+          gen = "Genotype", 
+          env = "Environment",
+          rept = "Repetition",
+          reg = "Region",
           res.het = F,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4)
+          trait = "Phenotype",
+          iter = 2000, cores = 1, chain = 1)
 ```
 
 ### With Region and incomplete blocks design
 
+$$
+y_{hjtki} = \mu + m_h + l_j + r_{t(hj)} + b_{k(hjt)} + g_i + gl_{ij} + gm_{ih} + \varepsilon_{jtki} 
+$$
+
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
-          gen = c("Genotype", "normal", "cauchy"), 
-          env = c("Environment", "normal", "cauchy"),
-          rept = list(c("Repetition", "normal", "cauchy"), c("Block", "normal", "cauchy")),
-          reg = list(c("Region", "normal", "cauchy"), c("normal", "cauchy")),
+          gen = "Genotype", 
+          env = "Environment",
+          rept = c("Repetition", "Block"),
+          reg = "Region",
           res.het = F,
-          sigma.dist = c("cauchy", "cauchy"), mu.dist = c("normal", "cauchy"),
-          gei.dist = c("normal", "cauchy"), trait = "Y", hyperparam = "default",
-          iter = 2000, cores = 4, chain = 4) 
+          trait = "Phenotype",
+          iter = 2000, cores = 1, chain = 1) 
 ```
 
-For the next steps, we will use the "soy" data, which is contained within the package. This data set has the adjusted means of 39 genotypes that were evaluted at 14 environments, in 3 breeding regions. 
+For the next steps, we will use the "soy" data, which is contained within the package. This data set has the adjusted means of 39 genotypes that were evaluated at 14 environments, in 3 breeding regions. 
 
 ```{r echo=FALSE}
 head(soy)
 ```
 
-
 Note that we do not have experimental design in this case, so the correct model has `rept = NULL`
 
-```{r echo=TRUE, warning=FALSE, message=FALSE}
+```{r echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
 mod = bayes_met(data = soy,
-                gen = c("Gen", "normal", "cauchy"),
-                env = c("Env", "normal", "cauchy"),
+                gen = "Gen",
+                env = "Env",
                 rept = NULL,
-                reg = list(c("Reg", "normal", "cauchy"),
-                           c("normal", "cauchy")),
+                reg = "Reg",
                 res.het = F,
-                sigma.dist = c("cauchy", "cauchy"),
-                mu.dist = c("normal", "cauchy"),
-                gei.dist = c("normal", "normal"),
-                trait = "eBLUE", hyperparam = "default",
-                iter = 100, cores = 4, chain = 4)
+                trait = "Y",
+                iter = 5000, cores = 4, chain = 4)
 ```
 
-We ran this model only with 100 iterations, for the sake of reproducibility. 
+```{r echo=FALSE}
+load('../../Manuscript/real_dat.RData')
+```
 
 ## Step three - `extr_outs`
 
-After fitting the model, the next step is to extract some outputs. The `extr_outs` function is a pre-requisite for estimating the probability of superior performance using the other functions. `extr_outs` also provide some important diagnostics regarding the convergence and reliability of the model. 
+After fitting the model, the next step is to extract some useful outputs. The `extr_outs()` function is a pre-requisite for estimating the probability of superior performance using the other functions. `extr_outs()` also provides some important diagnostics regarding the convergence and reliability of the model. 
 
 Using the `mod` object from the previous step:
-```{r echo=TRUE, warning=FALSE, results='hide', fig.width=8}
-outs = extr_outs(data = soy, trait = 'eBLUE', gen = 'Gen', model = mod,
+```{r echo=TRUE, warning=FALSE, results='hide', fig.width=8, eval=FALSE}
+outs = extr_outs(data = soy, trait = 'Y', gen = 'Gen', model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
                  res.het = F, 
-                 probs = c(0.025, 0.975) ,check.stan.diag = F)
-
+                 probs = c(0.025, 0.975), check.stan.diag = F)
 ```
 
-This function has some novelties: 
+In this function structure: 
 
-* `mod` is the model fitted using `bayes_met`
+* `model` is the model fitted using `bayes_met`
 
-* `effects` indicates which effects `mod` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
+* `effects` indicates which effects `model` has. Here, you may provide a string vector with the codes for each possible effect. The codes are:
 
   * `r` : replicate effect
 
-  * `b` : block inside replicate effect (if the trials are lattices)
+  * `b` : block effect
 
   * `l` : environment (or location) effect
 
-  * `m` : region effect (if it is available)
+  * `m` : region effect
 
   * `g` : genetic effect
 
   * `gl` : genotype-by-location effect
 
-  * `gm` : genotype-by-region effect (if `region` is available)
+  * `gm` : genotype-by-region effect
 
-The models will surely have `r`, `l`, `g` and `gl`. The other effects may or may not be necessary, depending on the situation
+The models will surely have `r`, `l`, `g` and `gl`. The other effects may or may not be necessary, depending on the situation.
 
 * `nenv` indicates the number of environments
 
-* `probs` are the probabilities that the function will consider to calculate the quantiles (provide values between 0 and 1)
+* `probs` are the probabilities that the function will consider to calculate the quantiles and the HPD (please, provide values between 0 and 1)
 
-* `check.stan.diag` asks whether you want some diagnostic plots provided by `rstan::stan_diag()` or not.
+* `check.stan.diag` asks whether you want diagnostic plots provided by `rstan::stan_diag()` or not.
 
-The function provides a list with the posterior of each effect and the data generated by the model, a dataframe with the variances of each effect, a list of with the maximum posterior values of each effect, a matrix containing some useful quality parameters of the model (See below):
+The function provides a list with the posterior of each effect, the data generated by the model, a data frame with the variances of each effect, a list with the maximum posterior values of each effect, and a matrix containing some useful quality parameters of the model (See below):
 
 ```{r echo=TRUE}
 outs$variances
@@ -240,7 +239,7 @@ It also provide a density plot comparing the generated data and the real data:
 outs$den_plot
 ```
 
-Note that this plots was built using `ggplot2` package. In fact, all the plots of this package are built using `ggplot2`, so they are all customizable. All you have to do is keep editing the object that contains the plot with `+` and the function of your preference. For example, if you wanted to change the position of the legend, you would do something like this:
+Note that this plots was built using `ggplot2` package. In fact, all the plots of this package are built using `ggplot2`, so they are all customizable. All you have to do is keep editing the object that contains the plot with `+` and the function of your preference. For example, to change the position of the legend:
 
 ```{r echo=TRUE, fig.width=6, fig.height=6}
 library(ggplot2)
@@ -248,10 +247,10 @@ outs$den_plot +
   theme(legend.position = 'right')
 ```
 
-Finally (and optionally), the function provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. More information about these plots in `?rstan::stan_diag`.
+Finally (and optionally), the function provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. For more information about these plots, please refer to `?rstan::stan_diag`.
 
-```{r echo=TRUE, warning=FALSE, results='hide',fig.width=6, fig.height=6}
-outs = extr_outs(data = soy, trait = 'eBLUE', gen = 'Gen', model = mod,
+```{r echo=TRUE, warning=FALSE, results='hide',fig.width=6, fig.height=6, eval=FALSE}
+outs = extr_outs(data = soy, trait = 'Y', gen = 'Gen', model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
                  res.het = F, check.stan.diag = T)
@@ -260,10 +259,10 @@ outs = extr_outs(data = soy, trait = 'eBLUE', gen = 'Gen', model = mod,
 
 ## Step four - `marg_prob`
 
-Using the outputs extracted by `extr_outs`, we can finally calculate the probability of superior performance of the evaluated genotypes. This is exactly what `marg_prob` will do:
+Using the outputs extracted by `extr_outs()`, we can finally calculate the probability of superior performance of the evaluated genotypes. This is exactly what `marg_prob()` will do:
 
-```{r echo=TRUE}
-margs = marg_prob(data = soy, trait = 'eBLUE', gen = 'Gen', env = 'Env',
+```{r echo=TRUE, eval=FALSE}
+margs = marg_prob(data = soy, trait = 'Y', gen = 'Gen', env = 'Env',
                  extr_outs = outs, int = .2, increase = T,
                  save.df = F, interactive = F)
 ```
@@ -272,7 +271,7 @@ margs = marg_prob(data = soy, trait = 'eBLUE', gen = 'Gen', env = 'Env',
 
 *   `increase`: The selection is for increasing (`TRUE`, default) or decreasing (`FALSE`) the trait mean? 
 
-*   `extr_outs`: An object that contains the outputs extracted by `extr_outs`.
+*   `extr_outs`: An object that contains the outputs extracted by `extr_outs()`.
 
 *   `int`: The selection intensity. Please, insert a numeric between 0 and 1.
 
@@ -289,30 +288,40 @@ margs$g_hpd
 Then, it calculates the marginal probability of superior performance, providing a data frame and a bar plot:
 
 ```{r echo=TRUE,fig.width=6, fig.height=6}
+head(margs$marg_prob.df)
+
 margs$marg_prob.plot
 ```
 
 Finally, it calculates the pairwise probability of superior performance, also providing a data frame and a plot. For this case, the plot is heat map:
 
 ```{r echo=TRUE,fig.width=6, fig.height=6}
+head(margs$pair_prob.df)
+
 margs$pair_prob.plot
 ```
 
 The heat map indicates what is the probability of the genotypes at the _x_-axis having better performance than the ones at the _y_-axis.
 
-## Step five (the last) - `cond_prob`
+## Step five - `cond_prob`
 
-Now that we have an overview about the probability of superior performance of the the evaluated genotypes, we can calculate this parameter within each environment. This is what `cond_prob` will do:
+Now that we have an overview about the probability of superior performance of the the evaluated genotypes, we can calculate this parameter within each environment. This is what `cond_prob()` will do:
 
-```{r echo=TRUE}
-conds = cond_prob(data = soy, trait = 'eBLUE', gen = 'Gen', env = 'Env',
+```{r echo=TRUE, eval=FALSE}
+conds = cond_prob(data = soy, trait = 'Y', gen = 'Gen', env = 'Env',
                   extr_outs = outs, int = .2, increase = T, reg = 'Reg',
                   save.df = F, interactive = F)
 ```
 
-The only difference from `marg_prob` is that in `cond_prob` you will indicate what is the column in you data frame that refers to the region information. If there is no such column, set `reg` to `NULL`
+The only difference from `marg_prob()` is that in `cond_prob()` you will indicate what is the column in you data frame that refers to the region information. If there is no such column, `reg = NULL`
 
-The function provides a matrix with the probability of superior performance in each environment. This matrix is used to build a heat map:
+The function provides a matrix with the probability of superior performance in each environment:
+
+```{r}
+head(conds$conds_prob)
+```
+
+This matrix is used to build a heat map:
 
 ```{r echo=TRUE,fig.width=6, fig.height=6}
 conds$psp_env.plot
@@ -324,10 +333,25 @@ If `reg` is not `NULL`, the function will provide the probability of superior pe
 conds$psp_reg.plot
 ```
 
+The function also provides the pairwise probabilities of superior performance within environment. These probabilities and their corresponding plots are within lists. For example, for the environment E14: 
+
+```{r,fig.width=6, fig.height=6}
+head(conds$conds_pwprobs.env$E14)
+
+conds$pwprobs.plots$E14
+```
+
+Or for the second region: 
+
+```{r,fig.width=6, fig.height=6}
+head(conds$conds_pwprobs.reg$R2)
+
+conds$pwprobs.reg.plots$R2
+```
 
 We hope this package is useful for you. Feel free to contact us if there any issues or suggestions for improvement. 
 
 <br>
 
-_FIM_
+**FIM**
 
