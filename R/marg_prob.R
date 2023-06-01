@@ -79,7 +79,7 @@
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 env = "Env",
-##'                 rept = NULL,
+##'                 repl = NULL,
 ##'                 reg = "Reg",
 ##'                 res.het = F,
 ##'                 trait = "Y",
@@ -107,6 +107,8 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2, increase = T,
   name.env = levels(factor(data[,env]))
   num.env = nlevels(factor(data[,env]))
 
+  # HPD
+
   g_hpd = as.data.frame(matrix(mod$post$g,
                                dimnames=list(t(outer(colnames(mod$post$g),
                                                      rownames(mod$post$g),
@@ -126,8 +128,11 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2, increase = T,
     labs(x = 'Values', y = 'Genotypes') +
     geom_point(size = 4, color = '#781c1e')
 
-  if(increase){
+  if(increase){ # Selection for increasing
   colnames(mod$post$g) = name.gen
+
+  # Marginal probability of superior performance
+
   ind_post = apply(mod$post$g, 1, function(x){
     ifelse(name.gen %in%
              names(x[order(x, decreasing = T)][1:ceiling(int * num.gen)]), 1, 0)
@@ -143,6 +148,7 @@ marg_prob = function(data, trait, gen, env, extr_outs, int = .2, increase = T,
     labs(x = 'Genotypes', y = 'Probability') +
     theme(axis.text.x = element_text(angle = 90))
 
+  # Pairwise probability of superior performance
 
   pwsprob = matrix(NA, num.gen, num.gen)
 

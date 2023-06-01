@@ -11,33 +11,33 @@
 ##' @param data  A data frame containing the observations
 ##' @param gen,env  A string. The name of the
 ##' column that corresponds to the evaluated genotype or environment.
-##' @param rept  A string, a vector, or `NULL`. If the trial is randomized in complete blocks,
-##' `rept` will be a string representing the name of the column
+##' @param repl  A string, a vector, or `NULL`. If the trial is randomized in complete blocks,
+##' `repl` will be a string representing the name of the column
 ##' that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
-##' `rept` will be a string vector containing the name of the column that corresponds to
+##' `repl` will be a string vector containing the name of the column that corresponds to
 ##' the replicate and block effects on the first and second positions, respectively.
-##' If the data do not have replicates, `rept` will be `NULL`.
+##' If the data do not have replicates, `repl` will be `NULL`.
 ##' @param trait A string. The name of the column that corresponds to the analysed variable.
 ##' @param reg A string or NULL. If the data set has information about regions,
 ##' `reg` will be a string with the name of the column that corresponds to the
 ##' region information. Otherwise, `reg = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
 ##' residual variances. Default is `FALSE`.
-##' @param chain Inherited from [rstan::sampling()].
+##' @param chains Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of Markov chains. The default is 4.
 ##' @param iter Inherited from [rstan::sampling()].
-##' A positive integer specifying the number of iterations for each chain
+##' A positive integer specifying the number of iterations for each chains
 ##' (including warmup). The default is 2000.
 ##' @param cores Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of cores to use when executing the
 ##' chains in parallel (defaults to 1).
-##' @param ... Additional arguments passed to the [rstan::sampling()] function.
+##' @param ... Additional arguments passed to the [rstan::sampling()] function
+##' (for instance, to change the thin number, or to set a specific seed).
 ##' For more information, see [rstan::sampling()] manual
 ##' @return The function returns an object of S4 class stanfit containing the
 ##' fitted results
 ##'
 ##' @seealso [rstan::sampling()]
-##'
 ##'
 ##' @import rstan
 ##' @importFrom stats density median model.matrix na.exclude quantile reorder sd var
@@ -50,17 +50,16 @@
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 env = "Env",
-##'                 rept = NULL,
+##'                 repl = NULL,
 ##'                 reg = "Reg",
 ##'                 res.het = F,
 ##'                 trait = "Y",
-##'                 iter = 100, cores = 4, chain = 4)
-##'                 #You may want to increase the number of iterations, cores and chains
+##'                 iter = 2000, cores = 1, chains = 4)
 ##'                 }
 ##' @export
 
-bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
-                    iter = 2000, cores = 1, chain = 4,...){
+bayes_met = function(data, gen, env, repl, trait, reg = NULL, res.het = F,
+                    iter = 2000, cores = 1, chains = 4,...){
 
   requireNamespace('rstan')
 
@@ -73,7 +72,7 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
   # Heterogeneous residual variances
   if(is.null(reg)){
     # no region effect
-    if(is.null(rept)){
+    if(is.null(repl)){
       # Only means
       data[,gen] = as.factor(data[,gen])
       data[,env] = as.factor(data[,env])
@@ -193,16 +192,16 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-    }else if(length(rept) == 1){
+    }else if(length(repl) == 1){
       # RCB
-      stopifnot("rept is not in the data" = rept %in% colnames(data))
+      stopifnot("repl is not in the data" = repl %in% colnames(data))
       data[,gen] = as.factor(data[,gen])
       data[,env] = as.factor(data[,env])
-      data[,rept] = as.factor(data[,rept])
+      data[,repl] = as.factor(data[,repl])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+      Z1 = model.matrix(~-1 + data[,repl]:data[,env])
       Z3 = model.matrix(~-1 + data[,gen])
       Z4 = model.matrix(~-1 + data[,env])
       Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -328,18 +327,18 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-    }else if(length(rept) == 2){
+    }else if(length(repl) == 2){
       # incomplete blocks
-      stopifnot("rept are not in the data" = rept %in% colnames(data))
+      stopifnot("repl are not in the data" = repl %in% colnames(data))
       data[,gen] = as.factor(data[,gen])
       data[,env] = as.factor(data[,env])
-      data[,rept[1]] = as.factor(data[,rept[1]])
-      data[,rept[2]] = as.factor(data[,rept[2]])
+      data[,repl[1]] = as.factor(data[,repl[1]])
+      data[,repl[2]] = as.factor(data[,repl[2]])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
-      Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+      Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
+      Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
       Z3 = model.matrix(~-1 + data[,gen])
       Z4 = model.matrix(~-1 + data[,env])
       Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -476,12 +475,12 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
     }
   }else{
     # With region effect
-    if(is.null(rept)){
+    if(is.null(repl)){
       # Only means
       data[,gen] = as.factor(data[,gen])
       data[,reg] = as.factor(data[,reg])
@@ -626,16 +625,16 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-    } else if(length(rept) == 1){
+    } else if(length(repl) == 1){
       # RCB
       data[,gen] = as.factor(data[,gen])
       data[,reg] = as.factor(data[,reg])
       data[,env] = as.factor(data[,env])
-      data[,rept] = as.factor(data[,rept])
+      data[,repl] = as.factor(data[,repl])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+      Z1 = model.matrix(~-1 + data[,repl]:data[,env])
       Z3 = model.matrix(~-1 + data[,gen])
       Z4 = model.matrix(~-1 + data[,env])
       Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -786,19 +785,19 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-    }else if(length(rept) == 2){
+    }else if(length(repl) == 2){
       # incomplete blocks
-      stopifnot("rept is are not in the data" = rept %in% colnames(data))
+      stopifnot("repl is are not in the data" = repl %in% colnames(data))
       data[,gen] = as.factor(data[,gen])
       data[,reg] = as.factor(data[,reg])
       data[,env] = as.factor(data[,env])
-      data[,rept[1]] = as.factor(data[,rept[1]])
-      data[,rept[2]] = as.factor(data[,rept[2]])
+      data[,repl[1]] = as.factor(data[,repl[1]])
+      data[,repl[2]] = as.factor(data[,repl[2]])
       n = nrow(data)
-      Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
-      Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+      Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
+      Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
       Z3 = model.matrix(~-1 + data[,gen])
       Z4 = model.matrix(~-1 + data[,env])
       Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -960,14 +959,14 @@ bayes_met = function(data, gen, env, rept, trait, reg = NULL, res.het = F,
 
       stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+      Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
     }
   }
 }else{
 # Homogeneous variances
 if(is.null(reg)){
   # No region information
-  if(is.null(rept)){
+  if(is.null(repl)){
     # Only-means
     data[,gen] = as.factor(data[,gen])
     data[,env] = as.factor(data[,env])
@@ -1080,15 +1079,15 @@ if(is.null(reg)){
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-  }else if(length(rept) == 1){
+  }else if(length(repl) == 1){
   # RCB
     data[,gen] = as.factor(data[,gen])
     data[,env] = as.factor(data[,env])
-    data[,rept] = as.factor(data[,rept])
+    data[,repl] = as.factor(data[,repl])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+    Z1 = model.matrix(~-1 + data[,repl]:data[,env])
     Z3 = model.matrix(~-1 + data[,gen])
     Z4 = model.matrix(~-1 + data[,env])
     Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -1206,17 +1205,17 @@ if(is.null(reg)){
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-  }else if(length(rept) == 2){
+  }else if(length(repl) == 2){
   # incomplete blocks
     data[,gen] = as.factor(data[,gen])
     data[,env] = as.factor(data[,env])
-    data[,rept[1]] = as.factor(data[,rept[1]])
-    data[,rept[2]] = as.factor(data[,rept[2]])
+    data[,repl[1]] = as.factor(data[,repl[1]])
+    data[,repl[2]] = as.factor(data[,repl[2]])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
-    Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+    Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
+    Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
     Z3 = model.matrix(~-1 + data[,gen])
     Z4 = model.matrix(~-1 + data[,env])
     Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -1346,12 +1345,12 @@ if(is.null(reg)){
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
   }
 }else{
   # With region information
-  if(is.null(rept)){
+  if(is.null(repl)){
     data[,gen] = as.factor(data[,gen])
     data[,reg] = as.factor(data[,reg])
     data[,env] = as.factor(data[,env])
@@ -1488,16 +1487,16 @@ if(is.null(reg)){
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-  } else if(length(rept) == 1){
+  } else if(length(repl) == 1){
   # RCDB
     data[,gen] = as.factor(data[,gen])
     data[,reg] = as.factor(data[,reg])
     data[,env] = as.factor(data[,env])
-    data[,rept] = as.factor(data[,rept])
+    data[,repl] = as.factor(data[,repl])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept]:data[,env])
+    Z1 = model.matrix(~-1 + data[,repl]:data[,env])
     Z3 = model.matrix(~-1 + data[,gen])
     Z4 = model.matrix(~-1 + data[,env])
     Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -1641,18 +1640,18 @@ if(is.null(reg)){
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
 
-  }else if(length(rept) == 2){
+  }else if(length(repl) == 2){
   # incomplete blocks
     data[,gen] = as.factor(data[,gen])
     data[,reg] = as.factor(data[,reg])
     data[,env] = as.factor(data[,env])
-    data[,rept[1]] = as.factor(data[,rept[1]])
-    data[,rept[2]] = as.factor(data[,rept[2]])
+    data[,repl[1]] = as.factor(data[,repl[1]])
+    data[,repl[2]] = as.factor(data[,repl[2]])
     n = nrow(data)
-    Z1 = model.matrix(~-1 + data[,rept[1]]:data[,env])
-    Z2 = model.matrix(~-1 + data[,rept[2]]:data[,env])
+    Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
+    Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
     Z3 = model.matrix(~-1 + data[,gen])
     Z4 = model.matrix(~-1 + data[,env])
     Z5 = model.matrix(~-1 + data[,gen]:data[,env])
@@ -1808,7 +1807,7 @@ if(is.null(reg)){
 
     stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chain = chain, ...)
+    Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
     }
   }
 }

@@ -39,7 +39,7 @@ The second step is to fit a multi-environment Bayesian model using the `bayes_me
 ![](img/desenho.png){width=100%}
 
 
-In other words, you have the control of which predefined model you will use. All you have to do is correctly declare the arguments `reg` and `rept`, since `gen` and `env` will be always present. Note that if you desire to analyse a data in IBD, `rept` must be a vector of size two (i.e., two strings compile with `c()`).
+In other words, you have the control of which predefined model you will use. All you have to do is correctly declare the arguments `reg` and `repl`, since `gen` and `env` will be always present. Note that if you desire to analyse a data in IBD, `repl` must be a vector of size two (i.e., two strings compile with `c()`).
 
 **2**-    You may  change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 2000 iterations (including warmup), 1 core and 1 chain. Be aware that the more iterations and chains, the more time the function will take to provide the results. At the same time, the higher is the probability of the model to reach more reliable results. The number of cores depends on the processing capacity of your machine. Choose wisely.
 
@@ -59,11 +59,11 @@ where the $y_{ij}$ is the phenotypic record of the $\text i^{\text{th}}$ genotyp
 mod = bayes_met(data = MyData, 
           gen = "Genotype", 
           env = "Environment",
-          rept = NULL,
+          repl = NULL,
           reg = NULL,
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chain = 1)
+          iter = 2000, cores = 1, chains = 1)
 ```
 
 ### Without Region and randomized complete blocks design
@@ -78,11 +78,11 @@ where the $y_{jki}$ is the phenotypic record of the $\text i^{\text{th}}$ genoty
 mod = bayes_met(data = MyData, 
           gen = "Genotype", 
           env = "Environment",
-          rept = "Repetition",
+          repl = "Repetition",
           reg = NULL,
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chain = 1)
+          iter = 2000, cores = 1, chains = 1)
 ```
 
 ### Without Region and incomplete blocks design
@@ -99,11 +99,11 @@ where the $y_{jtki}$ is the phenotypic record of the $\text i^{\text{th}}$ genot
 mod = bayes_met(data = MyData, 
           gen = "Genotype", 
           env = "Environment",
-          rept = c("Repetition", "Block"),
+          repl = c("Repetition", "Block"),
           reg = NULL,
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chain = 1)
+          iter = 2000, cores = 1, chains = 1)
 ```
 
 ### With Region and only means
@@ -118,11 +118,11 @@ All effects were previously declared but $m_h$ and $gm_{ih}$, which is the main 
 mod = bayes_met(data = MyData, 
           gen = "Genotype", 
           env = "Environment",
-          rept = NULL,
+          repl = NULL,
           res.het = F,
           reg = "Region",
           trait = "Phenotype",
-          iter = 2000, cores = 1, chain = 1)
+          iter = 2000, cores = 1, chains = 1)
 ```
 
 ### With Region and randomized complete blocks design
@@ -136,11 +136,11 @@ $$
 mod = bayes_met(data = MyData, 
           gen = "Genotype", 
           env = "Environment",
-          rept = "Repetition",
+          repl = "Repetition",
           reg = "Region",
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chain = 1)
+          iter = 2000, cores = 1, chains = 1)
 ```
 
 ### With Region and incomplete blocks design
@@ -153,11 +153,11 @@ $$
 mod = bayes_met(data = MyData, 
           gen = "Genotype", 
           env = "Environment",
-          rept = c("Repetition", "Block"),
+          repl = c("Repetition", "Block"),
           reg = "Region",
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chain = 1) 
+          iter = 2000, cores = 1, chains = 1) 
 ```
 
 For the next steps, we will use the "soy" data, which is contained within the package. This data set has the adjusted means of 39 genotypes that were evaluated at 14 environments, in 3 breeding regions. 
@@ -166,17 +166,17 @@ For the next steps, we will use the "soy" data, which is contained within the pa
 head(soy)
 ```
 
-Note that we do not have experimental design in this case, so the correct model has `rept = NULL`
+Note that we do not have experimental design in this case, so the correct model has `repl = NULL`
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
-                rept = NULL,
+                repl = NULL,
                 reg = "Reg",
                 res.het = F,
                 trait = "Y",
-                iter = 5000, cores = 4, chain = 4)
+                iter = 5000, cores = 4, chains = 4)
 ```
 
 ```{r echo=FALSE}

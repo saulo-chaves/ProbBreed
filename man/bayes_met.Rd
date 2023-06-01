@@ -8,13 +8,13 @@ bayes_met(
   data,
   gen,
   env,
-  rept,
+  repl,
   trait,
   reg = NULL,
   res.het = F,
   iter = 2000,
   cores = 1,
-  chain = 4,
+  chains = 4,
   ...
 )
 }
@@ -24,12 +24,12 @@ bayes_met(
 \item{gen, env}{A string. The name of the
 column that corresponds to the evaluated genotype or environment.}
 
-\item{rept}{A string, a vector, or \code{NULL}. If the trial is randomized in complete blocks,
-\code{rept} will be a string representing the name of the column
+\item{repl}{A string, a vector, or \code{NULL}. If the trial is randomized in complete blocks,
+\code{repl} will be a string representing the name of the column
 that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
-\code{rept} will be a string vector containing the name of the column that corresponds to
+\code{repl} will be a string vector containing the name of the column that corresponds to
 the replicate and block effects on the first and second positions, respectively.
-If the data do not have replicates, \code{rept} will be \code{NULL}.}
+If the data do not have replicates, \code{repl} will be \code{NULL}.}
 
 \item{trait}{A string. The name of the column that corresponds to the analysed variable.}
 
@@ -41,17 +41,18 @@ region information. Otherwise, \code{reg = NULL} (default).}
 residual variances. Default is \code{FALSE}.}
 
 \item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
-A positive integer specifying the number of iterations for each chain
+A positive integer specifying the number of iterations for each chains
 (including warmup). The default is 2000.}
 
 \item{cores}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of cores to use when executing the
 chains in parallel (defaults to 1).}
 
-\item{chain}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
+\item{chains}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of Markov chains. The default is 4.}
 
-\item{...}{Additional arguments passed to the \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} function.
+\item{...}{Additional arguments passed to the \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} function
+(for instance, to change the thin number, or to set a specific seed).
 For more information, see \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} manual}
 }
 \value{
@@ -68,12 +69,11 @@ Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Sta
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
-                rept = NULL,
+                repl = NULL,
                 reg = "Reg",
                 res.het = F,
                 trait = "Y",
-                iter = 100, cores = 4, chain = 4)
-                #You may want to increase the number of iterations, cores and chains
+                iter = 2000, cores = 1, chains = 4)
                 }
 }
 \seealso{
