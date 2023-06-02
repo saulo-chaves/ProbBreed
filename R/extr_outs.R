@@ -247,7 +247,7 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
 
   histograms = list()
   for (i in names(df.post.list)) {
-    histograms[[i]] = ggplot(data = df.post.list[[i]], aes(x = value)) +
+    histograms[[i]] = ggplot(data = df.post.list[[i]], aes(x = .data$value)) +
       geom_histogram(bins = 30, color = 'black', fill = '#781c1e') +
       labs(x = paste('Values of', i), y = 'Count')
   }
@@ -255,8 +255,9 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
   traceplots = list()
   for (i in names(df.post.list)[-which(names(df.post.list) == 'sampled_y')]) {
     traceplots[[i]] = ggplot(data = df.post.list[[i]],
-                             aes(y = value, color = factor(chain), x = iter)) +
-      geom_line(aes(group = factor(chain), linetype = factor(chain))) +
+                             aes(y = .data$value, color = factor(.data$chain),
+                                 x = .data$iter)) +
+      geom_line(aes(group = factor(.data$chain), linetype = factor(.data$chain))) +
       scale_colour_viridis_d(option = 'viridis', direction = -1) +
       labs(y = paste('Values of', i), x = 'Iterations',
            colour = 'Chain', linetype = 'Chain') +
@@ -269,8 +270,8 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
   densities = list()
   for (i in names(df.post.list)) {
     densities[[i]] = ggplot(data = df.post.list[[i]],
-                            aes(x = value, fill = factor(chain),
-                                color = factor(chain))) +
+                            aes(x = .data$value, fill = factor(.data$chain),
+                                color = factor(.data$chain))) +
       geom_density(alpha = .5, linewidth = .8)  +
       scale_fill_viridis_d(option = 'viridis', direction = -1) +
       scale_colour_viridis_d(option = 'viridis', direction = -1) +
@@ -281,7 +282,7 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
 
   plots = list(histograms = histograms, traceplots = traceplots, densities = densities)
 
-  cat('5. In-function plots built \n')
+  cat('5. Function plots built \n')
 
   if(check.stan.diag){
     stan.plot.list = list(

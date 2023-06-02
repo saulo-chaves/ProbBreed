@@ -76,7 +76,7 @@ using \code{\link[=bayes_met]{bayes_met()}}, and provides some diagnostics about
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
-                rept = NULL,
+                repl = NULL,
                 reg = "Reg",
                 res.het = F,
                 trait = "Y",
