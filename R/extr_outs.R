@@ -41,8 +41,8 @@
 ##' \item \code{ppcheck} : a matrix containing the p-values of maximum, minimum,
 ##' median, mean and standard deviation; effective number of parameters, WAIC2
 ##' value and Rhat
-##' \item \code{den_plot} a density plot comparing the generated data and the
-##' real data. Note that this plot is customizable using the `ggplot2` library
+##' \item \code{fun.plots} : a list with three types of ggplots: histograms, trace plots and density
+##' plots. These will be available for all effects declared at the `effects` argument.
 ##' }
 ##'
 ##' @seealso [rstan::stan_diag()], [ggplot2::ggplot()]
