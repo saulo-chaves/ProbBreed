@@ -14,9 +14,11 @@ Description: Compute the probability of superior performance and superior stabil
 URL: https://github.com/saulo-chaves/ProbBreed
 License: MIT + file LICENSE
 Depends: R (>= 3.5.0)
-Imports: ggplot2,
+Imports: 
+    ggplot2,
     rstan,
-    rlang
+    rlang,
+    lifecycle
 Suggests: 
     knitr,
     plotly,
