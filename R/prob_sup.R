@@ -24,9 +24,6 @@
 ##' If `TRUE`, the function loads the `plotly` package and uses the [plotly::ggplotly()]
 ##' command.
 ##'
-##' @seealso [plotly::ggplotly()]
-##'
-##'
 ##' @return The function returns two lists, one with the `marginal` probabilities, and
 ##' another with the `conditional` probabilities.
 ##'
@@ -36,11 +33,11 @@
 ##' \itemize{
 ##' \item \code{perfo}: the probabilities of superior performance
 ##' \item \code{pair_perfo}: the pairwise probabilities of superior performance
-##' \item \code{stabi}: the probabilities of superior stability (when `reg` is not
-##' 'NULL', `stabi` is divided into `stabi_gl` for the stability across environments, and
-##' `stabi_gm` for the stability across regions)
-##' \item \code{pair_stabi}: the pairwise probabilities of superior stability (which
-##' is also divided into `pair_stabi_gl` and `pair_stabi_gm` when `reg` is not 'NULL')
+##' \item \code{stabi}: the probabilities of superior stability. When `reg` is not
+##' `NULL`, `stabi` is divided into `stabi_gl` for the stability across environments, and
+##' `stabi_gm` for the stability across regions
+##' \item \code{pair_stabi}: the pairwise probabilities of superior stability, which
+##' is also divided into `pair_stabi_gl` and `pair_stabi_gm` when `reg` is not `NULL`
 ##' \item \code{joint_prob}: the joint probabilities of superior performance and stability
 ##' }
 ##' \item \code{plot} : A list of ggplots illustrating the outputs:
@@ -52,15 +49,16 @@
 ##' \item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
 ##' performance (the probability of genotypes at the \emph{x}-axis being superior
 ##' to those on \emph{y}-axis)
-##' \item \code{stabi}: a bar plot with the probabilities of superior stability (just like the data frames,
+##' \item \code{stabi}: a bar plot with the probabilities of superior stability. Like the data frames,
 ##' when `reg` is not `NULL`, two different plots are generated, one for the stability across
-##' environments (`stabi_gl`), and another for the stability across regions (`stabi_gm`).
+##' environments (`stabi_gl`), and another for the stability across regions (`stabi_gm`)
 ##' \item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability
-##' (also divided into two different plots when `reg` is not `NULL`). In this plot,
+##' (also divided into two different plots when `reg` is not `NULL`). This plot represents
 ##' the probability of genotypes at the \emph{x}-axis being superior
 ##' to those on \emph{y}-axis
 ##' \item \code{joint_prob}: a plot with the probabilities of superior performance,
-##' superior stability and the joint probabilities of superior performance and stability.
+##' probabilities of superior stability and the joint probabilities of superior
+##' performance and stability.
 ##' }
 ##' }
 ##'
@@ -68,7 +66,7 @@
 ##' \itemize{
 ##' \item \code{df} : A list with:
 ##' \itemize{
-##' \item \code{perfo}: a dataframe containing the probabilities of superior performance
+##' \item \code{perfo}: a data frame containing the probabilities of superior performance
 ##' within environments. It also has the probabilities of superior performance with regions
 ##' if `reg` is not `NULL`.
 ##' \item \code{pair_perfo}: a list with the pairwise probabilities of superior performance
@@ -100,7 +98,7 @@
 ##'
 ##' Let \eqn{\Omega} represent the subset of selected genotypes based on their
 ##' performance across environments. A given genotype \eqn{j} will belong to \eqn{\Omega}
-##' if its genetic marginal value (\eqn{g_j}) is amongst the top \eqn{V}, with \eqn{V}
+##' if its genetic marginal value (\eqn{g_j}) is among the top \eqn{V}, with \eqn{V}
 ##' being the selection intensity. `prob_sup()` leverages the Monte Carlo discretized sampling
 ##' from the posterior distribution to emulate the occurrence of \eqn{S} trials. Thence,
 ##' the probability of the \eqn{j^{th}} genotype belonging to \eqn{\Omega} is the
@@ -134,7 +132,13 @@
 ##'
 ##' \deqn{Pr(g_j > g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} > g_i^{(s)} \vert y)}}
 ##'
-##' Within environments, \eqn{g_j} is switched by \eqn{g_{jk}}.
+##' or
+##'
+##' \deqn{Pr(g_j < g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} < g_i^{(s)} \vert y)}}
+##'
+##' The first equation is applied when the aim is to increase the trait value (`increase = T`).
+##' Conversely, the second equation is used when `increase = F`. Within environments,
+##' \eqn{g_j} is switched by \eqn{g_{jk}}.
 ##'
 ##'
 ##' \itemize{\item Probability of superior stability}
@@ -143,7 +147,7 @@
 ##' agronomic way of looking at stability. Another point of view is to consider the
 ##' invariance as a measure of stability. Making a direct analogy with Shukla's (1972)
 ##' theory, a stable genotype would be the one that had the lower variance of the
-##' genotype-by-environment interaction effect (\eqn{var(ge_{jk})}). Using the same
+##' genotype-by-environment interaction effect, \eqn{var(ge_{jk})}. Using the same
 ##' ideas as above, the probability of superior stability is given by:
 ##'
 ##' \deqn{Pr [var(ge_{jk})\in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)})\in \Omega \vert y]} }
@@ -157,17 +161,39 @@
 ##' \deqn{Pr[var(ge_{jk}) < var(ge_{ik}) \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)}) < var(ge_{ik}^{(s)}) \vert y]} }
 ##'
 ##' Note that \eqn{j} will be superior to \eqn{i} if it has a \strong{lower}
-##' variance of the genotype-by-environment interaction effect.
+##' variance of the genotype-by-environment interaction effect. This is true regardless
+##' if `increase` is set to `TRUE` or `FALSE`.
+##'
+##' Finally, by assuming independence between the genetic main effect and the
+##' genotype-by-environment effect variance, `prob_sup` computes the joint probability
+##' of superior performance and stability:
+##'
+##' \deqn{Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]}
+##'
+##' The estimation of these probabilities are strictly related to some key question that
+##' constantly arises in plant breeding:
+##' \itemize{
+##' \item \strong{What is the risk of recommending a selection candidate for a target population of environments?}
+##' \item \strong{What is the probability of a given selection candidate having good performance if
+##' recommended to a target population of environments? And for a specific environment?}
+##' \item \strong{What is the probability of a given selection candidate having better performance
+##' than a cultivar check in the target population of environments? And in specific environments?}
+##' \item \strong{How probable is it that a given selection candidate performs similarly across environments?}
+##' \item \strong{What are the chances that a given selection candidate is more stable
+##' than a cultivar check in the target population of environments?}
+##' \item \strong{What is the probability that a given selection candidate having a
+##' superior and invariable performance across environments?}
+##' }
 ##'
 ##' @references
 ##'
 ##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
 ##' Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
-##' for cultivar recommendation in multi-environment trials. <i>Theoretical and
-##' Applied Genetics</i>, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
+##' for cultivar recommendation in multi-environment trials. \emph{Theoretical and
+##' Applied Genetics}, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
 ##'
 ##' Shukla, G. K. (1972) Some statistical aspects of partioning genotype environmental
-##' componentes of variability. <i>Heredity</i>, 29:237-245.
+##' componentes of variability. \emph{Heredity}, 29:237-245. https://doi.org/10.1038/hdy.1972.87
 ##'
 ##'
 ##' @import ggplot2
@@ -199,17 +225,18 @@
 ##' }
 ##'
 
-
-
-
-
-prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
+prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
                     increase = TRUE, save.df = FALSE, interactive = FALSE){
 
   # Conditions
   stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25')" = {
     is.character(data[,gen])
     is.character(data[,env])
+  })
+
+  stopifnot("Please, provide a valid selection intensity (number between 0 and 1)" = {
+    is.numeric(int)
+    int >= 0 & int <=1
   })
 
   # Namespaces
@@ -259,7 +286,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       g_hpd = ggplot(data = g_hpd, aes(x = .data$g, y = reorder(.data$gen, .data$g))) +
         geom_errorbar(aes(xmin = .data$down, xmax = .data$up), width = 0)+
         geom_errorbar(aes(xmin = .data$DOWN, xmax = .data$UP), width = 0, linewidth = 2, alpha = .8) +
-        labs(x = 'Posterior effects (HPD)', y = 'Genotypes') +
+        labs(x = 'Genetic main effects (HPD)', y = 'Genotypes') +
         geom_point(size = 4, color = '#781c1e')
 
 
@@ -480,7 +507,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                      merge(prob_g, prob_gm, by = 'ID'))
       j_prob$joint = j_prob$prob.x * j_prob$prob.y
       colnames(j_prob) = c('ID', 'Performance', 'Stability', 'Joint')
-      j_prob$lev = rep(c('Location', 'Region'), each = num.gen)
+      j_prob$lev = rep(c('Environment', 'Region'), each = num.gen)
       j_prob = stats::reshape(j_prob, direction = 'long', varying = list(2:4),
               times = colnames(j_prob)[2:4], v.names = 'value')
       j_prob = j_prob[,-5]
@@ -495,7 +522,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                                  function(x) x[which.max(x)]),
                            apply(merge(prob_g, prob_gm, by = 'ID')[,-1], 1,
                                  function(x) x[which.max(x)])),
-                   level = rep(c('Location','Region'), each = num.gen)
+                   level = rep(c('Environment','Region'), each = num.gen)
                    ),
                  aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
                  linewidth = 1.2) +
@@ -972,7 +999,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       g_hpd = ggplot(data = g_hpd, aes(x = .data$g, y = reorder(.data$gen, .data$g))) +
         geom_errorbar(aes(xmin = .data$down, xmax = .data$up), width = 0)+
         geom_errorbar(aes(xmin = .data$DOWN, xmax = .data$UP), width = 0, linewidth = 2, alpha = .8) +
-        labs(x = 'Posterior effects (HPD)', y = 'Genotypes') +
+        labs(x = 'Genetic main effects (HPD)', y = 'Genotypes') +
         geom_point(size = 4, color = '#781c1e')
 
       # Marginal probabilities ----------------
@@ -1427,7 +1454,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                                        y = reorder(.data$gen, -.data$g))) +
         geom_errorbar(aes(xmin = .data$down, xmax = .data$up), width = 0)+
         geom_errorbar(aes(xmin = .data$DOWN, xmax = .data$UP), width = 0, linewidth = 2, alpha = .8) +
-        labs(x = 'Posterior effects (HPD)', y = 'Genotypes') +
+        labs(x = 'Genetic main effects (HPD)', y = 'Genotypes') +
         geom_point(size = 4, color = '#781c1e')
 
 
@@ -1648,7 +1675,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                      merge(prob_g, prob_gm, by = 'ID'))
       j_prob$joint = j_prob$prob.x * j_prob$prob.y
       colnames(j_prob) = c('ID', 'Performance', 'Stability', 'Joint')
-      j_prob$lev = rep(c('Location', 'Region'), each = num.gen)
+      j_prob$lev = rep(c('Environment', 'Region'), each = num.gen)
       j_prob = reshape(j_prob, direction = 'long', varying = list(2:4),
                        times = colnames(j_prob)[2:4], v.names = 'value')
       j_prob = j_prob[,-5]
@@ -1663,7 +1690,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
                          function(x) x[which.max(x)]),
                    apply(merge(prob_g, prob_gm, by = 'ID')[,-1], 1,
                          function(x) x[which.max(x)])),
-          level = rep(c('Location','Region'), each = num.gen)
+          level = rep(c('Environment','Region'), each = num.gen)
         ),
         aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
         linewidth = 1.2) +
@@ -2140,7 +2167,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int = .2,
       g_hpd = ggplot(data = g_hpd, aes(x = .data$g, y = reorder(.data$gen, -.data$g))) +
         geom_errorbar(aes(xmin = .data$down, xmax = .data$up), width = 0)+
         geom_errorbar(aes(xmin = .data$DOWN, xmax = .data$UP), width = 0, linewidth = 2, alpha = .8) +
-        labs(x = 'Posterior effects (HPD)', y = 'Genotypes') +
+        labs(x = 'Genetic main effects (HPD)', y = 'Genotypes') +
         geom_point(size = 4, color = '#781c1e')
 
       # Marginal probabilities ----------------

@@ -1,5 +1,5 @@
 Package: ProbBreed
-Title: Probability of superior performance of genotypes evaluated at Multi-Environment Trials (METs)
+Title: Probability of Superior Performance and Stability of Genotypes Evaluated at Multi-Environment Trials
 Version: 0.0.1
 Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
                      email = "saulo.chaves@ufv.br",

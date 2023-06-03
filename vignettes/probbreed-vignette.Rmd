@@ -20,7 +20,7 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 ## Introduction
 
-Welcome to ProbBreed. This guide will help you fitting the Bayesian model, extracting the outputs and estimating the probabilities of superior performance, which are used to build the plots. Feel free to contact us if there are any issues. Further details are found within each function documentation (e.g.: `?bayes_met`) and in the seminal paper by [Dias et al. (2022)](https://doi.org/10.1007/s00122-022-04041-y).
+Welcome to ProbBreed. This guide will help you fitting the Bayesian model, extracting the outputs and estimating the probabilities of superior performance, which are used to build the plots. Feel free to contact us if there are any issues. Further details are found within each function documentation (e.g., `?bayes_met`) and in the seminal paper by [Dias et al. (2022)](https://doi.org/10.1007/s00122-022-04041-y).
 
 ## Step one
 
@@ -34,14 +34,13 @@ library(ProbBreed)
 
 The second step is to fit a multi-environment Bayesian model using the `bayes_met` function. This function has a set of predefined models that are used to run Bayesian analyses using `rstan`, the `R` interface to `Stan`. There are some important details that we would like to stress here:
 
-**1**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region (or mega-environment, or any other factor of higher-level), and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: complete block design (CBD), incomplete block design (IBD), or no design whatsoever (only-means). After choosing the model that fits your situation, you must declare the arguments in the function accordingly (See the figure below).
+**1**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region (or mega-environment, or any other factor of higher-level), and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: complete block design (CBD), incomplete block design (IBD), or no design whatsoever (only-means). After choosing the model that fits your situation, you must declare the arguments in the function accordingly (See the figure below):
 
 ![](img/desenho.png){width=100%}
 
+In other words, you have the control of which predefined model you will use. All you have to do is correctly declare the arguments `reg` and `repl`, since `gen` and `env` will be always present. Note that if you desire to analyse a data in IBD, `repl` must be a vector of size two (i.e., two strings compiled with `c()`).
 
-In other words, you have the control of which predefined model you will use. All you have to do is correctly declare the arguments `reg` and `repl`, since `gen` and `env` will be always present. Note that if you desire to analyse a data in IBD, `repl` must be a vector of size two (i.e., two strings compile with `c()`).
-
-**2**-    You may  change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 2000 iterations (including warmup), 1 core and 1 chain. Be aware that the more iterations and chains, the more time the function will take to provide the results. At the same time, the higher is the probability of the model to reach more reliable results. The number of cores depends on the processing capacity of your machine. Choose wisely.
+**2**-    You may  change the number of iterations, chains and cores. This will vary according to the data and the capacity of your machine. The default is 2000 iterations (including warmup), 1 core and 4 chains. Be aware that the more iterations and chains, the more time the function will take to provide the results. At the same time, the higher is the probability of the model to reach more reliable results. The number of cores depends on the processing capacity of your machine. Choose wisely.
 
 **3**-    You can choose between a model with homogeneous or heterogeneous residual variances using `res.het = F` and `res.het = T`, respectively. 
 
@@ -50,10 +49,10 @@ Without further ado, let us see how the six models can be fitted using `bayes_me
 ### Without Region and only means
 
 $$
-y_{ji} = \mu + l_j + g_i + gl_{ij} + \varepsilon_{ji} 
+y_{jk} = \mu + l_k + g_j + gl_{jk} + \varepsilon_{jk} 
 $$
 
-where the $y_{ij}$ is the phenotypic record of the $\text i^{\text{th}}$ genotype in the $\text j^{\text{th}}$ environment. This observation is influenced by a grand mean ($\mu$), the main effects of the jth environment ($l_j$) and of the ith genotype ($g_i$), the interaction between these two effects ($gl_{ij}$), and non-explained effects ($\varepsilon_{ji}$). 
+where the $y_{jk}$ is the phenotypic record of the $j^{\text{th}}$ genotype in the $k^{\text{th}}$ environment. This observation is influenced by a grand mean ($\mu$), the main effects of the $k^{\text{th}}$ environment ($l_k$) and of the $j^{\text{th}}$ genotype ($g_j$), the interaction between these two effects ($gl_{jk}$), and non-explained effects ($\varepsilon_{jk}$). 
 
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
@@ -63,16 +62,16 @@ mod = bayes_met(data = MyData,
           reg = NULL,
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chains = 1)
+          iter = 2000, cores = 1, chains = 4)
 ```
 
 ### Without Region and randomized complete blocks design
 
 $$
-y_{jki} = \mu + l_j + b_{k(j)} + g_i + gl_{ij} + \varepsilon_{jki} 
+y_{jkp} = \mu + l_k + b_{p(k)} + g_j + gl_{jk} + \varepsilon_{jkp} 
 $$
 
-where the $y_{jki}$ is the phenotypic record of the $\text i^{\text{th}}$ genotype, allocated in the $\text k^{\text{th}}$ block, in the $\text j^{\text{th}}$ environment. All other effects were previously declared but $b_{k(j)}$, which is the effect of the $\text k^{\text{th}}$ block in the $\text j^{\text{th}}$ environment.
+where the $y_{jkp}$ is the phenotypic record of the $j^{\text{th}}$ genotype, allocated in the $p^{\text{th}}$ block, in the $k^{\text{th}}$ environment. All other effects were previously declared but $b_{p(k)}$, which is the effect of the $p^{\text{th}}$ block in the $k^{\text{th}}$ environment.
 
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
@@ -82,7 +81,7 @@ mod = bayes_met(data = MyData,
           reg = NULL,
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chains = 1)
+          iter = 2000, cores = 1, chains = 4)
 ```
 
 ### Without Region and incomplete blocks design
@@ -90,10 +89,10 @@ mod = bayes_met(data = MyData,
 A lattice, for example: 
 
 $$
-y_{jtki} = \mu + l_j + r_{t(j)} + b_{k(jt)} + g_i + gl_{ij} + \varepsilon_{jtki} 
+y_{jkqp} = \mu + l_k + r_{q(k)} + b_{p(qk)} + g_j + gl_{jk} + \varepsilon_{jkqp} 
 $$
 
-where the $y_{jtki}$ is the phenotypic record of the $\text i^{\text{th}}$ genotype, allocated in the $\text k^{\text{th}}$ block of the $\text t^{\text{th}}$ repetition, in the $\text j^{\text{th}}$ environment. All other effects were previously declared but $r_{t(j)}$, which is the effect of the $\text t^{\text{th}}$ repetition in the $\text j^{\text{th}}$ environment. Note that the indices of $b$ also change. 
+where the $y_{jkqp}$ is the phenotypic record of the $j^{\text{th}}$ genotype, allocated in the $p^{\text{th}}$ block of the $q^{\text{th}}$ repetition, in the $k^{\text{th}}$ environment. All other effects were previously declared but $r_{q(k)}$, which is the effect of the $q^{\text{th}}$ repetition in the $k^{\text{th}}$ environment. Note that the indices of $b$ also change. 
 
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
@@ -103,16 +102,16 @@ mod = bayes_met(data = MyData,
           reg = NULL,
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chains = 1)
+          iter = 2000, cores = 1, chains = 4)
 ```
 
 ### With Region and only means
 
 $$
-y_{hji} = \mu + m_h + e_j + g_i + ge_{ij} + gm_{ih} + \varepsilon_{hji} 
+y_{jkt} = \mu + m_t + l_k + g_j + ge_{jk} + gm_{jk} + \varepsilon_{jkt} 
 $$
 
-All effects were previously declared but $m_h$ and $gm_{ih}$, which is the main effect of region and genotype-by-region interaction effect, respectively. 
+All effects were previously declared but $m_t$ and $gm_{jt}$, which is the main effect of region and genotype-by-region interaction effect, respectively. 
 
 ```{r eval=FALSE}
 mod = bayes_met(data = MyData, 
@@ -122,13 +121,13 @@ mod = bayes_met(data = MyData,
           res.het = F,
           reg = "Region",
           trait = "Phenotype",
-          iter = 2000, cores = 1, chains = 1)
+          iter = 2000, cores = 1, chains = 4)
 ```
 
 ### With Region and randomized complete blocks design
 
 $$
-y_{hjki} = \mu + m_h + l_j + b_{k(hj)} + g_i + gl_{ij} + gm_{ih} + \varepsilon_{jki} 
+y_{jktp} = \mu + m_t + l_k + b_{p(k)} + g_j + gl_{jk} + gm_{jt} + \varepsilon_{jktp} 
 $$
 
 
@@ -140,13 +139,13 @@ mod = bayes_met(data = MyData,
           reg = "Region",
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chains = 1)
+          iter = 2000, cores = 1, chains = 4)
 ```
 
 ### With Region and incomplete blocks design
 
 $$
-y_{hjtki} = \mu + m_h + l_j + r_{t(hj)} + b_{k(hjt)} + g_i + gl_{ij} + gm_{ih} + \varepsilon_{jtki} 
+y_{jktqp} = \mu + m_t + l_k + r_{q(k)} + b_{p(qk)} + g_j + gl_{jk} + gm_{jt} + \varepsilon_{jktqp} 
 $$
 
 ```{r eval=FALSE}
@@ -157,7 +156,7 @@ mod = bayes_met(data = MyData,
           reg = "Region",
           res.het = F,
           trait = "Phenotype",
-          iter = 2000, cores = 1, chains = 1) 
+          iter = 2000, cores = 1, chains = 4) 
 ```
 
 For the next steps, we will use the "soy" data, which is contained within the package. This data set has the adjusted means of 39 genotypes that were evaluated at 14 environments, in 3 breeding regions. 
@@ -176,11 +175,13 @@ mod = bayes_met(data = soy,
                 reg = "Reg",
                 res.het = F,
                 trait = "Y",
-                iter = 5000, cores = 4, chains = 4)
+                iter = 10000, cores = 4, chains = 4)
 ```
 
 ```{r echo=FALSE}
 load('tes.RData')
+load('marginal.RData')
+load('conditional.RData')
 ```
 
 ## Step three - `extr_outs`
@@ -193,7 +194,7 @@ outs = extr_outs(data = soy, trait = 'Y', gen = 'Gen', model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
                  res.het = F, 
-                 probs = c(0.025, 0.975), check.stan.diag = F)
+                 probs = c(0.05, 0.95), check.stan.diag = F)
 ```
 
 In this function structure: 
@@ -242,26 +243,23 @@ outs$ppcheck
 var_pp[[2]]
 ```
 
-It also provides a density plot comparing the generated data and the real data:
+It also provides a list containing built-in histograms, density plots and trace plots of each effect. For example, the density plot comparing the generated data by each chain and the real data...
 
 ```{r echo=TRUE, fig.retina=2, fig.width=6, fig.height=6, eval=FALSE}
-outs$den_plot
+outs$fun_plots$densities$sampled_y
 ```
 
 ![](img/density.png){width=100%}
 
+...Or the histogram of the genetic main effects:
 
-Note that this plots was built using `ggplot2` package. In fact, all the plots of this package are built using `ggplot2`, so they are all customizable. All you have to do is keep editing the object that contains the plot with `+` and the function of your preference. For example, to change the position of the legend:
-
-```{r echo=TRUE, fig.width=6, fig.height=6, eval=FALSE}
-library(ggplot2)
-outs$den_plot + 
-  theme(legend.position = 'right')
+```{r echo=TRUE, fig.retina=2, fig.width=6, fig.height=6, eval=FALSE}
+outs$fun_plots$histogram$g
 ```
+![](img/histogram.png){width=100%}
 
-![](img/density2.png){width=100%}
-
-As an option, the function provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. For more information about these plots, please refer to `?rstan::stan_diag`.
+These plots are available for all effects declared in `extr_outs()`. Feel free to explore it. 
+As an option, the function also provides some diagnostic plots of `rstan::stan_diag()`. The `...` is passed to `rstan::stan_diag()`, so you can explore further options provided by the function. For more information about these plots, please refer to `?rstan::stan_diag`.
 
 ```{r echo=TRUE, warning=FALSE, results='hide',fig.width=6, fig.height=6, eval=FALSE}
 outs = extr_outs(data = soy, trait = 'Y', gen = 'Gen', model = mod,
@@ -271,146 +269,326 @@ outs = extr_outs(data = soy, trait = 'Y', gen = 'Gen', model = mod,
 
 ```
 
-## Step four - `marg_prob`
 
-Using the outputs extracted by `extr_outs()`, we can finally calculate the probability of superior performance of the evaluated genotypes. This is exactly what `marg_prob()` will do:
+![](img/stanplots.png){width=100%}
+
+
+## Step four - `prob_sup`
+
+Using the outputs extracted by `extr_outs()`, we can finally calculate the probability of superior performance and superior stability of the evaluated genotypes. This is exactly what `prob_sup()` will do:
 
 ```{r echo=TRUE, eval=FALSE}
-margs = marg_prob(data = soy, trait = 'Y', gen = 'Gen', env = 'Env',
-                 extr_outs = outs, int = .2, increase = T,
-                 save.df = F, interactive = F)
+results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
+                   extr_outs = outs, reg = 'Reg', int = .2,
+                   increase = T, save.df = F, interactive = F)
 ```
 
-`data`, `trait`, `gen`, and `env` were previously described. The new commands of this function are:
+`data`, `trait`, `gen`, `env` and `reg` were previously described. The new commands of this function are:
 
 *   `increase`: The selection is for increasing (`TRUE`, default) or decreasing (`FALSE`) the trait mean? 
 
 *   `extr_outs`: An object that contains the outputs extracted by `extr_outs()`.
 
-*   `int`: The selection intensity. Please, insert a numeric between 0 and 1.
+*   `int`: The selection intensity, expressed in decimal values.
 
-*   `save.df`: If you want to save the data frames with the marginal and pairwise probabilities of superior performance in the work directory, set this to `TRUE`. Otherwise, `FALSE` (default).
+*   `save.df`: `TRUE` if you want to save the data frames containing the calculated probabilities in the work directory, `FALSE` otherwise.
 
-*   `interactive`: If you want to convert the ggplots into ggplotlys, i.e. make them interactive plots, set this to `TRUE`. Otherwise, `FALSE` (default).
+*   `interactive`: `TRUE` if you want to convert the ggplots into ggplotlys, i.e. make them interactive plots, `FALSE` otherwise.
 
-The function provides a caterpillar plot with the genotypes' performance and their respective confidence interval: 
+The outputs of this function are divided into two lists: `marginal` and `conditional`. The first list contains the probabilities of superior performance and superior stability across environments, whilst the second contains the probabilities of superior performance within environments. Both lists have the pairwise probabilities of both superior performance and stability, for comparison purposes. 
 
-```{r echo=TRUE,fig.width=6, fig.height=6, eval=FALSE}
-margs$g_hpd
+### Marginal output
+
+The `marginal` list contains two other lists: one with data frames detailing the results of each computed probability, and another with ggplots illustrating the computed probabilities. Below, we detail each result:
+
+#### High posterior density of genetic main effects
+
+This metric is illustrated in a caterpillar plot: 
+
+```{r echo=TRUE, eval=FALSE}
+results$marginal$plots$g_hpd
 ```
 
 ![](img/hpd.png){width=100%}
 
-Then, it calculates the marginal probability of superior performance, providing a data frame and a bar plot:
+#### Probability of superior performance
+
+Let $\Omega$ represent the subset of selected genotypes based on their performance across environments. A given genotype $j$ will belong to $\Omega$ if its genetic marginal value ($g_j$) is among the top $V$, with $V$ being the selection intensity. `prob_sup()` leverages the Monte Carlo discretized sampling from the posterior distribution to emulate the occurrence of $S$ trials. Thence, the probability of the $j^{\text{th}}$ genotype belonging to $\Omega$ is the ratio of success ($g_j \in \Omega$) and the total number of sampled events (the emulated $S$ trials):
+
+$$
+Pr(g_j \in \Omega \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} \in \Omega \vert y)}
+$$
+where $S$ is the total number of samples ($s = 1, 2, \dots, S$), and $I(g_j^{(s)} \in \Omega \vert y)$ is an indicator variable mapping success (1) if $g_j^{(s)}$ exists in $\Omega$ in the $s^{\text{th}}$ sample, and failure (0) otherwise. $S$ is conditioned to the number of iterations and chains previously set at `bayes_met()`. 
+
+The results provided by `prob_sup()` can be accessed using the following commands: 
 
 ```{r echo=TRUE,fig.width=6, fig.height=6, eval=FALSE}
-head(margs$marg_prob.df)
+head(results$marginal$df$perfo)
 ```
 
 ```{r echo=FALSE}
-head(margs_prob)
+head(marginal$perfo)
 ```
 
 ```{r, eval=FALSE}
-margs$marg_prob.plot
+results$marginal$plots$perfo
 ```
 
 ![](img/margs.png){width=100%}
 
-Finally, it calculates the pairwise probability of superior performance, also providing a data frame and a plot. For this case, the plot is heat map:
+#### Pairwise probability of superior performance
+
+To directly compare a selection candidate with a commercial check, or another promising genotype, we can calculate the pairwise probability of superior performance. This metric computes the probability of a genotype $j$ performing better than a genotype $i$:
+
+$$
+Pr(g_j > g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} > g_i^{(s)} \vert y)}
+$$
+where $I(g_j^{(s)} > g_i^{(s)} \vert y)$ is an indicator variable mapping if $g_j$ is better (1) than $g_i$, or not (0). Note that this equation is applied if the selection direction is to increase the trait value. If the aim is to decrease it (for example, plant height or the damage of a disease), you can set `increase = F`, and the following equation is employed: 
+
+$$
+Pr(g_j < g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} < g_i^{(s)} \vert y)}
+$$
+The results are accessed using the following commands:
 
 ```{r echo=TRUE,fig.width=6, fig.height=6, eval=FALSE}
-head(margs$pair_prob.df)
+head(results$marginal$df$pair_perfo)
 ```
 
 ```{r echo=FALSE}
-head(marg_pwprob)
+head(marginal$pair_perfo)
 ```
 
-
-
 ```{r, eval=FALSE}
-margs$pair_prob.plot
+results$marginal$plots$pair_perfo
 ```
 
 ![](img/pwprob_marg.png){width=100%}
 
-The heat map indicates what is the probability of the genotypes at the _x_-axis having better performance than the ones at the _y_-axis.
+The results indicates the probability of genotypes at the _x_-axis performing superiorly in relation to those at the _y_-axis.
 
-## Step five - `cond_prob`
+#### Probability of superior stability
 
-Now that we have an overview about the probability of superior performance of the the evaluated genotypes, we can calculate this parameter within each environment. This is what `cond_prob()` will do:
+Another criterion for recommending candidates to a target population of environments is by assessing how variable is their performance across environments. If we consider genotypes that have low genotype-by-environment interaction variance [$var(ge_{jk})$] as stable, the probability of superior stability is given by the following equation: 
+
+$$
+Pr[var(ge_{jk}) \in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S{I[var(ge_{jk}) \in \Omega \vert y]}
+$$
+where $I[var(ge_{jk}) \in \Omega \vert y]$ is an indicator variable mapping success (1) if the $j^{\text {th}}$ has one of the $V$ lower variances of the genotype-by-environment interaction, and failure (0) otherwise.
+
+If `reg` is not `NULL`, like in the example, two probabilities are computed separately, one for the genotype-by-environment interaction (`stabi_gl`), and another for the genotype-by-region interaction (`stabi_gm`). Otherwise, if `reg = NULL`, only `stabi_gl` will be available. For the example we are running, the results are accessed using the following commands:
+
+-   Genotype-by-environment interaction
+
+```{r eval=F, echo=TRUE}
+head(results$marginal$df$stabi_gl)
+```
+
+```{r eval=TRUE, echo=F}
+head(marginal$stabi_gl)
+```
 
 ```{r echo=TRUE, eval=FALSE}
-conds = cond_prob(data = soy, trait = 'Y', gen = 'Gen', env = 'Env',
-                  extr_outs = outs, int = .2, increase = T, reg = 'Reg',
-                  save.df = F, interactive = F)
+results$marginal$plots$stabi_gl
 ```
 
-The only difference from `marg_prob()` is that in `cond_prob()` you will indicate what is the column in you data frame that refers to the region information. If there is no such column, `reg = NULL`
+![](img/stabi_gl.png){width=100%}
 
-The function provides a matrix with the probability of superior performance in each environment:
+-   Genotype-by-region interaction
 
-```{r, eval=FALSE}
-head(conds$conds_prob)
+```{r eval=F, echo=TRUE}
+head(results$marginal$df$stabi_gm)
 ```
 
-```{r echo=FALSE}
-head(conds_prob)
+```{r eval=T, echo=F}
+head(marginal$stabi_gm)
 ```
 
-
-This matrix is used to build a heat map:
-
-```{r echo=TRUE,fig.width=6, fig.height=6, eval=FALSE}
-conds$psp_env.plot
+```{r echo=TRUE, eval=FALSE}
+results$marginal$plots$stabi_gm
 ```
 
-![](img/psp_env.png){width=100%}
+![](img/stabi_gm.png){width=100%}
 
-If `reg` is not `NULL`, the function will provide the probability of superior performance within regions: 
+#### Pairwise probability of superior stability
 
-```{r echo=TRUE,fig.width=6, fig.height=6, eval=FALSE}
-conds$psp_reg.plot
+We can also compare the stability of two selection candidates, or a experimental genotype and a commercial check. The following equation is used: 
+
+$$
+Pr[var(ge_{jk}) < var(ge_{ik}) \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)}) < var(ge_{ik}^{(s)}) \vert y]}
+$$
+note that, in this case, we are always interested in the genotype that has a lower variance of the genotype-by-environment (or genotype-by-region) interaction effects. 
+
+Again, there will be two different results when `reg` is not `NULL` (see below). When `reg = NULL`, only `pair_stabi_gl` is available. The following commands are used to access the results:
+
+
+-   Genotype-by-environment interaction
+
+```{r eval=F, echo=TRUE}
+head(results$marginal$df$pair_stabi_gl)
 ```
 
-![](img/psp_reg.png){width=100%}
-
-The function also provides the pairwise probabilities of superior performance within environment. These probabilities and their corresponding plots are within lists. For example, for the environment E14: 
-
-```{r,fig.width=6, fig.height=6, eval=FALSE}
-head(conds$conds_pwprobs.env$E14)
+```{r eval=TRUE, echo=F}
+head(marginal$pair_stabi_gl)
 ```
 
-```{r echo=FALSE}
-head(conds_pwprobs.env)
+```{r echo=TRUE, eval=FALSE}
+results$marginal$plots$pair_stabi_gl
 ```
 
-```{r,fig.width=6, fig.height=6, eval=FALSE}
-conds$pwprobs.plots$E14
+![](img/pair_stabi_gl.png){width=100%}
+
+The results indicates the probability of genotypes at the _x_-axis being more stable than the genotype at the _y_-axis.
+
+-   Genotype-by-region interaction
+
+```{r eval=F, echo=TRUE}
+head(results$marginal$df$pair_stabi_gm)
 ```
 
-![](img/pwprobs_env.png){width=100%}
-
-Or for the second region: 
-
-```{r,fig.width=6, fig.height=6, eval=FALSE}
-head(conds$conds_pwprobs.reg$R2)
+```{r eval=T, echo=F}
+head(marginal$pair_stabi_gm)
 ```
 
-```{r echo=FALSE}
-head(conds_pwprobs.reg)
+```{r echo=TRUE, eval=FALSE}
+results$marginal$plots$pair_stabi_gm
 ```
 
-```{r,fig.width=6, fig.height=6, eval=FALSE}
-conds$pwprobs.reg.plots$R2
+![](img/pair_stabi_gm.png){width=100%}
+
+The results indicates the probability of genotypes at the _x_-axis being more stable than the genotype at the _y_-axis.
+
+#### Joint probability of superior performance and superior stability
+
+Assuming that these the genetic main effects are independent of the variance of the genotype-by-environment interaction effects, the joint probability of superior performance and superior stability follows the same ideia as the probability of occurrence of two independent events: 
+
+$$
+Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]
+$$
+
+The results are accessed using the following commands:
+
+```{r eval=F, echo=TRUE}
+head(results$marginal$df$joint_prob)
 ```
 
-![](img/pwprob_reg.png){width=100%}
+```{r eval=T, echo=F}
+head(marginal$joint_prob)
+```
 
-We hope this package is useful for you. Feel free to contact us if there any issues or suggestions for improvement. 
+```{r echo=TRUE, eval=FALSE}
+results$marginal$plots$joint_prob
+```
+
+![](img/joint.png){width=100%}
+
+If `reg = NULL`, there will be no differentiation between environments and region in the plot above.
+
+### Conditional output
+
+The probabilities of superior performance can be particularized for each environment. In other words, if you want to recommend an experimental genotype for a specific location, for example, these are the results you are looking for. The `conditional` list is also divided into two sublists. The first, `df`, contains the results compiled into data frames. The second, `plots`, have the corresponding ggplots. 
+
+#### Probability of superior performance
+
+It is exactly the same idea as previous stated, but instead of using the marginal genetic effect of each genotype, we use the conditional genetic effect ($g_{jk} = g_j + ge_{jk}$): 
+
+$$
+Pr(g_{jk} \in \Omega_k \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} \in \Omega_k \vert y)}
+$$
+
+The results are accessed using the following commands:
+
+```{r echo=TRUE, eval=FALSE}
+head(results$conditional$df$perfo)
+```
+
+```{r echo=FALSE, eval=TRUE}
+head(conditional$perfo)
+```
+
+```{r echo=TRUE, eval=FALSE}
+results$conditional$plots$perfo_env
+```
+
+![](img/cond_perfo.png){width=100%}
+ 
+ The grey cells are environments in which the genotype specified in the row was not evaluated.
+ 
+```{r echo=TRUE, eval=FALSE}
+results$conditional$plots$perfo_reg
+```
+
+![](img/cond_perfo_reg.png){width=100%}
+
+This plot is only available if `reg` is not `NULL`.
+
+#### Pairwise probability of superior performance
+
+A directly comparison between genotypes evaluated at the same environment. `prob_sup()` used the following equations: 
+
+-   When `increase = TRUE`
+
+$$
+Pr(g_{jk} > g_{ik} \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} > g_{ik}^{(s)} \vert y)}
+$$
+
+-   When `increase = FALSE`
+
+$$
+Pr(g_{jk} < g_{ik} \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} < g_{ik}^{(s)} \vert y)}
+$$
+
+Note that this result could not be compiled into a single data frame, since there will be a pairwise comparison for each environment. Therefore, we opt to build several data frames and store them in a list (`pair_perfo_env`). When `reg` is not `NULL`, there will also be a second list, `pair_perfo_reg`. The ggplots are also stored in lists. Therefore, the results are accessed using the following commands, taking the environment "E05" and the region "R2" as examples:
+
+
+```{r echo=TRUE, eval=FALSE}
+head(results$conditional$df$pair_perfo_env$E05)
+```
+
+```{r echo=FALSE, eval=TRUE}
+head(conditional$E05)
+```
+
+```{r echo=TRUE, eval=FALSE}
+results$conditional$plots$pair_perfo_env$E05
+```
+
+![](img/E05.png){width=100%}
+
+
+```{r echo=TRUE, eval=FALSE}
+head(results$conditional$df$pair_perfo_reg$R2)
+```
+
+```{r echo=FALSE, eval=TRUE}
+head(conditional$R2)
+```
+
+```{r echo=TRUE, eval=FALSE}
+results$conditional$plots$pair_perfo_reg$R2
+```
+
+![](img/R2.png){width=100%}
+
+Like the other heat maps, we are evaluating the probability of genotypes at _x_-axis being superior than genotypes at the _y_-axis. 
+
+Note that the estimation of these probabilities are strictly related to some key question that constantly arises in plant breeding: 
+
+-   **What is the risk of recommending a selection candidate for a target population of environments?**
+
+-   **What is the probability of a given selection candidate having good performance if recommended to a target population of environments? And for a specific environment?**
+ 
+-   **What is the probability of a given selection candidate having better performance than a cultivar check in the target population of environments? And in specific environments?**
+ 
+-   **How probable is it that a given selection candidate performs similarly across environments?**
+
+-   **What are the chances that a given selection candidate is more stable than a cultivar check in the target population of environments?**
+
+-   **What is the probability that a given selection candidate having a superior and invariable performance across environments?**
+
+We hope this package is useful for you to answer any of these questions. Feel free to contact us if there any issues or suggestions for improvement. 
+
+<br>
 
 <br>
 
 **FIM**
-

@@ -1,8 +1,8 @@
-citHeader("To cite ProbSup in publications use:")
+citHeader("To cite ProbBreed in publications use:")
 
 citEntry(
   entry    = "Article",
-  title    = "ProbSup for genotypes' probability of superior performance",
+  title    = "ProbBreed: for genotypes' probability of superior performance",
   author   = "Saulo Chaves, Kaio Dias, Matheus Krause",
   journal  = "XXX",
   year     = "2023",

@@ -11,7 +11,7 @@ prob_sup(
   env,
   reg = NULL,
   extr_outs,
-  int = 0.2,
+  int,
   increase = TRUE,
   save.df = FALSE,
   interactive = FALSE
@@ -52,11 +52,11 @@ The \code{marginal} list has:
 \itemize{
 \item \code{perfo}: the probabilities of superior performance
 \item \code{pair_perfo}: the pairwise probabilities of superior performance
-\item \code{stabi}: the probabilities of superior stability (when \code{reg} is not
-'NULL', \code{stabi} is divided into \code{stabi_gl} for the stability across environments, and
-\code{stabi_gm} for the stability across regions)
-\item \code{pair_stabi}: the pairwise probabilities of superior stability (which
-is also divided into \code{pair_stabi_gl} and \code{pair_stabi_gm} when \code{reg} is not 'NULL')
+\item \code{stabi}: the probabilities of superior stability. When \code{reg} is not
+\code{NULL}, \code{stabi} is divided into \code{stabi_gl} for the stability across environments, and
+\code{stabi_gm} for the stability across regions
+\item \code{pair_stabi}: the pairwise probabilities of superior stability, which
+is also divided into \code{pair_stabi_gl} and \code{pair_stabi_gm} when \code{reg} is not \code{NULL}
 \item \code{joint_prob}: the joint probabilities of superior performance and stability
 }
 \item \code{plot} : A list of ggplots illustrating the outputs:
@@ -68,15 +68,16 @@ thick line, and 97.5\% represented by the thin line)
 \item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
 performance (the probability of genotypes at the \emph{x}-axis being superior
 to those on \emph{y}-axis)
-\item \code{stabi}: a bar plot with the probabilities of superior stability (just like the data frames,
+\item \code{stabi}: a bar plot with the probabilities of superior stability. Like the data frames,
 when \code{reg} is not \code{NULL}, two different plots are generated, one for the stability across
-environments (\code{stabi_gl}), and another for the stability across regions (\code{stabi_gm}).
+environments (\code{stabi_gl}), and another for the stability across regions (\code{stabi_gm})
 \item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability
-(also divided into two different plots when \code{reg} is not \code{NULL}). In this plot,
+(also divided into two different plots when \code{reg} is not \code{NULL}). This plot represents
 the probability of genotypes at the \emph{x}-axis being superior
 to those on \emph{y}-axis
 \item \code{joint_prob}: a plot with the probabilities of superior performance,
-superior stability and the joint probabilities of superior performance and stability.
+probabilities of superior stability and the joint probabilities of superior
+performance and stability.
 }
 }
 
@@ -84,7 +85,7 @@ The \code{conditional} list has:
 \itemize{
 \item \code{df} : A list with:
 \itemize{
-\item \code{perfo}: a dataframe containing the probabilities of superior performance
+\item \code{perfo}: a data frame containing the probabilities of superior performance
 within environments. It also has the probabilities of superior performance with regions
 if \code{reg} is not \code{NULL}.
 \item \code{pair_perfo}: a list with the pairwise probabilities of superior performance
@@ -121,7 +122,7 @@ stability, or invariance):
 
 Let \eqn{\Omega} represent the subset of selected genotypes based on their
 performance across environments. A given genotype \eqn{j} will belong to \eqn{\Omega}
-if its genetic marginal value (\eqn{g_j}) is amongst the top \eqn{V}, with \eqn{V}
+if its genetic marginal value (\eqn{g_j}) is among the top \eqn{V}, with \eqn{V}
 being the selection intensity. \code{prob_sup()} leverages the Monte Carlo discretized sampling
 from the posterior distribution to emulate the occurrence of \eqn{S} trials. Thence,
 the probability of the \eqn{j^{th}} genotype belonging to \eqn{\Omega} is the
@@ -155,7 +156,13 @@ equation is the following:
 
 \deqn{Pr(g_j > g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} > g_i^{(s)} \vert y)}}
 
-Within environments, \eqn{g_j} is switched by \eqn{g_{jk}}.
+or
+
+\deqn{Pr(g_j < g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} < g_i^{(s)} \vert y)}}
+
+The first equation is applied when the aim is to increase the trait value (\code{increase = T}).
+Conversely, the second equation is used when \code{increase = F}. Within environments,
+\eqn{g_j} is switched by \eqn{g_{jk}}.
 
 \itemize{\item Probability of superior stability}
 
@@ -163,7 +170,7 @@ The equations described above are related to the genotypes' previsibility, an
 agronomic way of looking at stability. Another point of view is to consider the
 invariance as a measure of stability. Making a direct analogy with Shukla's (1972)
 theory, a stable genotype would be the one that had the lower variance of the
-genotype-by-environment interaction effect (\eqn{var(ge_{jk})}). Using the same
+genotype-by-environment interaction effect, \eqn{var(ge_{jk})}. Using the same
 ideas as above, the probability of superior stability is given by:
 
 \deqn{Pr [var(ge_{jk})\in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)})\in \Omega \vert y]} }
@@ -177,7 +184,29 @@ The pairwise probability of superior stability is given by:
 \deqn{Pr[var(ge_{jk}) < var(ge_{ik}) \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)}) < var(ge_{ik}^{(s)}) \vert y]} }
 
 Note that \eqn{j} will be superior to \eqn{i} if it has a \strong{lower}
-variance of the genotype-by-environment interaction effect.
+variance of the genotype-by-environment interaction effect. This is true regardless
+if \code{increase} is set to \code{TRUE} or \code{FALSE}.
+
+Finally, by assuming independence between the genetic main effect and the
+genotype-by-environment effect variance, \code{prob_sup} computes the joint probability
+of superior performance and stability:
+
+\deqn{Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]}
+
+The estimation of these probabilities are strictly related to some key question that
+constantly arises in plant breeding:
+\itemize{
+\item \strong{What is the risk of recommending a selection candidate for a target population of environments?}
+\item \strong{What is the probability of a given selection candidate having good performance if
+recommended to a target population of environments? And for a specific environment?}
+\item \strong{What is the probability of a given selection candidate having better performance
+than a cultivar check in the target population of environments? And in specific environments?}
+\item \strong{How probable is it that a given selection candidate performs similarly across environments?}
+\item \strong{What are the chances that a given selection candidate is more stable
+than a cultivar check in the target population of environments?}
+\item \strong{What is the probability that a given selection candidate having a
+superior and invariable performance across environments?}
+}
 }
 \examples{
 \dontrun{
@@ -204,12 +233,9 @@ results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
 \references{
 Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
 Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
-for cultivar recommendation in multi-environment trials. \if{html}{\out{<i>}}Theoretical and
-Applied Genetics\if{html}{\out{</i>}}, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
+for cultivar recommendation in multi-environment trials. \emph{Theoretical and
+Applied Genetics}, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
 
 Shukla, G. K. (1972) Some statistical aspects of partioning genotype environmental
-componentes of variability. \if{html}{\out{<i>}}Heredity\if{html}{\out{</i>}}, 29:237-245.
-}
-\seealso{
-\code{\link[plotly:ggplotly]{plotly::ggplotly()}}
+componentes of variability. \emph{Heredity}, 29:237-245. https://doi.org/10.1038/hdy.1972.87
 }
