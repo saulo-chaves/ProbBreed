@@ -1,6 +1,6 @@
 citHeader("To cite ProbBreed in publications use:")
 
-citEntry(
+bibentry(
   entry    = "Article",
   title    = "ProbBreed: for genotypes' probability of superior performance",
   author   = "Saulo Chaves, Kaio Dias, Matheus Krause",

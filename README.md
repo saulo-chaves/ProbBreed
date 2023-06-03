@@ -4,6 +4,8 @@
 # ProbBreed
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/saulo-chaves/ProbSup/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/saulo-chaves/ProbSup/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ProbBreed employs Bayesian statistics to analyse multi-environment
@@ -38,12 +40,12 @@ mod = bayes_met(data = soy,
                 res.het = F,
                 trait = "Y",
                 iter = 2000, cores = 1, chains = 4)
-##'
+
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)), res.het = FALSE,
                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
-##'
+
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
                    extr_outs = outs, reg = 'Reg', int = .2,
                    increase = T, save.df = T, interactive = T)
