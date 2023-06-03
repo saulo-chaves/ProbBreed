@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-ProbBreed employs Bayesian statistics to analyse multi-environment trials' data, and uses its outputs to estimate the marginal, pairwise, and conditional probability of superior performance of the genotypes. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y.
+ProbBreed employs Bayesian statistics to analyse multi-environment trials' data, and uses its outputs to estimate the marginal and pairwise probabilities of superior performance and superior stability of the genotypes, as well as their conditional probability of superior performance. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y.
 
 ## Installation
 
@@ -38,43 +38,21 @@ library(ProbBreed)
 
 mod = bayes_met(data = soy,
                 gen = "Gen",
-                env = "Env", 
-                rept = NULL,
+                env = "Env",
+                repl = NULL,
                 reg = "Reg",
                 res.het = F,
-                trait = "Y", 
-                iter = 2000, cores = 1, chain = 1)
-
-outs = extr_outs(data = soy, 
-                 trait = "Y", 
-                 gen = "Gen", 
-                 model = mod, 
+                trait = "Y",
+                iter = 2000, cores = 1, chains = 4)
+##'
+outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
-                 nenv = length(unique(soy$Env)), 
-                 res.het = FALSE,
-                 probs = c(0.05, 0.95)
-                 check.stan.diag = TRUE)
-
-margs = marg_prob(data = soy, 
-                  trait = "Y",
-                  gen = "Gen", 
-                  env = "Env",
-                  extr_outs = outs, 
-                  int = 0.2,
-                  increase = TRUE, 
-                  save.df = FALSE, 
-                  interactive = FALSE)
-
-conds = cond_prob(data = soy, 
-                  trait = "Y",
-                  gen = "Gen", 
-                  env = "Env",
-                  reg = "Reg",
-                  extr_outs = outs, 
-                  int = 0.2,
-                  increase = TRUE, 
-                  save.df = FALSE, 
-                  interactive = FALSE)
+                 nenv = length(unique(soy$Env)), res.het = FALSE,
+                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
+##'
+results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
+                   extr_outs = outs, reg = 'Reg', int = .2,
+                   increase = T, save.df = T, interactive = T)
 
 ```
 
