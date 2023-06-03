@@ -10,9 +10,7 @@ Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
               person("Matheus", "Krause", role = "aut",
                      email = "mdkrause@iastate.edu",
                      comment = c(ORCID = "0000-0002-9171-1021")))
-Description: Run a MET model employing Bayesian statistics, 
-            and use its results to estimate the marginal, pairwise and conditional 
-            probability of superior performance and stability of each genotype.
+Description: Compute the probability of superior performance and superior stability of experimental genotypes
 URL: https://github.com/saulo-chaves/ProbBreed
 License: MIT + file LICENSE
 Depends: R (>= 3.5.0)

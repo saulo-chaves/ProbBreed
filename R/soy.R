@@ -20,8 +20,8 @@
 ##' @source
 ##'  \describe{
 ##'  Using soybean historical field trial data to study genotype by environment
-##'  variation and identify mega-environments with the integration of genetic
-##'  and non-genetic factors. Matheus D Krause, Kaio O G Dias, Asheesh K Singh,
+##'  variation and identify mega-environments with the integration of genetic and
+##'  non-genetic factors. Matheus D Krause, Kaio O G Dias, Asheesh K Singh,
 ##'  William D Beavis. bioRxiv 2022.04.11.487885;
 ##'  doi: https://doi.org/10.1101/2022.04.11.487885
 ##'  }
