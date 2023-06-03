@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/saulo-chaves/ProbSup/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/saulo-chaves/ProbSup/actions/workflows/R-CMD-check.yaml)
+[![Build status](https://ci.appveyor.com/api/projects/status/eeu30dhkhiper85g?svg=true)](https://ci.appveyor.com/project/saulo-chaves/probbreed)
 <!-- badges: end -->
 
 ProbBreed employs Bayesian statistics to analyse multi-environment trials' data, and uses its outputs to estimate the marginal and pairwise probabilities of superior performance and superior stability of the genotypes, as well as their conditional probability of superior performance. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y.

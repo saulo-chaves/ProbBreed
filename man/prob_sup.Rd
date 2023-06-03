@@ -234,8 +234,8 @@ results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
 Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
 Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
 for cultivar recommendation in multi-environment trials. \emph{Theoretical and
-Applied Genetics}, 133(2):443-455. https://doi.org/10.1007/s00122-022-04041-y
+Applied Genetics}, 133(2):443-455. \url{https://doi.org/10.1007/s00122-022-04041-y}
 
 Shukla, G. K. (1972) Some statistical aspects of partioning genotype environmental
-componentes of variability. \emph{Heredity}, 29:237-245. https://doi.org/10.1038/hdy.1972.87
+componentes of variability. \emph{Heredity}, 29:237-245. \url{https://doi.org/10.1038/hdy.1972.87}
 }
