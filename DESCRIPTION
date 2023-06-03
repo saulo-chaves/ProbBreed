@@ -12,7 +12,7 @@ Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
                      comment = c(ORCID = "0000-0002-9171-1021")))
 Description: Compute the probability of superior performance and superior stability of experimental genotypes.
 URL: https://github.com/saulo-chaves/ProbBreed
-License: MIT + file LICENSE
+License: AGPL (>= 3)
 Depends: R (>= 3.5.0)
 Imports: 
     ggplot2,
