@@ -10,8 +10,6 @@
 status](https://ci.appveyor.com/api/projects/status/eeu30dhkhiper85g?svg=true)](https://ci.appveyor.com/project/saulo-chaves/probbreed)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![Build
-Status](https://app.travis-ci.com/saulo-chaves/ProbBreed.svg?branch=main)](https://app.travis-ci.com/saulo-chaves/ProbBreed)
 <!-- badges: end -->
 
 ProbBreed employs Bayesian statistics to analyse multi-environment
@@ -49,7 +47,7 @@ mod = bayes_met(data = soy,
 
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
-                 nenv = length(unique(soy$Env)), res.het = FALSE,
+                 nenv = length(unique(soy$Env)),
                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",

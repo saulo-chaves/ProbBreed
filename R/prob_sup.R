@@ -216,7 +216,7 @@
 ##'
 ##' outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
 ##'                  effects = c('l','g','gl','m','gm'),
-##'                  nenv = length(unique(soy$Env)), res.het = FALSE,
+##'                  nenv = length(unique(soy$Env)),
 ##'                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 ##'
 ##' results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
@@ -364,7 +364,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
         )
       probsta = do.call(cbind, lapply(
         lapply(
-          name.gen, function(x) staprob_gl[,grep(x, colnames(staprob_gl))]
+          name.gen, function(x) staprob_gl[,grep(paste0(x,'$'), colnames(staprob_gl))]
         ),
         function(x) apply(x, 1, var)
       ))
@@ -432,11 +432,11 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       ## Probability of superior stability - Region --------------
       staprob_gm = mod$post$gm
       colnames(staprob_gm) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gm),'_Env'))[,1]
+        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gm),'_Reg'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
-          name.gen, function(x) staprob_gm[,grep(x, colnames(staprob_gm))]
+          name.gen, function(x) staprob_gm[,grep(paste0(x,'$'), colnames(staprob_gm))]
         ),
         function(x) apply(x, 1, var)
       ))
@@ -637,11 +637,11 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       # Conditional probabilities ----------------
       posgge = matrix(mod$post$g, nrow = num.sim, ncol = num.env * num.gen) + mod$post$gl
       for (i in name.reg) {
-        posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] =
-          posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] +
-          matrix(mod$post$gm[,grep(i, do.call(rbind, strsplit(colnames(mod$post$gm),'Reg'))[,2])],
+        posgge[,grep(paste0(i,'$'), do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] =
+          posgge[,grep(paste0(i,'$'), do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] +
+          matrix(mod$post$gm[,grep(paste0(i,'$'), do.call(rbind, strsplit(colnames(mod$post$gm),'Reg'))[,2])],
                  nrow = num.sim, ncol = num.gen *
-                   length(name.env.reg[grep(i, do.call(rbind,strsplit(name.env.reg,'Reg'))[,2])]))
+                   length(name.env.reg[grep(paste0(i,'$'), do.call(rbind,strsplit(name.env.reg,'Reg'))[,2])]))
       }
 
       ## Probability of superior performance ----------------
@@ -679,7 +679,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       probs.df = probs.df[,c('reg', 'loc', 'gen', 'prob')]
       probs.df$loc = sub('Env_','', probs.df$loc)
 
-      ### Per location ----------------
+      ### Per Location ----------------
       con_gl = ifelse(table(data[,gen], data[,env]) != 0, 1, NA)
 
       prob_ggl.plot = ggplot(
@@ -708,7 +708,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
 
       cat('8. Probability of superior performance within environments estimated \n')
 
-      ### Per region ----------------
+      ### Per Region ----------------
       con_gm = ifelse(table(data[,gen], data[,reg]) != 0, 1, NA)
 
       prob_ggm.plot = ggplot(
@@ -753,19 +753,20 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       condprobs = condprobs[,c('env','reg','gen','prob')]
 
       ## Pairwise probability of superior performance ----------------
-      ### Per location -------------
+      ### Per Location -------------
       combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_'), 2)))
       colnames(combs) = c('x', 'y')
       pwprobs.env = lapply(
         sapply(paste('Env', name.env, sep = '_'),
-               function(x) posgge[,grep(x, colnames(posgge))],
+               function(x) posgge[,grep(paste0(x,'_'), colnames(posgge))],
                simplify = F),
         function(y){
 
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(z[1], colnames(y))] > y[,grep(z[2], colnames(y))])
+              mean(y[,grep(paste0(z[1],'_'), colnames(y))] >
+                     y[,grep(paste0(z[2],'_'), colnames(y))])
             })
           )
 
@@ -810,14 +811,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       ### Per Region --------------
       pwprobs.reg = lapply(
         sapply(paste('Reg', name.reg, sep = '_'),
-               function(x) posgge[,grep(x, colnames(posgge))],
+               function(x) posgge[,grep(paste0(x,'$'), colnames(posgge))],
                simplify = F),
         function(y){
 
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(z[1], colnames(y))] > y[,grep(z[2], colnames(y))])
+              mean(y[,grep(paste0(z[1],'_'), colnames(y))] >
+                     y[,grep(paste0(z[2],'_'), colnames(y))])
             })
           )
 
@@ -1072,11 +1074,11 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       ## Probability of superior stability  -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_Env'))[,1]
+        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
-          name.gen, function(x) staprob_gl[,grep(x, colnames(staprob_gl))]
+          name.gen, function(x) staprob_gl[,grep(paste0(x,'$'), colnames(staprob_gl))]
         ),
         function(x) apply(x, 1, var)
       ))
@@ -1305,21 +1307,22 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('8. Probability of superior performance within environments estimated \n')
+      cat('6. Probability of superior performance within environments estimated \n')
 
       ## Pairwise probability of superior performance ----------------
-      ### Per location -------------
+      ### Per Location -------------
       combs = data.frame(t(utils::combn(name.gen, 2)))
       colnames(combs) = c('x', 'y')
       pwprobs = lapply(
         sapply(name.env,
-               function(x) posgge[,grep(x, colnames(posgge))],
+               function(x) posgge[,grep(paste0(x,'$'), colnames(posgge))],
                simplify = F),
         function(y){
           cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(z[1], colnames(y))] > y[,grep(z[2], colnames(y))])
+              mean(y[,grep(paste0(z[1],'_'), colnames(y))] >
+                     y[,grep(paste0(z[2],'_'), colnames(y))])
             })
           )
         }
@@ -1354,7 +1357,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('9. Pairwise probability of superior performance within environments estimated \n')
+      cat('7. Pairwise probability of superior performance within environments estimated \n')
 
       ## Transform into interactive plots -----------------
       if(interactive){
@@ -1532,7 +1535,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       )
       probsta = do.call(cbind, lapply(
         lapply(
-          name.gen, function(x) staprob_gl[,grep(x, colnames(staprob_gl))]
+          name.gen, function(x) staprob_gl[,grep(paste0(x,'$'), colnames(staprob_gl))]
         ),
         function(x) apply(x, 1, var)
       ))
@@ -1600,11 +1603,11 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       ## Probability of superior stability - Region --------------
       staprob_gm = mod$post$gm
       colnames(staprob_gm) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gm),'_Env'))[,1]
+        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gm),'_Reg'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
-          name.gen, function(x) staprob_gm[,grep(x, colnames(staprob_gm))]
+          name.gen, function(x) staprob_gm[,grep(paste0(x,'$'), colnames(staprob_gm))]
         ),
         function(x) apply(x, 1, var)
       ))
@@ -1805,11 +1808,11 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       # Conditional probabilities ----------------
       posgge = matrix(mod$post$g, nrow = num.sim, ncol = num.env * num.gen) + mod$post$gl
       for (i in name.reg) {
-        posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] =
-          posgge[,grep(i, do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] +
-          matrix(mod$post$gm[,grep(i, do.call(rbind, strsplit(colnames(mod$post$gm),'Reg'))[,2])],
+        posgge[,grep(paste0(i,'$'), do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] =
+          posgge[,grep(paste0(i,'$'), do.call(rbind,strsplit(colnames(posgge),'Reg'))[,2])] +
+          matrix(mod$post$gm[,grep(paste0(i,'$'), do.call(rbind, strsplit(colnames(mod$post$gm),'Reg'))[,2])],
                  nrow = num.sim, ncol = num.gen *
-                   length(name.env.reg[grep(i, do.call(rbind,strsplit(name.env.reg,'Reg'))[,2])]))
+                   length(name.env.reg[grep(paste0(i,'$'), do.call(rbind,strsplit(name.env.reg,'Reg'))[,2])]))
       }
 
       ## Probability of superior performance ----------------
@@ -1847,7 +1850,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       probs.df = probs.df[,c('reg', 'loc', 'gen', 'prob')]
       probs.df$loc = sub('Env_','', probs.df$loc)
 
-      ### Per location ----------------
+      ### Per Location ----------------
       con_gl = ifelse(table(data[,gen], data[,env]) != 0, 1, NA)
 
       prob_ggl.plot = ggplot(
@@ -1876,7 +1879,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
 
       cat('8. Probability of superior performance within environments estimated \n')
 
-      ### Per region ----------------
+      ### Per Region ----------------
       con_gm = ifelse(table(data[,gen], data[,reg]) != 0, 1, NA)
 
       prob_ggm.plot = ggplot(
@@ -1921,19 +1924,20 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       condprobs = condprobs[,c('env','reg','gen','prob')]
 
       ## Pairwise probability of superior performance ----------------
-      ### Per location -------------
+      ### Per Location -------------
       combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_'), 2)))
       colnames(combs) = c('x', 'y')
       pwprobs.env = lapply(
         sapply(paste('Env', name.env, sep = '_'),
-               function(x) posgge[,grep(x, colnames(posgge))],
+               function(x) posgge[,grep(paste0(x, '_'), colnames(posgge))],
                simplify = F),
         function(y){
 
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(z[1], colnames(y))] < y[,grep(z[2], colnames(y))])
+              mean(y[,grep(paste0(z[1],'_'), colnames(y))] <
+                     y[,grep(paste0(z[2],'_'), colnames(y))])
             })
           )
 
@@ -1978,14 +1982,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       ### Per Region --------------
       pwprobs.reg = lapply(
         sapply(paste('Reg', name.reg, sep = '_'),
-               function(x) posgge[,grep(x, colnames(posgge))],
+               function(x) posgge[,grep(paste0(x, '$'), colnames(posgge))],
                simplify = F),
         function(y){
 
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(z[1], colnames(y))] < y[,grep(z[2], colnames(y))])
+              mean(y[,grep(paste0(z[1],'_'), colnames(y))] <
+                     y[,grep(paste0(z[2],'_'), colnames(y))])
             })
           )
 
@@ -2240,11 +2245,11 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
       ## Probability of superior stability  -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_Env'))[,1]
+        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
-          name.gen, function(x) staprob_gl[,grep(x, colnames(staprob_gl))]
+          name.gen, function(x) staprob_gl[,grep(paste0(x,'$'), colnames(staprob_gl))]
         ),
         function(x) apply(x, 1, var)
       ))
@@ -2473,21 +2478,22 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('8. Probability of superior performance within environments estimated \n')
+      cat('6. Probability of superior performance within environments estimated \n')
 
       ## Pairwise probability of superior performance ----------------
-      ### Per location -------------
+      ### Per Location -------------
       combs = data.frame(t(utils::combn(name.gen, 2)))
       colnames(combs) = c('x', 'y')
       pwprobs = lapply(
         sapply(name.env,
-               function(x) posgge[,grep(x, colnames(posgge))],
+               function(x) posgge[,grep(paste0(x, '$'), colnames(posgge))],
                simplify = F),
         function(y){
           cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(z[1], colnames(y))] < y[,grep(z[2], colnames(y))])
+              mean(y[,grep(paste0(z[1],'_'), colnames(y))] <
+                     y[,grep(paste0(z[2],'_'), colnames(y))])
             })
           )
         }
@@ -2522,7 +2528,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('9. Pairwise probability of superior performance within environments estimated \n')
+      cat('7. Pairwise probability of superior performance within environments estimated \n')
 
       ## Transform into interactive plots -----------------
       if(interactive){

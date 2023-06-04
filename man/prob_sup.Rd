@@ -221,7 +221,7 @@ mod = bayes_met(data = soy,
 
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
-                 nenv = length(unique(soy$Env)), res.het = FALSE,
+                 nenv = length(unique(soy$Env)),
                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",

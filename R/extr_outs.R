@@ -26,7 +26,6 @@
 ##' \item \code{gm} : genotype-by-region effect
 ##' }
 ##' @param nenv The number of environments in the analysis
-##' @param res.het Are the residual heterogeneous? Default is FALSE
 ##' @param probs A vector with two elements representing the probabilities that will
 ##' be considered for computing the quantiles. Provide values between 0 and 1.
 ##' @param check.stan.diag A logical value indicating whether the function should
@@ -68,12 +67,12 @@
 ##'
 ##' outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
 ##'                  effects = c('l','g','gl','m','gm'),
-##'                  nenv = length(unique(soy$Env)), res.het = FALSE,
+##'                  nenv = length(unique(soy$Env)),
 ##'                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 ##'                  }
 ##' @export
 
-extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
+extr_outs = function(data, trait, gen, model, effects, nenv,
                      probs = c(0.025, 0.975), check.stan.diag = FALSE, ...){
 
   requireNamespace('ggplot2')
@@ -94,7 +93,7 @@ extr_outs = function(data, trait, gen, model, effects, nenv, res.het = FALSE,
   cat('1. Posterior effects extracted \n')
 
   # Variances
-  if(res.het == F){
+  if(!'sigma_vec' %in% names(out)){
 
     variances = NULL
     std.dev = NULL

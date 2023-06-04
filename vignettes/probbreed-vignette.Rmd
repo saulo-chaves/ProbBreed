@@ -193,7 +193,6 @@ Using the `mod` object from the previous step:
 outs = extr_outs(data = soy, trait = 'Y', gen = 'Gen', model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
-                 res.het = F, 
                  probs = c(0.05, 0.95), check.stan.diag = F)
 ```
 

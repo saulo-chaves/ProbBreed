@@ -11,7 +11,6 @@ extr_outs(
   model,
   effects,
   nenv,
-  res.het = FALSE,
   probs = c(0.025, 0.975),
   check.stan.diag = FALSE,
   ...
@@ -42,8 +41,6 @@ incomplete blocks design)
 }}
 
 \item{nenv}{The number of environments in the analysis}
-
-\item{res.het}{Are the residual heterogeneous? Default is FALSE}
 
 \item{probs}{A vector with two elements representing the probabilities that will
 be considered for computing the quantiles. Provide values between 0 and 1.}
@@ -85,7 +82,7 @@ mod = bayes_met(data = soy,
 
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
-                 nenv = length(unique(soy$Env)), res.het = FALSE,
+                 nenv = length(unique(soy$Env)),
                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
                  }
 }
