@@ -91,7 +91,7 @@
 ##' Probabilities provide the risk of recommending a candidate for a target
 ##' population of environments or for a specific environment. The function `prob_sup()`
 ##' computes the probabilities of superior performance (agronomic stability,
-##' or previsibility), and the probabilities of superior stability (ecological
+##' or predictability), and the probabilities of superior stability (ecological
 ##' stability, or invariance):
 ##'
 ##' \itemize{\item Probability of superior performance}
@@ -143,7 +143,7 @@
 ##'
 ##' \itemize{\item Probability of superior stability}
 ##'
-##' The equations described above are related to the genotypes' previsibility, an
+##' The equations described above are related to the genotypes' performance predictability, an
 ##' agronomic way of looking at stability. Another point of view is to consider the
 ##' invariance as a measure of stability. Making a direct analogy with Shukla's (1972)
 ##' theory, a stable genotype would be the one that had the lower variance of the
