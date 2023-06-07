@@ -458,7 +458,7 @@ The results indicates the probability of genotypes at the _x_-axis being more st
 
 #### Joint probability of superior performance and superior stability
 
-Assuming that these the genetic main effects are independent of the variance of the genotype-by-environment interaction effects, the joint probability of superior performance and superior stability follows the same ideia as the probability of occurrence of two independent events: 
+Assuming that the genetic main effects are independent of the variance of the genotype-by-environment interaction effects, the joint probability of superior performance and superior stability follows the same ideia as the probability of occurrence of two independent events: 
 
 $$
 Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]

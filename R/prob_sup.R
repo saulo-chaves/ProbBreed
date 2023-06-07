@@ -48,7 +48,7 @@
 ##' \item \code{perfo}: a bar plot illustrating the probabilities of superior performance
 ##' \item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
 ##' performance (the probability of genotypes at the \emph{x}-axis being superior
-##' to those on \emph{y}-axis)
+##' to those on the \emph{y}-axis)
 ##' \item \code{stabi}: a bar plot with the probabilities of superior stability. Like the data frames,
 ##' when `reg` is not `NULL`, two different plots are generated, one for the stability across
 ##' environments (`stabi_gl`), and another for the stability across regions (`stabi_gm`)
@@ -113,7 +113,7 @@
 ##' and failure (0) otherwise. \eqn{S} is conditioned to the number of iterations and chains
 ##' previously set at [ProbBreed::bayes_met()].
 ##'
-##' The same idea can be applied for each environment: let \eqn{\Omega_k} represent
+##' The same idea can be applied to each environment: let \eqn{\Omega_k} represent
 ##' the subset of superior genotypes in the \eqn{k^{th}} environment, then the
 ##' probability of the \eqn{j^{th}} genotype belonging to \eqn{\Omega_k} is
 ##'
@@ -170,7 +170,7 @@
 ##'
 ##' \deqn{Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]}
 ##'
-##' The estimation of these probabilities are strictly related to some key question that
+##' The estimation of these probabilities are strictly related to some key questions that
 ##' constantly arises in plant breeding:
 ##' \itemize{
 ##' \item \strong{What is the risk of recommending a selection candidate for a target population of environments?}
