@@ -39,7 +39,7 @@
 ##' \item \code{map} : a list with the maximum posterior values of each effect
 ##' \item \code{ppcheck} : a matrix containing the p-values of maximum, minimum,
 ##' median, mean and standard deviation; effective number of parameters, WAIC2
-##' value and Rhat
+##' value, Rhat and effective sample size.
 ##' \item \code{fun.plots} : a list with three types of ggplots: histograms, trace plots and density
 ##' plots. These will be available for all effects declared at the `effects` argument.
 ##' }
@@ -223,8 +223,8 @@ extr_outs = function(data, trait, gen, model, effects, nenv,
       p.val_sd = p.val_sd,
       Eff_Npar = p_WAIC2,
       WAIC2 = WAIC2,
-      mean_Rhat = mean(summary(model)$summar[,"Rhat"])
-      #n_eff = mean(summary(model)$summar[,"n_eff"])/4000
+      mean_Rhat = mean(summary(model)$summar[,"Rhat"]),
+      n_eff = mean(summary(model)$summar[,"n_eff"])/4000
     )
   ), 4)
   colnames(output_p_check) <-
