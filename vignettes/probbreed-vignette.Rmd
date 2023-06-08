@@ -300,7 +300,7 @@ The outputs of this function are divided into two lists: `marginal` and `conditi
 
 The `marginal` list contains two other lists: one with data frames detailing the results of each computed probability, and another with ggplots illustrating the computed probabilities. Below, we detail each result:
 
-#### High posterior density of genetic main effects
+#### Highest posterior density of genetic main effects
 
 This metric is illustrated in a caterpillar plot: 
 

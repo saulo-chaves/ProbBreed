@@ -62,12 +62,12 @@ is also divided into \code{pair_stabi_gl} and \code{pair_stabi_gm} when \code{re
 \item \code{plot} : A list of ggplots illustrating the outputs:
 \itemize{
 \item \code{g_hpd}: a caterpillar plot representing the marginal genetic value of
-each genotype, and their respective high posterior density (95\% represented by the
+each genotype, and their respective highest posterior density interval (95\% represented by the
 thick line, and 97.5\% represented by the thin line)
 \item \code{perfo}: a bar plot illustrating the probabilities of superior performance
 \item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
 performance (the probability of genotypes at the \emph{x}-axis being superior
-to those on \emph{y}-axis)
+to those on the \emph{y}-axis)
 \item \code{stabi}: a bar plot with the probabilities of superior stability. Like the data frames,
 when \code{reg} is not \code{NULL}, two different plots are generated, one for the stability across
 environments (\code{stabi_gl}), and another for the stability across regions (\code{stabi_gm})
@@ -137,7 +137,7 @@ success (1) if \eqn{g_j^{(s)}} exists in \eqn{\Omega} in the \eqn{s^{th}} sample
 and failure (0) otherwise. \eqn{S} is conditioned to the number of iterations and chains
 previously set at \code{\link[=bayes_met]{bayes_met()}}.
 
-The same idea can be applied for each environment: let \eqn{\Omega_k} represent
+The same idea can be applied to each environment: let \eqn{\Omega_k} represent
 the subset of superior genotypes in the \eqn{k^{th}} environment, then the
 probability of the \eqn{j^{th}} genotype belonging to \eqn{\Omega_k} is
 
@@ -193,7 +193,7 @@ of superior performance and stability:
 
 \deqn{Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]}
 
-The estimation of these probabilities are strictly related to some key question that
+The estimation of these probabilities are strictly related to some key questions that
 constantly arises in plant breeding:
 \itemize{
 \item \strong{What is the risk of recommending a selection candidate for a target population of environments?}

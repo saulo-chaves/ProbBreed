@@ -43,7 +43,7 @@
 ##' \item \code{plot} : A list of ggplots illustrating the outputs:
 ##' \itemize{
 ##' \item \code{g_hpd}: a caterpillar plot representing the marginal genetic value of
-##' each genotype, and their respective high posterior density (95% represented by the
+##' each genotype, and their respective highest posterior density interval (95% represented by the
 ##' thick line, and 97.5% represented by the thin line)
 ##' \item \code{perfo}: a bar plot illustrating the probabilities of superior performance
 ##' \item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
