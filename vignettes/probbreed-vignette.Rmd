@@ -34,7 +34,7 @@ library(ProbBreed)
 
 The second step is to fit a multi-environment Bayesian model using the `bayes_met` function. This function has a set of predefined models that are used to run Bayesian analyses using `rstan`, the `R` interface to `Stan`. There are some important details that we would like to stress here:
 
-**1**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region (or mega-environment, or any other factor of higher-level), and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: complete block design (CBD), incomplete block design (IBD), or no design whatsoever (only-means). After choosing the model that fits your situation, you must declare the arguments in the function accordingly (See the figure below):
+**1**-    Currently, the function has six options of models: three models are suitable for considering both information of local and region (or mega-environment, or any other factor of higher-level), and the other three models consider only the information of local (or any factor that you consider an environment). The difference between these models is the experimental design they are considering: randomized complete block design (RCBD), incomplete block design (IBD), or no design whatsoever (entry-mean). After choosing the model that fits your situation, you must declare the arguments in the function accordingly (See the figure below):
 
 ![](img/desenho.png){width=100%}
 

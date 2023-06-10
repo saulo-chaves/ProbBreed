@@ -51,6 +51,6 @@ outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-                   extr_outs = outs, reg = 'Reg', int = .2,
+                   mod.output = outs, reg = 'Reg', int = .2,
                    increase = T, save.df = T, interactive = T)
 ```

@@ -13,7 +13,7 @@
 ##' @param reg A string or NULL. If the data set has information about regions,
 ##' `reg` will be a string with the name of the column that corresponds to the
 ##' region information. Otherwise, `reg = NULL` (default).
-##' @param extr_outs An object from the [extr_outs()] function
+##' @param mod.output An object from the [extr_outs()] function
 ##' @param int A number representing the selection intensity
 ##' (between 0 and 1)
 ##' @param increase Logical. Indicates the direction of the selection.
@@ -220,12 +220,12 @@
 ##'                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 ##'
 ##' results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-##'                    extr_outs = outs, reg = 'Reg', int = .2,
+##'                    mod.output = outs, reg = 'Reg', int = .2,
 ##'                    increase = T, save.df = T, interactive = T)
 ##' }
 ##'
 
-prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
+prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                     increase = TRUE, save.df = FALSE, interactive = FALSE){
 
   # Conditions
@@ -245,7 +245,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, extr_outs, int,
   # Preparation
   df = data
   data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
-  mod = extr_outs
+  mod = mod.output
   name.gen = levels(factor(data[,gen]))
   num.gen = nlevels(factor(data[,gen]))
   name.env = levels(factor(data[,env]))

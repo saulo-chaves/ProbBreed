@@ -271,8 +271,8 @@ extr_outs = function(data, trait, gen, model, effects, nenv,
     densities[[i]] = ggplot(data = df.post.list[[i]],
                             aes(x = .data$value, fill = factor(.data$chain),
                                 color = factor(.data$chain))) +
-      geom_density(alpha = .5, linewidth = .8)  +
-      scale_fill_viridis_d(option = 'viridis', direction = -1) +
+      geom_density(linewidth = 1.3)  +
+      scale_fill_viridis_d(option = 'viridis', direction = -1, alpha = .3) +
       scale_colour_viridis_d(option = 'viridis', direction = -1) +
       labs(x = paste('Values of', i), y = 'Frequency',
            colour = 'Chain', fill = 'Chain') +
