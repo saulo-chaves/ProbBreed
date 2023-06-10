@@ -278,7 +278,7 @@ Using the outputs extracted by `extr_outs()`, we can finally calculate the proba
 
 ```{r echo=TRUE, eval=FALSE}
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-                   extr_outs = outs, reg = 'Reg', int = .2,
+                   mod.output = outs, reg = 'Reg', int = .2,
                    increase = T, save.df = F, interactive = F)
 ```
 
@@ -286,7 +286,7 @@ results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
 
 *   `increase`: The selection is for increasing (`TRUE`, default) or decreasing (`FALSE`) the trait mean? 
 
-*   `extr_outs`: An object that contains the outputs extracted by `extr_outs()`.
+*   `mod.output`: An object that contains the outputs extracted by `extr_outs()`.
 
 *   `int`: The selection intensity, expressed in decimal values.
 
