@@ -10,7 +10,7 @@ prob_sup(
   gen,
   env,
   reg = NULL,
-  extr_outs,
+  mod.output,
   int,
   increase = TRUE,
   save.df = FALSE,
@@ -27,7 +27,7 @@ the variable, genotype and environment information, respectively}
 \code{reg} will be a string with the name of the column that corresponds to the
 region information. Otherwise, \code{reg = NULL} (default).}
 
-\item{extr_outs}{An object from the \code{\link[=extr_outs]{extr_outs()}} function}
+\item{mod.output}{An object from the \code{\link[=extr_outs]{extr_outs()}} function}
 
 \item{int}{A number representing the selection intensity
 (between 0 and 1)}
@@ -225,7 +225,7 @@ outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-                   extr_outs = outs, reg = 'Reg', int = .2,
+                   mod.output = outs, reg = 'Reg', int = .2,
                    increase = T, save.df = T, interactive = T)
 }
 
