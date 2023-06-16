@@ -23,7 +23,7 @@ prob_sup(
 \item{trait, gen, env}{A string. The name of the columns that corresponds to
 the variable, genotype and environment information, respectively}
 
-\item{reg}{A string or NULL. If the data set has information about regions,
+\item{reg}{A string or NULL. If the dataset has information about regions,
 \code{reg} will be a string with the name of the column that corresponds to the
 region information. Otherwise, \code{reg = NULL} (default).}
 
@@ -61,7 +61,7 @@ is also divided into \code{pair_stabi_gl} and \code{pair_stabi_gm} when \code{re
 }
 \item \code{plot} : A list of ggplots illustrating the outputs:
 \itemize{
-\item \code{g_hpd}: a caterpillar plot representing the marginal genetic value of
+\item \code{g_hpd}: a caterpillar plot representing the marginal genotypic value of
 each genotype, and their respective highest posterior density interval (95\% represented by the
 thick line, and 97.5\% represented by the thin line)
 \item \code{perfo}: a bar plot illustrating the probabilities of superior performance
@@ -86,7 +86,7 @@ The \code{conditional} list has:
 \item \code{df} : A list with:
 \itemize{
 \item \code{perfo}: a data frame containing the probabilities of superior performance
-within environments. It also has the probabilities of superior performance with regions
+within environments. It also has the probabilities of superior performance within regions
 if \code{reg} is not \code{NULL}.
 \item \code{pair_perfo}: a list with the pairwise probabilities of superior performance
 within environments. If \code{reg} is not \code{NULL}, two lists are generated.
@@ -112,86 +112,85 @@ across environments (\code{marginal} output). It also computes the probabilities
 of superior performance within environments (\code{conditional} output).
 }
 \details{
-Probabilities provide the risk of recommending a candidate for a target
+Probabilities provide the risk of recommending a selection candidate for a target
 population of environments or for a specific environment. The function \code{prob_sup()}
-computes the probabilities of superior performance (agronomic stability,
-or predictability), and the probabilities of superior stability (ecological
-stability, or invariance):
+computes the probabilities of superior performance and the probabilities of superior stability:
 
 \itemize{\item Probability of superior performance}
 
 Let \eqn{\Omega} represent the subset of selected genotypes based on their
 performance across environments. A given genotype \eqn{j} will belong to \eqn{\Omega}
-if its genetic marginal value (\eqn{g_j}) is among the top \eqn{V}, with \eqn{V}
-being the selection intensity. \code{prob_sup()} leverages the Monte Carlo discretized sampling
-from the posterior distribution to emulate the occurrence of \eqn{S} trials. Thence,
+if its genotypic marginal value (\eqn{\hat{g}_j}) is high or low enough compared to
+its peers. \code{prob_sup()} leverages the Monte Carlo discretized sampling
+from the posterior distribution to emulate the occurrence of \eqn{S} trials. Then,
 the probability of the \eqn{j^{th}} genotype belonging to \eqn{\Omega} is the
-ratio of success (\eqn{g_j \in \Omega}) and the total number of sampled events
-(the emulated \eqn{S} trials):
+ratio of success (\eqn{\hat{g}_j \in \Omega}) events and the total number of sampled events,
+as follows:
 
-\deqn{Pr(g_j \in \Omega \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} \in \Omega \vert y)}}
+\deqn{Pr(\hat{g}_j \in \Omega \vert y) = \frac{1}{S}\sum_{s=1}^S{I(\hat{g}_j^{(s)} \in \Omega \vert y)}}
 
 where \eqn{S} is the total number of samples (\eqn{s = 1, 2, ..., S}),
-and \eqn{I(g_j^{(s)} \in \Omega \vert y)} is an indicator variable mapping
-success (1) if \eqn{g_j^{(s)}} exists in \eqn{\Omega} in the \eqn{s^{th}} sample,
-and failure (0) otherwise. \eqn{S} is conditioned to the number of iterations and chains
+and \eqn{I(g_j^{(s)} \in \Omega \vert y)} is an indicator variable that can assume
+two values: (1) if \eqn{\hat{g}_j^{(s)} \in \Omega} in the \eqn{s^{th}} sample,
+and (0) otherwise. \eqn{S} is conditioned to the number of iterations and chains
 previously set at \code{\link[=bayes_met]{bayes_met()}}.
 
-The same idea can be applied to each environment: let \eqn{\Omega_k} represent
-the subset of superior genotypes in the \eqn{k^{th}} environment, then the
-probability of the \eqn{j^{th}} genotype belonging to \eqn{\Omega_k} is
+Similarly, the conditional probability of superior performance can be applied to
+individual environments. Let \eqn{\Omega_k} represent the subset of superior
+genotypes in the \eqn{k^{th}} environment, so that the probability of the
+\eqn{j^{\text{th}} \in \Omega_k} can calculated as follows:
 
-\deqn{Pr(g_{jk} \in \Omega_k \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} \in \Omega_k \vert y)}}
+\deqn{Pr(\hat{g}_{jk} \in \Omega_k \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} \in \Omega_k \vert y)}
 
-where \eqn{I(g_{jk}^{(s)} \in \Omega_k \vert y)} is an indicator variable mapping
-success (1) if \eqn{g_{jk}^{(s)}} exists in \eqn{\Omega_k}, and failure (0) otherwise.
-Note that \eqn{g_{jk} = g_j + ge_{jk}}, i.e., the genetic marginal value is summed to
-the genetic value of \eqn{j} when planted specifically at environment \eqn{k}
-(genotype-by-environment interaction effect).
+where \eqn{I(\hat{g}_{jk}^{(s)} \in \Omega_k \vert y)} is an indicator variable
+mapping success (1) if \eqn{\hat{g}_{jk}^{(s)}} exists in \eqn{\Omega_k}, and
+failure (0) otherwise, and \eqn{\hat{g}_{jk}^{(s)} = \hat{g}_j^{(s)} + \widehat{ge}_{jk}^{(s)}}.
+Note that when computing conditional probabilities (i.e., conditional to the
+\eqn{k^{\text{th}}} environment or mega-environment), we are accounting for
+the interaction of the \eqn{j^{\text{th}}} genotype with the \eqn{k^{\text{th}}}
+environment.
 
-Pairwise comparisons are also available in \code{prob_sup()}, both across and within environments.
-Leveraging the same samples, \code{prob_sup()} estimates the probability of a genotype
-\eqn{j} performing better than a genotype \eqn{i}. Across environments, the
-equation is the following:
+The pairwise probabilities of superior performance can also be calculated across
+or within environments. This metric assesses the probability of the \eqn{j^{\text{th}}}
+genotype being superior to another experimental genotype or a commercial check.
+The calculations are as follows, across and within environments, respectively:
 
-\deqn{Pr(g_j > g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} > g_i^{(s)} \vert y)}}
+\deqn{Pr(\hat{g}_{j} > \hat{g}_{j^\prime} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{j}^{(s)} > \hat{g}_{j^\prime}^{(s)} \vert y)}
 
 or
 
-\deqn{Pr(g_j < g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} < g_i^{(s)} \vert y)}}
+\deqn{Pr(\hat{g}_{jk} > \hat{g}_{j^\prime k} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} > \hat{g}_{j^\prime k}^{(s)} \vert y)}
 
-The first equation is applied when the aim is to increase the trait value (\code{increase = T}).
-Conversely, the second equation is used when \code{increase = F}. Within environments,
-\eqn{g_j} is switched by \eqn{g_{jk}}.
+These equations are set for when the selection direction is positive. If
+\code{increase = F}, \eqn{>} is simply switched by \eqn{<}.
 
 \itemize{\item Probability of superior stability}
 
-The equations described above are related to the genotypes' performance predictability, an
-agronomic way of looking at stability. Another point of view is to consider the
-invariance as a measure of stability. Making a direct analogy with Shukla's (1972)
-theory, a stable genotype would be the one that had the lower variance of the
-genotype-by-environment interaction effect, \eqn{var(ge_{jk})}. Using the same
-ideas as above, the probability of superior stability is given by:
+Probabilities of superior performance highlight experimental genotypes with
+high agronomic stability. For ecological stability (invariance), the probability
+of superior stability is the more adequate. Making a direct analogy with the
+method of Shukla (1972), a stable genotype is the one that has a low variance
+of the GEI (genotype-by-environment interaction) effects \eqn{[var(\widehat{ge})$]}.
+Using the same probability principles previously described, the probability
+of superior stability is given as follows:
 
-\deqn{Pr [var(ge_{jk})\in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)})\in \Omega \vert y]} }
+\deqn{Pr[var(\widehat{ge}_{jk}) \in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S I[var(\widehat{ge}_{jk}^{(s)}) \in \Omega \vert y]}
 
-where \eqn{I[var(ge_{jk}^{(s)})\in \Omega \vert y]} is an indicator variable
-mappings success (1) or failure (0).
+where \eqn{I[var(\widehat{ge}_{jk}^{(s)}) \in \Omega \vert y]} indicates if
+\eqn{var(\widehat{ge}_{jk}^{(s)})} exists in \eqn{\Omega} (1) or not (0).
+Pairwise probabilities of superior stability are also possible in this context:
 
-\code{prob_sup()} also provides means to directly compare the stability of two genotypes.
-The pairwise probability of superior stability is given by:
+\deqn{Pr[var(\widehat{ge}_{jk}) < var(\widehat{ge}_{j^\prime k}) \vert y] = \frac{1}{S} \sum_{s=1}^S I[var(\widehat{ge}_{jk})^{(s)} < var(\widehat{ge}_{j^\prime k})^{(s)} \vert y]}
 
-\deqn{Pr[var(ge_{jk}) < var(ge_{ik}) \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)}) < var(ge_{ik}^{(s)}) \vert y]} }
-
-Note that \eqn{j} will be superior to \eqn{i} if it has a \strong{lower}
+Note that \eqn{j} will be superior to \eqn{j^\prime} if it has a \strong{lower}
 variance of the genotype-by-environment interaction effect. This is true regardless
 if \code{increase} is set to \code{TRUE} or \code{FALSE}.
 
-Finally, by assuming independence between the genetic main effect and the
-genotype-by-environment effect variance, \code{prob_sup} computes the joint probability
-of superior performance and stability:
+The joint probability independent events is the product of the individual probabilities.
+The estimated genotypic main effects and the variances of GEI effects are independent
+by design, thus the joint probability of superior performance and stability as follows:
 
-\deqn{Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]}
+\deqn{Pr[\hat{g}_j \in \Omega \cap var(\widehat{ge}_{jk}) \in \Omega] = Pr(\hat{g}_j \in \Omega) \times Pr[var(\widehat{ge}_{jk}) \in \Omega]}
 
 The estimation of these probabilities are strictly related to some key questions that
 constantly arises in plant breeding:

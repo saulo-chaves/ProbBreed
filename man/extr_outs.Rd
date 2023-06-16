@@ -31,19 +31,19 @@ corresponds to the evaluated genotypes}
 in the model. The codes are:
 \itemize{
 \item \code{r} : replicate effect
-\item \code{b} : block inside replicate effect (if the trials are in
+\item \code{b} : block inside replicate effect (if the trials were laid out in
 incomplete blocks design)
 \item \code{l} : environment effect
 \item \code{m} : region effect (if it is available)
-\item \code{g} : genetic effect
+\item \code{g} : genotypic effect
 \item \code{gl} : genotype-by-environment effect
 \item \code{gm} : genotype-by-region effect
 }}
 
 \item{nenv}{The number of environments in the analysis}
 
-\item{probs}{A vector with two elements representing the probabilities that will
-be considered for computing the quantiles. Provide values between 0 and 1.}
+\item{probs}{A vector with two elements representing the probabilities
+(in decimal scale) that will be considered for computing the quantiles.}
 
 \item{check.stan.diag}{A logical value indicating whether the function should
 extract some diagnostic using native \code{rstan} functions.}

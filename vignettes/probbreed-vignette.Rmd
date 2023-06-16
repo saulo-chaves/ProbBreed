@@ -210,7 +210,7 @@ In this function structure:
 
   * `m` : region effect
 
-  * `g` : genetic effect
+  * `g` : genotypic effect
 
   * `gl` : genotype-by-location effect
 
@@ -250,7 +250,7 @@ outs$fun_plots$densities$sampled_y
 
 ![](img/density.png){width=100%}
 
-...Or the histogram of the genetic main effects:
+...Or the histogram of the genotypic main effects:
 
 ```{r echo=TRUE, fig.retina=2, fig.width=6, fig.height=6, eval=FALSE}
 outs$fun_plots$histogram$g
@@ -300,7 +300,7 @@ The outputs of this function are divided into two lists: `marginal` and `conditi
 
 The `marginal` list contains two other lists: one with data frames detailing the results of each computed probability, and another with ggplots illustrating the computed probabilities. Below, we detail each result:
 
-#### Highest posterior density of genetic main effects
+#### Highest posterior density of genotypic main effects
 
 This metric is illustrated in a caterpillar plot: 
 
@@ -312,13 +312,12 @@ results$marginal$plots$g_hpd
 
 #### Probability of superior performance
 
-Let $\Omega$ represent the subset of selected genotypes based on their performance across environments. A given genotype $j$ will belong to $\Omega$ if its genetic marginal value ($g_j$) is among the top $V$, with $V$ being the selection intensity. `prob_sup()` leverages the Monte Carlo discretized sampling from the posterior distribution to emulate the occurrence of $S$ trials. Thence, the probability of the $j^{\text{th}}$ genotype belonging to $\Omega$ is the ratio of success ($g_j \in \Omega$) and the total number of sampled events (the emulated $S$ trials):
+Let $\Omega$ be a subset of the high-performance selected genotypes according to the intensity of selection. A given genotype $j$ will belong to $\Omega$ if its genotypic marginal value ($\hat{g}_j$) is high (or low) enough compared to its peers. We can emulate the occurrence of $S$ trials ($s = 1, 2, \dots, S$) leveraging from the Monte Carlo discretized sampling from posterior distributions of the fitted Bayesian models. Then, the probability of the $j^{\text{th}}$ genotype belonging to $\Omega$ is its ratio of success ($\hat{g}_j \in \Omega$) events over the total number of sampled events [$S = (\hat{g}_j \in \Omega) + (\hat{g}_j \notin \Omega)]$, as follows::
 
 $$
-Pr(g_j \in \Omega \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} \in \Omega \vert y)}
+Pr(\hat{g}_j \in \Omega \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_j^{(s)} \in \Omega \vert y)
 $$
-where $S$ is the total number of samples ($s = 1, 2, \dots, S$), and $I(g_j^{(s)} \in \Omega \vert y)$ is an indicator variable mapping success (1) if $g_j^{(s)}$ exists in $\Omega$ in the $s^{\text{th}}$ sample, and failure (0) otherwise. $S$ is conditioned to the number of iterations and chains previously set at `bayes_met()`. 
-
+where $I(\hat{g}_j^{(s)} \in \Omega \vert y)$ is an indicator variable that can assume two values: (1) if $\hat{g}_j \in \Omega$ in the $s^{\text{th}}$ sample, and (0) otherwise. Note that the uncertainty associated with the distribution of the values from the genotypic posterior values are captured by accounting $\hat{g}_j \in \Omega$ in $S$. 
 The results provided by `prob_sup()` can be accessed using the following commands: 
 
 ```{r echo=TRUE,fig.width=6, fig.height=6, eval=FALSE}
@@ -337,15 +336,15 @@ results$marginal$plots$perfo
 
 #### Pairwise probability of superior performance
 
-To directly compare a selection candidate with a commercial check, or another promising genotype, we can calculate the pairwise probability of superior performance. This metric computes the probability of a genotype $j$ performing better than a genotype $i$:
+To directly compare a selection candidate with a commercial check, or another promising genotype, we can calculate the pairwise probability of superior performance. This metric computes the probability of a genotype $j$ performing better than a genotype $j^\prime$:
 
 $$
-Pr(g_j > g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} > g_i^{(s)} \vert y)}
+Pr(\hat{g}_{j} > \hat{g}_{j^\prime} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{j}^{(s)} > \hat{g}_{j^\prime}^{(s)} \vert y)
 $$
-where $I(g_j^{(s)} > g_i^{(s)} \vert y)$ is an indicator variable mapping if $g_j$ is better (1) than $g_i$, or not (0). Note that this equation is applied if the selection direction is to increase the trait value. If the aim is to decrease it (for example, plant height or the damage of a disease), you can set `increase = F`, and the following equation is employed: 
+Note that this equation is applied if the selection direction is to increase the trait value. If the aim is to decrease it (for example, plant height or the damage of a disease), you can set `increase = F`, and the following equation is employed: 
 
 $$
-Pr(g_j < g_i \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_j^{(s)} < g_i^{(s)} \vert y)}
+Pr(\hat{g}_{j} < \hat{g}_{j^\prime} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{j}^{(s)} < \hat{g}_{j^\prime}^{(s)} \vert y)
 $$
 The results are accessed using the following commands:
 
@@ -367,12 +366,12 @@ The results indicates the probability of genotypes at the _x_-axis performing su
 
 #### Probability of superior stability
 
-Another criterion for recommending candidates to a target population of environments is by assessing how variable is their performance across environments. If we consider genotypes that have low genotype-by-environment interaction variance [$var(ge_{jk})$] as stable, the probability of superior stability is given by the following equation: 
+Probabilities of superior performance highlight experimental genotypes with high agronomic stability. For ecological stability (invariance), the probability of superior stability is more adequate. If we consider genotypes that have low genotype-by-environment interaction variance [$var(ge_{jk})$] as stable, the probability of superior stability is given by the following equation: 
 
 $$
-Pr[var(ge_{jk}) \in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S{I[var(ge_{jk}) \in \Omega \vert y]}
+Pr[var(\widehat{ge}_{jk}) \in \Omega \vert y] = \frac{1}{S} \sum_{s=1}^S I[var(\widehat{ge}_{jk}^{(s)}) \in \Omega \vert y]
 $$
-where $I[var(ge_{jk}) \in \Omega \vert y]$ is an indicator variable mapping success (1) if the $j^{\text {th}}$ has one of the $V$ lower variances of the genotype-by-environment interaction, and failure (0) otherwise.
+where $I[var(\widehat{ge}_{jk}^{(s)}) \in \Omega \vert y]$ indicates if $var(\widehat{ge}_{jk}^{(s)})$ exists in $\Omega$ (1) or not (0). Note that this probability can only be computed across environments since it depends on $var(\widehat{ge}_{jk})$. Pairwise probabilities of superior stability are also possible in this context: 
 
 If `reg` is not `NULL`, like in the example, two probabilities are computed separately, one for the genotype-by-environment interaction (`stabi_gl`), and another for the genotype-by-region interaction (`stabi_gm`). Otherwise, if `reg = NULL`, only `stabi_gl` will be available. For the example we are running, the results are accessed using the following commands:
 
@@ -413,7 +412,7 @@ results$marginal$plots$stabi_gm
 We can also compare the stability of two selection candidates, or a experimental genotype and a commercial check. The following equation is used: 
 
 $$
-Pr[var(ge_{jk}) < var(ge_{ik}) \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(ge_{jk}^{(s)}) < var(ge_{ik}^{(s)}) \vert y]}
+Pr[var(\widehat{ge_{jk}}) < var(\widehat{ge}_{ik}) \vert y] = \frac{1}{S} \sum_{s=1}^S{I [var(\widehat{ge}_{jk}^{(s)}) < var(\widehat{ge}_{ik}^{(s)}) \vert y]}
 $$
 note that, in this case, we are always interested in the genotype that has a lower variance of the genotype-by-environment (or genotype-by-region) interaction effects. 
 
@@ -458,10 +457,10 @@ The results indicates the probability of genotypes at the _x_-axis being more st
 
 #### Joint probability of superior performance and superior stability
 
-Assuming that the genetic main effects are independent of the variance of the genotype-by-environment interaction effects, the joint probability of superior performance and superior stability follows the same ideia as the probability of occurrence of two independent events: 
+Assuming that the genotypic main effects are independent of the variance of the genotype-by-environment interaction effects, the joint probability of superior performance and superior stability follows the same ideia as the probability of occurrence of two independent events: 
 
 $$
-Pr[g_j \in \Omega, var(ge_{jk} \in \Omega)] = Pr(g_j \in \Omega \vert y) \times Pr[var(ge_{jk}) \in \Omega \vert y]
+Pr[\hat{g}_j \in \Omega \cap var(\widehat{ge}_{jk}) \in \Omega] = Pr(\hat{g}_j \in \Omega) \times Pr[var(\widehat{ge}_{jk}) \in \Omega]
 $$
 
 The results are accessed using the following commands:
@@ -488,10 +487,10 @@ The probabilities of superior performance can be particularized for each environ
 
 #### Probability of superior performance
 
-It is exactly the same idea as previous stated, but instead of using the marginal genetic effect of each genotype, we use the conditional genetic effect ($g_{jk} = g_j + ge_{jk}$): 
+It is exactly the same idea as previous stated, but instead of using the marginal genotypic effect of each genotype, we use the conditional genotypic effect ($g_{jk} = g_j + ge_{jk}$): 
 
 $$
-Pr(g_{jk} \in \Omega_k \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} \in \Omega_k \vert y)}
+Pr(\hat{g}_{jk} \in \Omega_k \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} \in \Omega_k \vert y)
 $$
 
 The results are accessed using the following commands:
@@ -527,13 +526,13 @@ A directly comparison between genotypes evaluated at the same environment. `prob
 -   When `increase = TRUE`
 
 $$
-Pr(g_{jk} > g_{ik} \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} > g_{ik}^{(s)} \vert y)}
+Pr(\hat{g}_{jk} > \hat{g}_{j^\prime k} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} > \hat{g}_{j^\prime k}^{(s)} \vert y)
 $$
 
 -   When `increase = FALSE`
 
 $$
-Pr(g_{jk} < g_{ik} \vert y) = \frac{1}{S}\sum_{s=1}^S{I(g_{jk}^{(s)} < g_{ik}^{(s)} \vert y)}
+Pr(\hat{g}_{jk} < \hat{g}_{j^\prime k} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} < \hat{g}_{j^\prime k}^{(s)} \vert y)
 $$
 
 Note that this result could not be compiled into a single data frame, since there will be a pairwise comparison for each environment. Therefore, we opt to build several data frames and store them in a list (`pair_perfo_env`). When `reg` is not `NULL`, there will also be a second list, `pair_perfo_reg`. The ggplots are also stored in lists. Therefore, the results are accessed using the following commands, taking the environment "E05" and the region "R2" as examples:
