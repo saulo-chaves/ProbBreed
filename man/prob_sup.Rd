@@ -170,7 +170,7 @@ Probabilities of superior performance highlight experimental genotypes with
 high agronomic stability. For ecological stability (invariance), the probability
 of superior stability is the more adequate. Making a direct analogy with the
 method of Shukla (1972), a stable genotype is the one that has a low variance
-of the GEI (genotype-by-environment interaction) effects \eqn{[var(\widehat{ge})$]}.
+of the GEI (genotype-by-environment interaction) effects \eqn{[var(\widehat{ge})]}.
 Using the same probability principles previously described, the probability
 of superior stability is given as follows:
 
