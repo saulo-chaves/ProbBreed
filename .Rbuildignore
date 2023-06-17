@@ -1,4 +1,6 @@
-^ProbSup\.Rproj$
+^ProbSup.Rproj$
+^\.Rproj\.user$
+^.Rhistory$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
@@ -8,3 +10,4 @@
 ^cran-comments\.md$
 ^revdep$
 ^CRAN-SUBMISSION$
+^ProbBreed\.Rproj$

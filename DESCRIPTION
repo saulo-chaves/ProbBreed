@@ -1,5 +1,5 @@
 Package: ProbBreed
-Title: Probability of Superior Performance and Stability of Genotypes Evaluated at Multi-Environment Trials
+Title: Probability of Superior Performance and Stability of Selection Candidates Evaluated at Multi-Environment Trials
 Version: 1.0.0
 Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
                      email = "saulo.chaves@ufv.br",
@@ -10,7 +10,7 @@ Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
               person("Matheus", "Krause", role = "aut",
                      email = "mdkrause@iastate.edu",
                      comment = c(ORCID = "0000-0002-9171-1021")))
-Description: Compute the probability of superior performance and superior stability of experimental genotypes.
+Description: Compute the probability of superior performance and superior stability of selection candidates.
 URL: https://github.com/saulo-chaves/ProbBreed
 License: AGPL (>= 3)
 Depends: R (>= 3.5.0)
@@ -28,4 +28,3 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 LazyData: true
-VignetteBuilder: knitr

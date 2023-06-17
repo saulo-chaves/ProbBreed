@@ -4,9 +4,9 @@
 \name{ProbBreed-package}
 \alias{ProbBreed}
 \alias{ProbBreed-package}
-\title{ProbBreed: Probability of Superior Performance and Stability of Genotypes Evaluated at Multi-Environment Trials}
+\title{ProbBreed: Probability of Superior Performance and Stability of Selection Candidates Evaluated at Multi-Environment Trials}
 \description{
-Compute the probability of superior performance and superior stability of experimental genotypes.
+Compute the probability of superior performance and superior stability of selection candidates.
 }
 \seealso{
 Useful links:
