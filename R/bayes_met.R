@@ -4,9 +4,12 @@
 ##' Bayesian model for multi-environment trials
 ##'
 ##' @description
-##' This function runs a Bayesian model for analysing data from
+##' This function runs a Bayesian model for analyzing data from
 ##' Multi-environment trials using `rstan`, the `R` interface to `Stan`.
 ##'
+##' @details
+##' More details about the usage of `bayes_met`, as well as the other function of
+##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
 ##'
 ##' @param data  A data frame containing the observations
 ##' @param gen,env  A string. The name of the
@@ -45,20 +48,19 @@
 ##'
 ##'
 ##' @examples
-##' \dontrun{
-##' # Model
+##' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 env = "Env",
 ##'                 repl = NULL,
 ##'                 reg = "Reg",
-##'                 res.het = F,
+##'                 res.het = FALSE,
 ##'                 trait = "Y",
 ##'                 iter = 2000, cores = 1, chains = 4)
 ##'                 }
 ##' @export
 
-bayes_met = function(data, gen, env, repl, trait, reg = NULL, res.het = F,
+bayes_met = function(data, gen, env, repl, trait, reg = NULL, res.het = FALSE,
                     iter = 2000, cores = 1, chains = 4,...){
 
   requireNamespace('rstan')

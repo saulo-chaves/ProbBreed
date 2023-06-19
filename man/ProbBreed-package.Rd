@@ -4,9 +4,9 @@
 \name{ProbBreed-package}
 \alias{ProbBreed}
 \alias{ProbBreed-package}
-\title{ProbBreed: Probability of Superior Performance and Stability of Selection Candidates Evaluated at Multi-Environment Trials}
+\title{ProbBreed: Probability Theory for Selecting Candidates in Plant Breeding}
 \description{
-Compute the probability of superior performance and superior stability of selection candidates.
+Use probability theory under the Bayesian framework for calculating the risk of selecting candidates in a multi-environment context [Dias et al. (2022) \doi{10.1007/s00122-022-04041-y}]. Contained are functions used to fit a Bayesian multi-environment model (based on the available presets), extract posterior values and maximum posterior values, compute the variance components, check the model’s convergence, and calculate the probabilities. For both across and within-environments scopes, the package computes the probability of superior performance and the pairwise probability of superior performance. Furthermore, the probability of superior stability and the pairwise probability of superior stability across environments is estimated. A joint probability of superior performance and stability is also provided.
 }
 \seealso{
 Useful links:

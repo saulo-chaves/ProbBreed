@@ -13,6 +13,7 @@ extr_outs(
   nenv,
   probs = c(0.025, 0.975),
   check.stan.diag = FALSE,
+  verbose = FALSE,
   ...
 )
 }
@@ -48,6 +49,9 @@ incomplete blocks design)
 \item{check.stan.diag}{A logical value indicating whether the function should
 extract some diagnostic using native \code{rstan} functions.}
 
+\item{verbose}{A logical value. If \code{TRUE}, the function will indicate the
+completed steps. Defaults to \code{FALSE}}
+
 \item{...}{Passed to \code{\link[rstan:stan_plot_diagnostics]{rstan::stan_diag()}}}
 }
 \value{
@@ -68,22 +72,27 @@ plots. These will be available for all effects declared at the \code{effects} ar
 This function extracts outputs of the Bayesian model fitted
 using \code{\link[=bayes_met]{bayes_met()}}, and provides some diagnostics about the model
 }
+\details{
+More details about the usage of \code{extr_outs}, as well as the other function of
+the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
+}
 \examples{
-\dontrun{
+\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
                 reg = "Reg",
-                res.het = F,
+                res.het = FALSE,
                 trait = "Y",
-                iter = 100, cores = 4, chain = 4)
-                #Remember, increase the number of iterations, cores and chains
+                iter = 2000, cores = 1, chain = 4)
 
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
-                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
+                 probs = c(0.05, 0.95),
+                 check.stan.diag = TRUE,
+                 verbose = FALSE)
                  }
 }
 \seealso{

@@ -14,7 +14,8 @@ prob_sup(
   int,
   increase = TRUE,
   save.df = FALSE,
-  interactive = FALSE
+  interactive = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ region information. Otherwise, \code{reg = NULL} (default).}
 \item{interactive}{Logical. Should ggplots be converted into interactive plots?
 If \code{TRUE}, the function loads the \code{plotly} package and uses the \code{\link[plotly:ggplotly]{plotly::ggplotly()}}
 command.}
+
+\item{verbose}{A logical value. If \code{TRUE}, the function will indicate the
+completed steps. Defaults to \code{FALSE}.}
 }
 \value{
 The function returns two lists, one with the \code{marginal} probabilities, and
@@ -162,7 +166,7 @@ or
 \deqn{Pr(\hat{g}_{jk} > \hat{g}_{j^\prime k} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} > \hat{g}_{j^\prime k}^{(s)} \vert y)}
 
 These equations are set for when the selection direction is positive. If
-\code{increase = F}, \eqn{>} is simply switched by \eqn{<}.
+\code{increase = FALSE}, \eqn{>} is simply switched by \eqn{<}.
 
 \itemize{\item Probability of superior stability}
 
@@ -206,26 +210,39 @@ than a cultivar check in the target population of environments?}
 \item \strong{What is the probability that a given selection candidate having a
 superior and invariable performance across environments?}
 }
+
+More details about the usage of \code{prob_sup}, as well as the other function of
+the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
 }
 \examples{
-\dontrun{
+\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
                 reg = "Reg",
-                res.het = F,
+                res.het = FALSE,
                 trait = "Y",
                 iter = 2000, cores = 1, chains = 4)
 
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
-                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
+                 probs = c(0.05, 0.95),
+                 check.stan.diag = TRUE,
+                 verbose = FALSE)
 
-results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-                   mod.output = outs, reg = 'Reg', int = .2,
-                   increase = T, save.df = T, interactive = T)
+results = prob_sup(data = soy,
+                   trait = "Y",
+                   gen = "Gen",
+                   env = "Env",
+                   mod.output = outs,
+                   reg = 'Reg',
+                   int = .2,
+                   increase = TRUE,
+                   save.df = FALSE,
+                   interactive = FALSE,
+                   verbose = FALSE)
 }
 
 }

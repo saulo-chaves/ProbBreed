@@ -23,6 +23,8 @@
 ##' @param interactive Logical. Should ggplots be converted into interactive plots?
 ##' If `TRUE`, the function loads the `plotly` package and uses the [plotly::ggplotly()]
 ##' command.
+##' @param verbose A logical value. If `TRUE`, the function will indicate the
+##' completed steps. Defaults to `FALSE`.
 ##'
 ##' @return The function returns two lists, one with the `marginal` probabilities, and
 ##' another with the `conditional` probabilities.
@@ -138,7 +140,7 @@
 ##' \deqn{Pr(\hat{g}_{jk} > \hat{g}_{j^\prime k} \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} > \hat{g}_{j^\prime k}^{(s)} \vert y)}
 ##'
 ##' These equations are set for when the selection direction is positive. If
-##' `increase = F`, \eqn{>} is simply switched by \eqn{<}.
+##' `increase = FALSE`, \eqn{>} is simply switched by \eqn{<}.
 ##'
 ##'
 ##' \itemize{\item Probability of superior stability}
@@ -184,6 +186,9 @@
 ##' superior and invariable performance across environments?}
 ##' }
 ##'
+##' More details about the usage of `prob_sup`, as well as the other function of
+##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
+##'
 ##' @references
 ##'
 ##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
@@ -203,29 +208,40 @@
 ##' @export
 ##'
 ##' @examples
-##' \dontrun{
+##' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 env = "Env",
 ##'                 repl = NULL,
 ##'                 reg = "Reg",
-##'                 res.het = F,
+##'                 res.het = FALSE,
 ##'                 trait = "Y",
 ##'                 iter = 2000, cores = 1, chains = 4)
 ##'
 ##' outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
 ##'                  effects = c('l','g','gl','m','gm'),
 ##'                  nenv = length(unique(soy$Env)),
-##'                  probs = c(0.05, 0.95), check.stan.diag = TRUE)
+##'                  probs = c(0.05, 0.95),
+##'                  check.stan.diag = TRUE,
+##'                  verbose = FALSE)
 ##'
-##' results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-##'                    mod.output = outs, reg = 'Reg', int = .2,
-##'                    increase = T, save.df = T, interactive = T)
+##' results = prob_sup(data = soy,
+##'                    trait = "Y",
+##'                    gen = "Gen",
+##'                    env = "Env",
+##'                    mod.output = outs,
+##'                    reg = 'Reg',
+##'                    int = .2,
+##'                    increase = TRUE,
+##'                    save.df = FALSE,
+##'                    interactive = FALSE,
+##'                    verbose = FALSE)
 ##' }
 ##'
 
 prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
-                    increase = TRUE, save.df = FALSE, interactive = FALSE){
+                    increase = TRUE, save.df = FALSE, interactive = FALSE,
+                    verbose = FALSE){
 
   # Conditions
   stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25')" = {
@@ -306,7 +322,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior performance') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('1. Probability of superior performance estimated \n')
+      if(verbose) message('1. Probability of superior performance estimated')
 
       ## Pairwise probability of superior performance ----------------
       pwsprob_g = matrix(NA, num.gen, num.gen,
@@ -354,7 +370,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_g = stats::na.exclude(pwsprob_g[order(pwsprob_g$x),])
 
-      cat('2. Pairwise probability of superior performance estimated \n')
+      if(verbose) message('2. Pairwise probability of superior performance estimated')
 
       ## Probability of superior stability - Location -----------------
       staprob_gl = mod$post$gl
@@ -382,7 +398,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior stability') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('3. Probability of superior stability (GL) estimated \n')
+      if(verbose) message('3. Probability of superior stability (GL) estimated')
 
       ## Pairwise probability of superior stability - Location -------------
       pwsprob_gl = matrix(NA, num.gen, num.gen,
@@ -426,7 +442,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_gl = stats::na.exclude(pwsprob_gl[order(pwsprob_gl$x),])
 
-      cat('4. Pairwise probability of superior stability (GL) estimated \n')
+      if(verbose) message('4. Pairwise probability of superior stability (GL) estimated')
 
       ## Probability of superior stability - Region --------------
       staprob_gm = mod$post$gm
@@ -454,7 +470,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior stability') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('5. Probability of superior stability (GM) estimated \n')
+      if(verbose) message('5. Probability of superior stability (GM) estimated')
 
 
       ## Pairwise probability of superior stability - Region -----------------
@@ -499,7 +515,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_gm = stats::na.exclude(pwsprob_gm[order(pwsprob_gm$x),])
 
-      cat('6. Pairwise probability of superior stability (GM) estimated \n')
+      if(verbose) message('6. Pairwise probability of superior stability (GM) estimated')
 
       ## Joint probability of superior performance and stability -----------------
       j_prob = rbind(merge(prob_g, prob_gl, by = 'ID'),
@@ -555,7 +571,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
              shape = 'Probabilities')
 
-      cat('7. Joint probability of superior performance and stability estimated \n')
+      if(verbose) message('7. Joint probability of superior performance and stability estimated')
 
       ## Transform into interactive plots -----------------
 
@@ -705,7 +721,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('8. Probability of superior performance within environments estimated \n')
+      if(verbose) message('8. Probability of superior performance within environments estimated')
 
       ### Per Region ----------------
       con_gm = ifelse(table(data[,gen], data[,reg]) != 0, 1, NA)
@@ -734,7 +750,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('9. Probability of superior performance within regions estimated \n')
+      if(verbose) message('9. Probability of superior performance within regions estimated')
 
       ### Adjusting the data frame ----------------
       condprobs = merge(
@@ -805,7 +821,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('10. Pairwise probability of superior performance within environments estimated \n')
+      if(verbose) message('10. Pairwise probability of superior performance within environments estimated')
 
       ### Per Region --------------
       pwprobs.reg = lapply(
@@ -858,7 +874,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('11. Pairwise probability of superior performance within regions estimated \n')
+      if(verbose) message('11. Pairwise probability of superior performance within regions estimated')
 
 
       ## Transform into interactive plots -----------------
@@ -974,7 +990,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
 
       # Final output -----------
-      cat('Process completed!')
+      if(verbose) message('Process completed!')
       output = list(marginal = marg_prob, conditional = cond_prob)
       return(output)
 
@@ -1020,7 +1036,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior performance') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('1. Probability of superior performance estimated \n')
+      cat('1. Probability of superior performance estimated')
 
       ## Pairwise probability of superior performance ----------------
       pwsprob_g = matrix(NA, num.gen, num.gen,
@@ -1068,7 +1084,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_g = stats::na.exclude(pwsprob_g[order(pwsprob_g$x),])
 
-      cat('2. Pairwise probability of superior performance estimated \n')
+      if(verbose) message('2. Pairwise probability of superior performance estimated')
 
       ## Probability of superior stability  -----------------
       staprob_gl = mod$post$gl
@@ -1096,7 +1112,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior stability') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('3. Probability of superior stability estimated \n')
+      if(verbose) message('3. Probability of superior stability estimated')
 
       ## Pairwise probability of superior stability  -------------
       pwsprob_gl = matrix(NA, num.gen, num.gen,
@@ -1140,7 +1156,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_gl = stats::na.exclude(pwsprob_gl[order(pwsprob_gl$x),])
 
-      cat('4. Pairwise probability of superior stability estimated \n')
+      if(verbose) message('4. Pairwise probability of superior stability estimated')
 
 
       ## Joint probability of superior performance and stability -----------------
@@ -1191,7 +1207,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
              shape = 'Probabilities')
 
-      cat('5. Joint probability of superior performance and stability estimated \n')
+      if(verbose) message('5. Joint probability of superior performance and stability estimated')
 
       ## Transform into interactive plots -----------
 
@@ -1306,7 +1322,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('6. Probability of superior performance within environments estimated \n')
+      if(verbose) message('6. Probability of superior performance within environments estimated')
 
       ## Pairwise probability of superior performance ----------------
       ### Per Location -------------
@@ -1356,7 +1372,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('7. Pairwise probability of superior performance within environments estimated \n')
+      if(verbose) message('7. Pairwise probability of superior performance within environments estimated')
 
       ## Transform into interactive plots -----------------
       if(interactive){
@@ -1417,7 +1433,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       }
 
       # Final output -----------
-      cat('Process completed!')
+      if(verbose) message('Process completed!')
       output = list(marginal = marg_prob, conditional = cond_prob)
       return(output)
 
@@ -1477,7 +1493,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior performance') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('1. Probability of superior performance estimated \n')
+      if(verbose) message('1. Probability of superior performance estimated')
 
       ## Pairwise probability of superior performance ----------------
       pwsprob_g = matrix(NA, num.gen, num.gen,
@@ -1525,7 +1541,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_g = stats::na.exclude(pwsprob_g[order(pwsprob_g$x),])
 
-      cat('2. Pairwise probability of superior performance estimated \n')
+      if(verbose) message('2. Pairwise probability of superior performance estimated')
 
       ## Probability of superior stability - Location -----------------
       staprob_gl = mod$post$gl
@@ -1553,7 +1569,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior stability') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('3. Probability of superior stability (GL) estimated \n')
+      if(verbose) message('3. Probability of superior stability (GL) estimated')
 
       ## Pairwise probability of superior stability - Location -------------
       pwsprob_gl = matrix(NA, num.gen, num.gen,
@@ -1597,7 +1613,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_gl = stats::na.exclude(pwsprob_gl[order(pwsprob_gl$x),])
 
-      cat('4. Pairwise probability of superior stability (GL) estimated \n')
+      if(verbose) message('4. Pairwise probability of superior stability (GL) estimated')
 
       ## Probability of superior stability - Region --------------
       staprob_gm = mod$post$gm
@@ -1625,7 +1641,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior stability') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('5. Probability of superior stability (GM) estimated \n')
+      if(verbose) message('5. Probability of superior stability (GM) estimated')
 
 
       ## Pairwise probability of superior stability - Region -----------------
@@ -1670,7 +1686,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_gm = stats::na.exclude(pwsprob_gm[order(pwsprob_gm$x),])
 
-      cat('6. Pairwise probability of superior stability (GM) estimated \n')
+      if(verbose) message('6. Pairwise probability of superior stability (GM) estimated')
 
       ## Joint probability of superior performance and stability -----------------
       j_prob = rbind(merge(prob_g, prob_gl, by = 'ID'),
@@ -1726,7 +1742,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
              shape = 'Probabilities')
 
-      cat('7. Joint probability of superior performance and stability estimated \n')
+      if(verbose) message('7. Joint probability of superior performance and stability estimated')
 
       ## Transform into interactive plots -----------------
 
@@ -1876,7 +1892,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('8. Probability of superior performance within environments estimated \n')
+      if(verbose) message('8. Probability of superior performance within environments estimated')
 
       ### Per Region ----------------
       con_gm = ifelse(table(data[,gen], data[,reg]) != 0, 1, NA)
@@ -1905,7 +1921,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('9. Probability of superior performance within regions estimated \n')
+      if(verbose) message('9. Probability of superior performance within regions estimated')
 
       ### Adjusting the data frame ----------------
       condprobs = merge(
@@ -1976,7 +1992,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('10. Pairwise probability of superior performance within environments estimated \n')
+      if(verbose) message('10. Pairwise probability of superior performance within environments estimated')
 
       ### Per Region --------------
       pwprobs.reg = lapply(
@@ -2029,7 +2045,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('11. Pairwise probability of superior performance within regions estimated \n')
+      if(verbose) message('11. Pairwise probability of superior performance within regions estimated')
 
 
       ## Transform into interactive plots -----------------
@@ -2145,7 +2161,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
 
       # Final output -----------
-      cat('Process completed!')
+      if(verbose) message('Process completed!')
       output = list(marginal = marg_prob, conditional = cond_prob)
       return(output)
 
@@ -2191,7 +2207,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior performance') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('1. Probability of superior performance estimated \n')
+      if(verbose) message('1. Probability of superior performance estimated')
 
       ## Pairwise probability of superior performance ----------------
       pwsprob_g = matrix(NA, num.gen, num.gen,
@@ -2239,7 +2255,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_g = stats::na.exclude(pwsprob_g[order(pwsprob_g$x),])
 
-      cat('2. Pairwise probability of superior performance estimated \n')
+      if(verbose) message('2. Pairwise probability of superior performance estimated')
 
       ## Probability of superior stability  -----------------
       staprob_gl = mod$post$gl
@@ -2267,7 +2283,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior stability') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('3. Probability of superior stability estimated \n')
+      if(verbose) message('3. Probability of superior stability estimated')
 
       ## Pairwise probability of superior stability  -------------
       pwsprob_gl = matrix(NA, num.gen, num.gen,
@@ -2311,7 +2327,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       )
       pwsprob_gl = stats::na.exclude(pwsprob_gl[order(pwsprob_gl$x),])
 
-      cat('4. Pairwise probability of superior stability estimated \n')
+      if(verbose) message('4. Pairwise probability of superior stability estimated')
 
 
       ## Joint probability of superior performance and stability -----------------
@@ -2362,7 +2378,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
              shape = 'Probabilities')
 
-      cat('5. Joint probability of superior performance and stability estimated \n')
+      if(verbose) message('5. Joint probability of superior performance and stability estimated')
 
       ## Transform into interactive plots -----------
 
@@ -2477,7 +2493,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                                      title.position = 'top',
                                      title.hjust = .5))
 
-      cat('6. Probability of superior performance within environments estimated \n')
+      if(verbose) message('6. Probability of superior performance within environments estimated')
 
       ## Pairwise probability of superior performance ----------------
       ### Per Location -------------
@@ -2527,7 +2543,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                 legend.position = c(.8,.15), legend.direction = 'horizontal')
       })
 
-      cat('7. Pairwise probability of superior performance within environments estimated \n')
+      if(verbose) message('7. Pairwise probability of superior performance within environments estimated')
 
       ## Transform into interactive plots -----------------
       if(interactive){
@@ -2588,7 +2604,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       }
 
       # Final output -----------
-      cat('Process completed!')
+      if(verbose) message('Process completed!')
       output = list(marginal = marg_prob, conditional = cond_prob)
       return(output)
 

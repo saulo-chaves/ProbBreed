@@ -11,7 +11,7 @@ bayes_met(
   repl,
   trait,
   reg = NULL,
-  res.het = F,
+  res.het = FALSE,
   iter = 2000,
   cores = 1,
   chains = 4,
@@ -60,18 +60,21 @@ The function returns an object of S4 class stanfit containing the
 fitted results
 }
 \description{
-This function runs a Bayesian model for analysing data from
+This function runs a Bayesian model for analyzing data from
 Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Stan}.
 }
+\details{
+More details about the usage of \code{bayes_met}, as well as the other function of
+the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
+}
 \examples{
-\dontrun{
-# Model
+\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
                 reg = "Reg",
-                res.het = F,
+                res.het = FALSE,
                 trait = "Y",
                 iter = 2000, cores = 1, chains = 4)
                 }
