@@ -5,9 +5,6 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/saulo-chaves/ProbSup/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/saulo-chaves/ProbBreed/actions/workflows/R-CMD-check.yaml)
-[![Build
-status](https://ci.appveyor.com/api/projects/status/eeu30dhkhiper85g?svg=true)](https://ci.appveyor.com/project/saulo-chaves/probbreed)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
