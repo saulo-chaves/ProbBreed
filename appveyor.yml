@@ -25,8 +25,10 @@ environment:
 build_script:
   - travis-tool.sh install_deps
 
+test: off
+
 test_script:
-  - travis-tool.sh off
+  - travis-tool.sh run-tests
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
