@@ -142,7 +142,7 @@ previously set at \code{\link[=bayes_met]{bayes_met()}}.
 Similarly, the conditional probability of superior performance can be applied to
 individual environments. Let \eqn{\Omega_k} represent the subset of superior
 genotypes in the \eqn{k^{th}} environment, so that the probability of the
-\eqn{j^{\text{th}} \in \Omega_k} can calculated as follows:
+\eqn{j^{th} \in \Omega_k} can calculated as follows:
 
 \deqn{Pr(\hat{g}_{jk} \in \Omega_k \vert y) = \frac{1}{S} \sum_{s=1}^S I(\hat{g}_{jk}^{(s)} \in \Omega_k \vert y)}
 
@@ -150,12 +150,12 @@ where \eqn{I(\hat{g}_{jk}^{(s)} \in \Omega_k \vert y)} is an indicator variable
 mapping success (1) if \eqn{\hat{g}_{jk}^{(s)}} exists in \eqn{\Omega_k}, and
 failure (0) otherwise, and \eqn{\hat{g}_{jk}^{(s)} = \hat{g}_j^{(s)} + \widehat{ge}_{jk}^{(s)}}.
 Note that when computing conditional probabilities (i.e., conditional to the
-\eqn{k^{\text{th}}} environment or mega-environment), we are accounting for
-the interaction of the \eqn{j^{\text{th}}} genotype with the \eqn{k^{\text{th}}}
+\eqn{k^{th}} environment or mega-environment), we are accounting for
+the interaction of the \eqn{j^{th}} genotype with the \eqn{k^{th}}
 environment.
 
 The pairwise probabilities of superior performance can also be calculated across
-or within environments. This metric assesses the probability of the \eqn{j^{\text{th}}}
+or within environments. This metric assesses the probability of the \eqn{j^{th}}
 genotype being superior to another experimental genotype or a commercial check.
 The calculations are as follows, across and within environments, respectively:
 
