@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 ProbBreed employs Bayesian statistics to analyse multi-environment trials' data, and uses its outputs to estimate the marginal and pairwise probabilities of superior performance and superior stability of the genotypes, as well as their conditional probability of superior performance. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y.
-
+ 
 ## Installation
 
 You can install the development version of ProbBreed from [GitHub](https://github.com/) with:
