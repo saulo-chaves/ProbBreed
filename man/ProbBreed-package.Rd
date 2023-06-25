@@ -23,7 +23,7 @@ Useful links:
 Authors:
 \itemize{
   \item Kaio Dias \email{kaio.o.dias@ufv.br} (\href{https://orcid.org/0000-0002-9171-1021}{ORCID}) [copyright holder]
-  \item Matheus Krause \email{mdkrause@iastate.edu} (\href{https://orcid.org/0000-0002-9171-1021}{ORCID})
+  \item Matheus Krause \email{mdkrause@iastate.edu} (\href{https://orcid.org/0000-0003-2411-9287}{ORCID})
 }
 
 }

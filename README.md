@@ -29,8 +29,8 @@ command:
 install.packages("ProbBreed")
 ```
 
-Alternatively, you can install the development version of ProbBreed from
-[GitHub](https://github.com/saulo-chaves/ProbBreed) with:
+Alternatively, you can install the development version of `ProbBreed`
+from [GitHub](https://github.com/saulo-chaves/ProbBreed) with:
 
 ``` r
 # install.packages("devtools")
