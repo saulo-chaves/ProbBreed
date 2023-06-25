@@ -22,8 +22,15 @@ performance. The method is thoroughly described at
 
 ## Installation
 
-You can install the development version of ProbBreed from
-[GitHub](https://github.com/) with:
+You can install the CRAN version of `ProbBreed` using the following
+command:
+
+``` r
+install.packages("ProbBreed")
+```
+
+Alternatively, you can install the development version of ProbBreed from
+[GitHub](https://github.com/saulo-chaves/ProbBreed) with:
 
 ``` r
 # install.packages("devtools")
@@ -49,9 +56,11 @@ mod = bayes_met(data = soy,
 outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
-                 probs = c(0.05, 0.95), check.stan.diag = TRUE)
+                 probs = c(0.05, 0.95), check.stan.diag = FALSE, 
+                 verbose = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
                    mod.output = outs, reg = 'Reg', int = .2,
-                   increase = T, save.df = T, interactive = T)
+                   increase = TRUE, save.df = FALSE, interactive = FALSE, 
+                   verbose = TRUE)
 ```
