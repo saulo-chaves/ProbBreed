@@ -1036,7 +1036,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         labs(x = 'Genotypes', y = 'Probability of superior performance') +
         theme(axis.text.x = element_text(angle = 90))
 
-      cat('1. Probability of superior performance estimated')
+      if(verbose) message('1. Probability of superior performance estimated')
 
       ## Pairwise probability of superior performance ----------------
       pwsprob_g = matrix(NA, num.gen, num.gen,
