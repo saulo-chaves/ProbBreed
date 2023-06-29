@@ -1421,12 +1421,12 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       if(save.df){
         dir.create(path = paste0(getwd(),'/cond_prob'))
-        utils::write.csv(condprobs,
+        utils::write.csv(probs.df,
                          file = paste0(getwd(),'/cond_prob/perfo.csv'),
                          row.names = F)
         dir.create(path = paste0(getwd(),'/cond_prob/pairwise_env'))
-        for (i in names(pwprobs.env)){
-          utils::write.csv(pwprobs.env[[i]],
+        for (i in names(pwprobs)){
+          utils::write.csv(pwprobs[[i]],
                            file = paste0(getwd(),'/cond_prob/pairwise_env/perfo_',i,'.csv'),
                            row.names = F)
         }
@@ -2592,12 +2592,12 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       if(save.df){
         dir.create(path = paste0(getwd(),'/cond_prob'))
-        utils::write.csv(condprobs,
+        utils::write.csv(probs.df,
                          file = paste0(getwd(),'/cond_prob/perfo.csv'),
                          row.names = F)
         dir.create(path = paste0(getwd(),'/cond_prob/pairwise_env'))
-        for (i in names(pwprobs.env)){
-          utils::write.csv(pwprobs.env[[i]],
+        for (i in names(pwprobs)){
+          utils::write.csv(pwprobs[[i]],
                            file = paste0(getwd(),'/cond_prob/pairwise_env/perfo_',i,'.csv'),
                            row.names = F)
         }
