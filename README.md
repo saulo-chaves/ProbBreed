@@ -45,9 +45,9 @@ it:
 
 ``` r
 toy = data.frame(
-gen = rep(1:5, each =4),
-env = rep(1:4, times = 5),
-y = rnorm(20, mean = 20, sd = 5)
+  gen = rep(1:5, each =4),
+  env = rep(1:4, times = 5),
+  y = rnorm(20, mean = 20, sd = 5)
 )
 new.toy = recod(toy, name.fact = 'gen', cod = 'G')
 ```
