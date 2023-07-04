@@ -39,6 +39,19 @@ devtools::install_github("saulo-chaves/ProbBreed", build_vignettes = T)
 
 ## Usage
 
+If the levels of the factors (Genotype, Environment and Region) in your
+dataset are not alphanumeric, you can use the `recod` function to recode
+it:
+
+``` r
+toy = data.frame(
+gen = rep(1:5, each =4),
+env = rep(1:4, times = 5),
+y = rnorm(20, mean = 20, sd = 5)
+)
+new.toy = recod(toy, name.fact = 'gen', cod = 'G')
+```
+
 A basic workflow using the available data is:
 
 ``` r

@@ -244,9 +244,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
                     verbose = FALSE){
 
   # Conditions
-  stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25')" = {
-    is.character(data[,gen])
-    is.character(data[,env])
+  stopifnot("Each 'gen' and 'env' must be represented by an alphanumeric code (e.g., 'G01' or 'L25')" = {
+    all(grepl('[A-Za-z]', data[, gen]))
+    all(grepl('[A-Za-z]', data[, env]))
   })
 
   stopifnot("Please, provide a valid selection intensity (number between 0 and 1)" = {
@@ -274,7 +274,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       # Preparations
 
       stopifnot("Each 'reg' must be represented by a string (e.g., 'R08')" = {
-        is.character(data[,reg])
+        all(grepl('[A-Za-z]', data[, reg]))
       })
 
       name.reg = levels(factor(data[,reg]))
@@ -1444,7 +1444,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       # Preparations
 
       stopifnot("Each 'reg' must be represented by a string (e.g., 'R08')" = {
-        is.character(data[,reg])
+        all(grepl('[A-Za-z]', data[, reg]))
       })
 
       name.reg = levels(factor(data[,reg]))
