@@ -279,13 +279,13 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       name.reg = levels(factor(data[,reg]))
       num.reg = nlevels(factor(data[,reg]))
-      colnames(mod$post$g) = paste0(name.gen, '_')
+      colnames(mod$post$g) = paste0(name.gen, '_@#')
       colnames(mod$post$gm) = paste('Gen',rep(name.gen,  times = num.reg),
-                                    'Reg',rep(name.reg,  each = num.gen), sep = '_')
+                                    'Reg',rep(name.reg,  each = num.gen), sep = '_@#')
       name.env.reg = sort(paste('Env',unique(data[,c(env,reg)])[,1],
-                                'Reg',unique(data[,c(env,reg)])[,2], sep = '_'))
+                                'Reg',unique(data[,c(env,reg)])[,2], sep = '_@#'))
       colnames(mod$post$gl) = paste('Gen',rep(name.gen,  times = num.env),
-                                    rep(name.env.reg,  each = num.gen), sep = '_')
+                                    rep(name.env.reg,  each = num.gen), sep = '_@#')
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -311,7 +311,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ind_post = apply(mod$post$g, 1, function(x){
         ifelse(name.gen %in%
                  unlist(strsplit(names(x[order(x, decreasing = T)][1:ceiling(int * num.gen)]),
-                                 split = '_')), 1, 0)
+                                 split = '_@#')), 1, 0)
       })
       rownames(ind_post) = name.gen
       prob_g = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
@@ -332,14 +332,14 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           pwsprob_g[i,j] = mean(mod$post$g[,j] > mod$post$g[,i])
         }
       }
-      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_'))
+      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_@#'))
       pwsprob_g1 = pwsprob_g[match(prob_g$ID, rownames(pwsprob_g)),
                          match(prob_g$ID, rownames(pwsprob_g))]
       pwsprob_g1[upper.tri(pwsprob_g1, diag = T)] = NA
       pwsprob_g1 = stats::reshape(
         data.frame(pwsprob_g1),
         direction = 'long',
-        varying = list(colnames(pwsprob_g1)),
+        varying = list(colnames(data.frame(pwsprob_g1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g1), times = colnames(pwsprob_g1),
         new.row.names = NULL, v.names = 'prob'
@@ -363,7 +363,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_g = stats::reshape(
         data.frame(pwsprob_g),
         direction = 'long',
-        varying = list(colnames(pwsprob_g)),
+        varying = list(colnames(data.frame(pwsprob_g))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g), times = colnames(pwsprob_g),
         new.row.names = 1:length(c(pwsprob_g)), v.names = 'prob'
@@ -375,7 +375,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ## Probability of superior stability - Location -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_Env'))[,1]
+        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#Env'))[,1]
         )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -414,7 +414,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl1 = stats::reshape(
         data.frame(pwsprob_gl1),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl1)),
+        varying = list(colnames(data.frame(pwsprob_gl1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl1), times = colnames(pwsprob_gl1),
         new.row.names = NULL, v.names = 'prob'
@@ -435,7 +435,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl = stats::reshape(
         data.frame(pwsprob_gl),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl)),
+        varying = list(colnames(data.frame(pwsprob_gl))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl), times = colnames(pwsprob_gl),
         new.row.names = 1:length(c(pwsprob_gl)), v.names = 'prob'
@@ -447,7 +447,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ## Probability of superior stability - Region --------------
       staprob_gm = mod$post$gm
       colnames(staprob_gm) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gm),'_Reg'))[,1]
+        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gm),'_@#Reg'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -487,7 +487,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gm1 = stats::reshape(
         data.frame(pwsprob_gm1),
         direction = 'long',
-        varying = list(colnames(pwsprob_gm1)),
+        varying = list(colnames(data.frame(pwsprob_gm1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gm1), times = colnames(pwsprob_gm1),
         new.row.names = NULL, v.names = 'prob'
@@ -508,7 +508,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gm = stats::reshape(
         data.frame(pwsprob_gm),
         direction = 'long',
-        varying = list(colnames(pwsprob_gm)),
+        varying = list(colnames(data.frame(pwsprob_gm))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gm), times = colnames(pwsprob_gm),
         new.row.names = 1:length(c(pwsprob_gm)), v.names = 'prob'
@@ -684,15 +684,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       probs.df = stats::reshape(
         data = data.frame(probs), direction = 'long',
-        varying = list(colnames(probs)),
+        varying = list(colnames(data.frame(probs))),
         ids = name.gen, times = colnames(probs),
         new.row.names = 1:length(c(probs)), v.names = 'prob',
         idvar = 'gen', timevar = 'env'
       )
-      probs.df = cbind(probs.df, do.call(rbind, strsplit(probs.df$env, '_Reg_')))
+      probs.df = cbind(probs.df, do.call(rbind, strsplit(probs.df$env, '_@#Reg_@#')))
       probs.df = probs.df[,-1]; colnames(probs.df) = c('prob', 'gen', 'loc', 'reg')
       probs.df = probs.df[,c('reg', 'loc', 'gen', 'prob')]
-      probs.df$loc = sub('Env_','', probs.df$loc)
+      probs.df$loc = sub('Env_@#','', probs.df$loc)
 
       ### Per Location ----------------
       con_gl = ifelse(table(data[,gen], data[,env]) != 0, 1, NA)
@@ -702,7 +702,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           x = probs.df,
           y = stats::reshape(
             data = data.frame(con_gl), direction = 'long',
-            varying = list(colnames(con_gl)),
+            varying = list(colnames(data.frame(con_gl))),
             ids = name.gen, times = name.env,
             v.names = 'freq',
             idvar = 'gen', timevar = 'loc'
@@ -731,7 +731,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           x = probs.df,
           y = stats::reshape(
             data = data.frame(con_gm), direction = 'long',
-            varying = list(colnames(con_gm)),
+            varying = list(colnames(data.frame(con_gm))),
             ids = name.gen, times = name.reg,
             v.names = 'freq',
             idvar = 'gen', timevar = 'reg'
@@ -769,29 +769,29 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       ## Pairwise probability of superior performance ----------------
       ### Per Location -------------
-      combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_'), 2)))
+      combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_@#'), 2)))
       colnames(combs) = c('x', 'y')
       pwprobs.env = lapply(
-        sapply(paste('Env', name.env, sep = '_'),
-               function(x) posgge[,grep(paste0(x,'_'), colnames(posgge))],
+        sapply(paste('Env', name.env, sep = '_@#'),
+               function(x) posgge[,grep(paste0(x,'_@#'), colnames(posgge))],
                simplify = F),
         function(y){
 
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(paste0(z[1],'_'), colnames(y))] >
-                     y[,grep(paste0(z[2],'_'), colnames(y))])
+              mean(y[,grep(paste0(z[1],'_@#'), colnames(y))] >
+                     y[,grep(paste0(z[2],'_@#'), colnames(y))])
             })
           )
 
-          a[,1] = sub('Gen_', '', a[,1])
-          a[,2] = sub('Gen_', '', a[,2])
+          a[,1] = sub('Gen_@#', '', a[,1])
+          a[,2] = sub('Gen_@#', '', a[,2])
 
           a
         }
       )
-      names(pwprobs.env) = sub('Env_', '', names(pwprobs.env))
+      names(pwprobs.env) = sub('Env_@#', '', names(pwprobs.env))
       for (i in names(pwprobs.env)) {
         pwprobs.env[[i]] = merge(
           merge(pwprobs.env[[i]],
@@ -825,7 +825,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       ### Per Region --------------
       pwprobs.reg = lapply(
-        sapply(paste('Reg', name.reg, sep = '_'),
+        sapply(paste('Reg', name.reg, sep = '_@#'),
                function(x) posgge[,grep(paste0(x,'$'), colnames(posgge))],
                simplify = F),
         function(y){
@@ -833,18 +833,18 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(paste0(z[1],'_'), colnames(y))] >
-                     y[,grep(paste0(z[2],'_'), colnames(y))])
+              mean(y[,grep(paste0(z[1],'_@#'), colnames(y))] >
+                     y[,grep(paste0(z[2],'_@#'), colnames(y))])
             })
           )
 
-          a[,1] = sub('Gen_', '', a[,1])
-          a[,2] = sub('Gen_', '', a[,2])
+          a[,1] = sub('Gen_@#', '', a[,1])
+          a[,2] = sub('Gen_@#', '', a[,2])
 
           a
         }
       )
-      names(pwprobs.reg) = sub('Reg_', '', names(pwprobs.reg))
+      names(pwprobs.reg) = sub('Reg_@#', '', names(pwprobs.reg))
       for (i in names(pwprobs.reg)) {
         pwprobs.reg[[i]] = merge(
           merge(pwprobs.reg[[i]],
@@ -885,7 +885,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
               x = probs.df,
               y = stats::reshape(
                 data = data.frame(con_gl), direction = 'long',
-                varying = list(colnames(con_gl)),
+                varying = list(colnames(data.frame(con_gl))),
                 ids = name.gen, times = name.env,
                 v.names = 'freq',
                 idvar = 'gen', timevar = 'loc'
@@ -908,7 +908,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
               x = probs.df,
               y = stats::reshape(
                 data = data.frame(con_gm), direction = 'long',
-                varying = list(colnames(con_gm)),
+                varying = list(colnames(data.frame(con_gm))),
                 ids = name.gen, times = name.reg,
                 v.names = 'freq',
                 idvar = 'gen', timevar = 'reg'
@@ -998,9 +998,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
     }else{ #If there is no breeding region
 
       # Preparation
-      colnames(mod$post$g) = paste0(name.gen, '_')
+      colnames(mod$post$g) = paste0(name.gen, '_@#')
       colnames(mod$post$gl) = paste(rep(name.gen,  times = num.env),
-                                    rep(name.env,  each = num.gen), sep = '_')
+                                    rep(name.env,  each = num.gen), sep = '_@#')
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -1025,7 +1025,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ind_post = apply(mod$post$g, 1, function(x){
         ifelse(name.gen %in%
                  unlist(strsplit(names(x[order(x, decreasing = T)][1:ceiling(int * num.gen)]),
-                                 split = '_')), 1, 0)
+                                 split = '_@#')), 1, 0)
       })
       rownames(ind_post) = name.gen
       prob_g = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
@@ -1046,14 +1046,14 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           pwsprob_g[i,j] = mean(mod$post$g[,j] > mod$post$g[,i])
         }
       }
-      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_'))
+      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_@#'))
       pwsprob_g1 = pwsprob_g[match(prob_g$ID, rownames(pwsprob_g)),
                              match(prob_g$ID, rownames(pwsprob_g))]
       pwsprob_g1[upper.tri(pwsprob_g1, diag = T)] = NA
       pwsprob_g1 = stats::reshape(
         data.frame(pwsprob_g1),
         direction = 'long',
-        varying = list(colnames(pwsprob_g1)),
+        varying = list(colnames(data.frame(pwsprob_g1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g1), times = colnames(pwsprob_g1),
         new.row.names = NULL, v.names = 'prob'
@@ -1077,7 +1077,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_g = stats::reshape(
         data.frame(pwsprob_g),
         direction = 'long',
-        varying = list(colnames(pwsprob_g)),
+        varying = list(colnames(data.frame(pwsprob_g))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g), times = colnames(pwsprob_g),
         new.row.names = 1:length(c(pwsprob_g)), v.names = 'prob'
@@ -1089,7 +1089,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ## Probability of superior stability  -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_'))[,1]
+        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -1128,7 +1128,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl1 = stats::reshape(
         data.frame(pwsprob_gl1),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl1)),
+        varying = list(colnames(data.frame(pwsprob_gl1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl1), times = colnames(pwsprob_gl1),
         new.row.names = NULL, v.names = 'prob'
@@ -1149,7 +1149,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl = stats::reshape(
         data.frame(pwsprob_gl),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl)),
+        varying = list(colnames(data.frame(pwsprob_gl))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl), times = colnames(pwsprob_gl),
         new.row.names = 1:length(c(pwsprob_gl)), v.names = 'prob'
@@ -1299,7 +1299,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       probs.df = stats::reshape(
         data = data.frame(probs), direction = 'long',
-        varying = list(colnames(probs)),
+        varying = list(colnames(data.frame(probs))),
         ids = name.gen, times = colnames(probs),
         new.row.names = 1:length(c(probs)), v.names = 'prob',
         idvar = 'gen', timevar = 'env'
@@ -1336,8 +1336,8 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(paste0(z[1],'_'), colnames(y))] >
-                     y[,grep(paste0(z[2],'_'), colnames(y))])
+              mean(y[,grep(paste0(z[1],'_@#'), colnames(y))] >
+                     y[,grep(paste0(z[2],'_@#'), colnames(y))])
             })
           )
         }
@@ -1449,13 +1449,13 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       name.reg = levels(factor(data[,reg]))
       num.reg = nlevels(factor(data[,reg]))
-      colnames(mod$post$g) = paste0(name.gen, '_')
+      colnames(mod$post$g) = paste0(name.gen, '_@#')
       colnames(mod$post$gm) = paste('Gen',rep(name.gen,  times = num.reg),
-                                    'Reg',rep(name.reg,  each = num.gen), sep = '_')
+                                    'Reg',rep(name.reg,  each = num.gen), sep = '_@#')
       name.env.reg = sort(paste('Env',unique(data[,c(env,reg)])[,1],
-                                'Reg',unique(data[,c(env,reg)])[,2], sep = '_'))
+                                'Reg',unique(data[,c(env,reg)])[,2], sep = '_@#'))
       colnames(mod$post$gl) = paste('Gen',rep(name.gen,  times = num.env),
-                                    rep(name.env.reg,  each = num.gen), sep = '_')
+                                    rep(name.env.reg,  each = num.gen), sep = '_@#')
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -1482,7 +1482,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ind_post = apply(mod$post$g, 1, function(x){
         ifelse(name.gen %in%
                  unlist(strsplit(names(x[order(x, decreasing = F)][1:ceiling(int * num.gen)]),
-                                 split = '_')), 1, 0)
+                                 split = '_@#')), 1, 0)
       })
       rownames(ind_post) = name.gen
       prob_g = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
@@ -1503,14 +1503,14 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           pwsprob_g[i,j] = mean(mod$post$g[,j] < mod$post$g[,i])
         }
       }
-      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_'))
+      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_@#'))
       pwsprob_g1 = pwsprob_g[match(prob_g$ID, rownames(pwsprob_g)),
                              match(prob_g$ID, rownames(pwsprob_g))]
       pwsprob_g1[upper.tri(pwsprob_g1, diag = T)] = NA
       pwsprob_g1 = stats::reshape(
         data.frame(pwsprob_g1),
         direction = 'long',
-        varying = list(colnames(pwsprob_g1)),
+        varying = list(colnames(data.frame(pwsprob_g1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g1), times = colnames(pwsprob_g1),
         new.row.names = NULL, v.names = 'prob'
@@ -1534,7 +1534,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_g = stats::reshape(
         data.frame(pwsprob_g),
         direction = 'long',
-        varying = list(colnames(pwsprob_g)),
+        varying = list(colnames(data.frame(pwsprob_g))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g), times = colnames(pwsprob_g),
         new.row.names = 1:length(c(pwsprob_g)), v.names = 'prob'
@@ -1546,7 +1546,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ## Probability of superior stability - Location -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_Env'))[,1]
+        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#Env'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -1585,7 +1585,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl1 = stats::reshape(
         data.frame(pwsprob_gl1),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl1)),
+        varying = list(colnames(data.frame(pwsprob_gl1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl1), times = colnames(pwsprob_gl1),
         new.row.names = NULL, v.names = 'prob'
@@ -1606,7 +1606,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl = stats::reshape(
         data.frame(pwsprob_gl),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl)),
+        varying = list(colnames(data.frame(pwsprob_gl))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl), times = colnames(pwsprob_gl),
         new.row.names = 1:length(c(pwsprob_gl)), v.names = 'prob'
@@ -1618,7 +1618,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ## Probability of superior stability - Region --------------
       staprob_gm = mod$post$gm
       colnames(staprob_gm) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gm),'_Reg'))[,1]
+        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gm),'_@#Reg'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -1658,7 +1658,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gm1 = stats::reshape(
         data.frame(pwsprob_gm1),
         direction = 'long',
-        varying = list(colnames(pwsprob_gm1)),
+        varying = list(colnames(data.frame(pwsprob_gm1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gm1), times = colnames(pwsprob_gm1),
         new.row.names = NULL, v.names = 'prob'
@@ -1679,7 +1679,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gm = stats::reshape(
         data.frame(pwsprob_gm),
         direction = 'long',
-        varying = list(colnames(pwsprob_gm)),
+        varying = list(colnames(data.frame(pwsprob_gm))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gm), times = colnames(pwsprob_gm),
         new.row.names = 1:length(c(pwsprob_gm)), v.names = 'prob'
@@ -1855,15 +1855,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       probs.df = stats::reshape(
         data = data.frame(probs), direction = 'long',
-        varying = list(colnames(probs)),
+        varying = list(colnames(data.frame(probs))),
         ids = name.gen, times = colnames(probs),
         new.row.names = 1:length(c(probs)), v.names = 'prob',
         idvar = 'gen', timevar = 'env'
       )
-      probs.df = cbind(probs.df, do.call(rbind, strsplit(probs.df$env, '_Reg_')))
+      probs.df = cbind(probs.df, do.call(rbind, strsplit(probs.df$env, '_@#Reg_@#')))
       probs.df = probs.df[,-1]; colnames(probs.df) = c('prob', 'gen', 'loc', 'reg')
       probs.df = probs.df[,c('reg', 'loc', 'gen', 'prob')]
-      probs.df$loc = sub('Env_','', probs.df$loc)
+      probs.df$loc = sub('Env_@#','', probs.df$loc)
 
       ### Per Location ----------------
       con_gl = ifelse(table(data[,gen], data[,env]) != 0, 1, NA)
@@ -1873,7 +1873,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           x = probs.df,
           y = stats::reshape(
             data = data.frame(con_gl), direction = 'long',
-            varying = list(colnames(con_gl)),
+            varying = list(colnames(data.frame(con_gl))),
             ids = name.gen, times = name.env,
             v.names = 'freq',
             idvar = 'gen', timevar = 'loc'
@@ -1902,7 +1902,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           x = probs.df,
           y = stats::reshape(
             data = data.frame(con_gm), direction = 'long',
-            varying = list(colnames(con_gm)),
+            varying = list(colnames(data.frame(con_gm))),
             ids = name.gen, times = name.reg,
             v.names = 'freq',
             idvar = 'gen', timevar = 'reg'
@@ -1928,7 +1928,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
         x = probs.df,
         y = stats::reshape(
           data = data.frame(con_gl), direction = 'long',
-          varying = list(colnames(con_gl)),
+          varying = list(colnames(data.frame(con_gl))),
           ids = name.gen, times = name.env,
           v.names = 'freq',
           idvar = 'gen', timevar = 'loc'
@@ -1940,29 +1940,29 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       ## Pairwise probability of superior performance ----------------
       ### Per Location -------------
-      combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_'), 2)))
+      combs = data.frame(t(utils::combn(paste('Gen', name.gen, sep = '_@#'), 2)))
       colnames(combs) = c('x', 'y')
       pwprobs.env = lapply(
-        sapply(paste('Env', name.env, sep = '_'),
-               function(x) posgge[,grep(paste0(x, '_'), colnames(posgge))],
+        sapply(paste('Env', name.env, sep = '_@#'),
+               function(x) posgge[,grep(paste0(x, '_@#'), colnames(posgge))],
                simplify = F),
         function(y){
 
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(paste0(z[1],'_'), colnames(y))] <
-                     y[,grep(paste0(z[2],'_'), colnames(y))])
+              mean(y[,grep(paste0(z[1],'_@#'), colnames(y))] <
+                     y[,grep(paste0(z[2],'_@#'), colnames(y))])
             })
           )
 
-          a[,1] = sub('Gen_', '', a[,1])
-          a[,2] = sub('Gen_', '', a[,2])
+          a[,1] = sub('Gen_@#', '', a[,1])
+          a[,2] = sub('Gen_@#', '', a[,2])
 
           a
         }
       )
-      names(pwprobs.env) = sub('Env_', '', names(pwprobs.env))
+      names(pwprobs.env) = sub('Env_@#', '', names(pwprobs.env))
       for (i in names(pwprobs.env)) {
         pwprobs.env[[i]] = merge(
           merge(pwprobs.env[[i]],
@@ -1996,7 +1996,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       ### Per Region --------------
       pwprobs.reg = lapply(
-        sapply(paste('Reg', name.reg, sep = '_'),
+        sapply(paste('Reg', name.reg, sep = '_@#'),
                function(x) posgge[,grep(paste0(x, '$'), colnames(posgge))],
                simplify = F),
         function(y){
@@ -2004,18 +2004,18 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           a = cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(paste0(z[1],'_'), colnames(y))] <
-                     y[,grep(paste0(z[2],'_'), colnames(y))])
+              mean(y[,grep(paste0(z[1],'_@#'), colnames(y))] <
+                     y[,grep(paste0(z[2],'_@#'), colnames(y))])
             })
           )
 
-          a[,1] = sub('Gen_', '', a[,1])
-          a[,2] = sub('Gen_', '', a[,2])
+          a[,1] = sub('Gen_@#', '', a[,1])
+          a[,2] = sub('Gen_@#', '', a[,2])
 
           a
         }
       )
-      names(pwprobs.reg) = sub('Reg_', '', names(pwprobs.reg))
+      names(pwprobs.reg) = sub('Reg_@#', '', names(pwprobs.reg))
       for (i in names(pwprobs.reg)) {
         pwprobs.reg[[i]] = merge(
           merge(pwprobs.reg[[i]],
@@ -2056,7 +2056,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
               x = probs.df,
               y = stats::reshape(
                 data = data.frame(con_gl), direction = 'long',
-                varying = list(colnames(con_gl)),
+                varying = list(colnames(data.frame(con_gl))),
                 ids = name.gen, times = name.env,
                 v.names = 'freq',
                 idvar = 'gen', timevar = 'loc'
@@ -2079,7 +2079,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
               x = probs.df,
               y = stats::reshape(
                 data = data.frame(con_gm), direction = 'long',
-                varying = list(colnames(con_gm)),
+                varying = list(colnames(data.frame(con_gm))),
                 ids = name.gen, times = name.reg,
                 v.names = 'freq',
                 idvar = 'gen', timevar = 'reg'
@@ -2169,9 +2169,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
     }else{ #If there is no breeding region
 
       # Preparation
-      colnames(mod$post$g) = paste0(name.gen, '_')
+      colnames(mod$post$g) = paste0(name.gen, '_@#')
       colnames(mod$post$gl) = paste(rep(name.gen,  times = num.env),
-                                    rep(name.env,  each = num.gen), sep = '_')
+                                    rep(name.env,  each = num.gen), sep = '_@#')
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -2196,7 +2196,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ind_post = apply(mod$post$g, 1, function(x){
         ifelse(name.gen %in%
                  unlist(strsplit(names(x[order(x, decreasing = F)][1:ceiling(int * num.gen)]),
-                                 split = '_')), 1, 0)
+                                 split = '_@#')), 1, 0)
       })
       rownames(ind_post) = name.gen
       prob_g = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
@@ -2217,14 +2217,14 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           pwsprob_g[i,j] = mean(mod$post$g[,j] < mod$post$g[,i])
         }
       }
-      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_'))
+      colnames(pwsprob_g) = rownames(pwsprob_g) = unlist(strsplit(rownames(pwsprob_g), split = '_@#'))
       pwsprob_g1 = pwsprob_g[match(prob_g$ID, rownames(pwsprob_g)),
                              match(prob_g$ID, rownames(pwsprob_g))]
       pwsprob_g1[upper.tri(pwsprob_g1, diag = T)] = NA
       pwsprob_g1 = stats::reshape(
         data.frame(pwsprob_g1),
         direction = 'long',
-        varying = list(colnames(pwsprob_g1)),
+        varying = list(colnames(data.frame(pwsprob_g1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g1), times = colnames(pwsprob_g1),
         new.row.names = NULL, v.names = 'prob'
@@ -2248,7 +2248,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_g = stats::reshape(
         data.frame(pwsprob_g),
         direction = 'long',
-        varying = list(colnames(pwsprob_g)),
+        varying = list(colnames(data.frame(pwsprob_g))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_g), times = colnames(pwsprob_g),
         new.row.names = 1:length(c(pwsprob_g)), v.names = 'prob'
@@ -2260,7 +2260,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       ## Probability of superior stability  -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_','',do.call(rbind,strsplit(colnames(staprob_gl),'_'))[,1]
+        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -2299,7 +2299,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl1 = stats::reshape(
         data.frame(pwsprob_gl1),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl1)),
+        varying = list(colnames(data.frame(pwsprob_gl1))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl1), times = colnames(pwsprob_gl1),
         new.row.names = NULL, v.names = 'prob'
@@ -2320,7 +2320,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
       pwsprob_gl = stats::reshape(
         data.frame(pwsprob_gl),
         direction = 'long',
-        varying = list(colnames(pwsprob_gl)),
+        varying = list(colnames(data.frame(pwsprob_gl))),
         idvar = 'y', timevar = 'x',
         ids = rownames(pwsprob_gl), times = colnames(pwsprob_gl),
         new.row.names = 1:length(c(pwsprob_gl)), v.names = 'prob'
@@ -2470,7 +2470,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
 
       probs.df = stats::reshape(
         data = data.frame(probs), direction = 'long',
-        varying = list(colnames(probs)),
+        varying = list(colnames(data.frame(probs))),
         ids = name.gen, times = colnames(probs),
         new.row.names = 1:length(c(probs)), v.names = 'prob',
         idvar = 'gen', timevar = 'env'
@@ -2507,8 +2507,8 @@ prob_sup = function(data, trait, gen, env, reg = NULL, mod.output, int,
           cbind(
             combs,
             pwprob = apply(combs, 1, function(z){
-              mean(y[,grep(paste0(z[1],'_'), colnames(y))] <
-                     y[,grep(paste0(z[2],'_'), colnames(y))])
+              mean(y[,grep(paste0(z[1],'_@#'), colnames(y))] <
+                     y[,grep(paste0(z[2],'_@#'), colnames(y))])
             })
           )
         }
