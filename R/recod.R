@@ -15,6 +15,8 @@
 ##' @return The function returns the same data frame, but with a new column
 ##' with the prefix "cod." containing the recoded levels
 ##'
+##' @export
+##'
 ##' @examples
 ##' toy = data.frame(
 ##'             gen = rep(1:5, each =4),

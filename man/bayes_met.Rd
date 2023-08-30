@@ -11,6 +11,7 @@ bayes_met(
   repl,
   trait,
   reg = NULL,
+  time = NULL,
   res.het = FALSE,
   iter = 2000,
   cores = 1,
@@ -37,8 +38,13 @@ If the data do not have replicates, \code{repl} will be \code{NULL}.}
 \code{reg} will be a string with the name of the column that corresponds to the
 region information. Otherwise, \code{reg = NULL} (default).}
 
+\item{time}{A string or NULL. If the data set has information about time-related
+environmental factors (years, seasons...), \code{time} will be a string with the
+name of the column that corresponds to the time information. Otherwise, \code{time = NULL} (default).}
+
 \item{res.het}{Logical, indicating if the model should consider heterogeneous
-residual variances. Default is \code{FALSE}.}
+residual variances. Default is \code{FALSE}. If \code{TRUE}, the model will estimate one
+residual variance per environment (or location)}
 
 \item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
 A positive integer specifying the number of iterations for each chains
@@ -73,6 +79,7 @@ mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
+                time = NULL,
                 reg = "Reg",
                 res.het = FALSE,
                 trait = "Y",

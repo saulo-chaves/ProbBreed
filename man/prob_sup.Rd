@@ -10,6 +10,7 @@ prob_sup(
   gen,
   env,
   reg = NULL,
+  time = NULL,
   mod.output,
   int,
   increase = TRUE,
@@ -22,11 +23,15 @@ prob_sup(
 \item{data}{A data frame containing the phenotypic data}
 
 \item{trait, gen, env}{A string. The name of the columns that corresponds to
-the variable, genotype and environment information, respectively}
+the trait, genotype and environment information, respectively}
 
 \item{reg}{A string or NULL. If the dataset has information about regions,
 \code{reg} will be a string with the name of the column that corresponds to the
 region information. Otherwise, \code{reg = NULL} (default).}
+
+\item{time}{A string or NULL. If the data set has information about time-related
+environmental factors (years, seasons...), \code{time} will be a string with the
+name of the column that corresponds to the time information. Otherwise, \code{time = NULL} (default).}
 
 \item{mod.output}{An object from the \code{\link[=extr_outs]{extr_outs()}} function}
 
@@ -54,31 +59,32 @@ The \code{marginal} list has:
 \itemize{
 \item \code{df} : A list of data frames containing the calculated probabilities:
 \itemize{
-\item \code{perfo}: the probabilities of superior performance
-\item \code{pair_perfo}: the pairwise probabilities of superior performance
-\item \code{stabi}: the probabilities of superior stability. When \code{reg} is not
-\code{NULL}, \code{stabi} is divided into \code{stabi_gl} for the stability across environments, and
-\code{stabi_gm} for the stability across regions
-\item \code{pair_stabi}: the pairwise probabilities of superior stability, which
-is also divided into \code{pair_stabi_gl} and \code{pair_stabi_gm} when \code{reg} is not \code{NULL}
-\item \code{joint_prob}: the joint probabilities of superior performance and stability
+\item \code{perfo}: the probabilities of superior performance.
+\item \code{pair_perfo}: the pairwise probabilities of superior performance.
+\item \code{stabi}: the probabilities of superior stability. Can be \code{stabi_gl},
+\code{stabi_gm} (when \code{reg} is not \code{NULL}) or \code{stabi_gt} (when \code{time} is not \code{NULL}).
+\item \code{pair_stabi}: the pairwise probabilities of superior stability.
+Can be \code{pair_stabi_gl}, \code{pair_stabi_gm} (when \code{reg} is not \code{NULL}) or
+\code{pair_stabi_gt} (when \code{time} is not \code{NULL}).
+\item \code{joint_prob}: the joint probabilities of superior performance and stability.
 }
 \item \code{plot} : A list of ggplots illustrating the outputs:
 \itemize{
 \item \code{g_hpd}: a caterpillar plot representing the marginal genotypic value of
 each genotype, and their respective highest posterior density interval (95\% represented by the
-thick line, and 97.5\% represented by the thin line)
+thick line, and 97.5\% represented by the thin line).
 \item \code{perfo}: a bar plot illustrating the probabilities of superior performance
 \item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
 performance (the probability of genotypes at the \emph{x}-axis being superior
-to those on the \emph{y}-axis)
-\item \code{stabi}: a bar plot with the probabilities of superior stability. Like the data frames,
-when \code{reg} is not \code{NULL}, two different plots are generated, one for the stability across
-environments (\code{stabi_gl}), and another for the stability across regions (\code{stabi_gm})
-\item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability
-(also divided into two different plots when \code{reg} is not \code{NULL}). This plot represents
+to those on the \emph{y}-axis).
+\item \code{stabi}: a bar plot with the probabilities of superior stability.
+Different plots are generated for \code{stabi_gl}, \code{stabi_gm} and \code{stabi_gt} if \code{reg}
+or/and \code{time} are not \code{NULL}.
+\item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability.
+Different plots are generated for \code{stabi_gl}, \code{stabi_gm} and \code{stabi_gt} if \code{reg}
+or/and \code{time} are not \code{NULL}. This plot represents
 the probability of genotypes at the \emph{x}-axis being superior
-to those on \emph{y}-axis
+to those on \emph{y}-axis.
 \item \code{joint_prob}: a plot with the probabilities of superior performance,
 probabilities of superior stability and the joint probabilities of superior
 performance and stability.
@@ -89,22 +95,21 @@ The \code{conditional} list has:
 \itemize{
 \item \code{df} : A list with:
 \itemize{
-\item \code{perfo}: a data frame containing the probabilities of superior performance
-within environments. It also has the probabilities of superior performance within regions
-if \code{reg} is not \code{NULL}.
-\item \code{pair_perfo}: a list with the pairwise probabilities of superior performance
-within environments. If \code{reg} is not \code{NULL}, two lists are generated.
+\item \code{prob}: data frames containing the probabilities of superior performance
+within environments. Can be \code{prob_env}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
+\code{prob_time} (if \code{time} is not \code{NULL}).
+\item \code{pwprob}: lists with the pairwise probabilities of superior performance
+within environments. Can be \code{pwprob_env}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
+\code{pwprob_time} (if \code{time} is not \code{NULL}).
 }
 \item \code{plot} : A list with:
 \itemize{
-\item \code{perfo}: a heatmap with the probabilities of superior performance within
-environments. If \code{reg} is not \code{NULL}, there will be two heatmaps: \code{perfo_env}
-for the probabilities of superior performance within environments, and \code{perfo_reg}
-for the same probabilities within regions.
-\item \code{pair_perfo}: a list of heatmaps representing the pairwise probability of superior
-performance within environments. If \code{reg} is not \code{NULL}, there will be two lists: \code{pair_perfo_env}
-for the probabilities of superior performance within environments, and \code{pair_perfo_reg}
-for the same probabilities within regions. The interpretation is the same as in the
+\item \code{prob}: heatmaps with the probabilities of superior performance within
+environments. Can be \code{prob_env}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
+\code{prob_time} (if \code{time} is not \code{NULL}).
+\item \code{pwprob}: a list of heatmaps representing the pairwise probability of superior
+performance within environments. Can be \code{pwprob_env}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
+\code{pwprob_time} (if \code{time} is not \code{NULL}). The interpretation is the same as in the
 \code{pair_perfo} in the \code{marginal} list: the probability of genotypes at the \emph{x}-axis being superior
 to those on \emph{y}-axis.
 }
@@ -220,12 +225,13 @@ mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
+                time = NULL,
                 reg = "Reg",
                 res.het = FALSE,
                 trait = "Y",
                 iter = 2000, cores = 1, chains = 4)
 
-outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
+outs = extr_outs(data = soy, trait = "Y", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
                  probs = c(0.05, 0.95),
@@ -238,6 +244,7 @@ results = prob_sup(data = soy,
                    env = "Env",
                    mod.output = outs,
                    reg = 'Reg',
+                   time = NULL,
                    int = .2,
                    increase = TRUE,
                    save.df = FALSE,

@@ -7,7 +7,6 @@
 extr_outs(
   data,
   trait,
-  gen,
   model,
   effects,
   nenv,
@@ -23,9 +22,6 @@ extr_outs(
 \item{trait}{A character representing the name of the column that
 corresponds to the analysed trait}
 
-\item{gen}{A character representing the name of the column that
-corresponds to the evaluated genotypes}
-
 \item{model}{An object containing the Bayesian model fitted using \code{rstan}}
 
 \item{effects}{A string vector containing the codes of the effects included
@@ -39,6 +35,8 @@ incomplete blocks design)
 \item \code{g} : genotypic effect
 \item \code{gl} : genotype-by-environment effect
 \item \code{gm} : genotype-by-region effect
+\item \code{t} : time effect
+\item \code{gt} : genotype-by-time effect
 }}
 
 \item{nenv}{The number of environments in the analysis}
@@ -82,12 +80,13 @@ mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
+                time = NULL,
                 reg = "Reg",
                 res.het = FALSE,
                 trait = "Y",
-                iter = 2000, cores = 1, chain = 4)
+                iter = 2000, cores = 1, chains = 4)
 
-outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
+outs = extr_outs(data = soy, trait = "Y", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
                  probs = c(0.05, 0.95),

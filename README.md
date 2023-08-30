@@ -34,7 +34,7 @@ from [GitHub](https://github.com/saulo-chaves/ProbBreed) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("saulo-chaves/ProbBreed", build_vignettes = T)
+devtools::install_github("saulo-chaves/ProbBreed")
 ```
 
 ## Usage

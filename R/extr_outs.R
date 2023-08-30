@@ -15,8 +15,6 @@
 ##' @param data A data frame containing the observations
 ##' @param trait A character representing the name of the column that
 ##' corresponds to the analysed trait
-##' @param gen A character representing the name of the column that
-##' corresponds to the evaluated genotypes
 ##' @param model An object containing the Bayesian model fitted using `rstan`
 ##' @param effects A string vector containing the codes of the effects included
 ##' in the model. The codes are:
@@ -29,6 +27,8 @@
 ##' \item \code{g} : genotypic effect
 ##' \item \code{gl} : genotype-by-environment effect
 ##' \item \code{gm} : genotype-by-region effect
+##' \item \code{t} : time effect
+##' \item \code{gt} : genotype-by-time effect
 ##' }
 ##' @param nenv The number of environments in the analysis
 ##' @param probs A vector with two elements representing the probabilities
@@ -53,7 +53,6 @@
 ##'
 ##' @seealso [rstan::stan_diag()], [ggplot2::ggplot()]
 ##'
-##'
 ##' @import rstan ggplot2
 ##' @importFrom utils write.csv
 ##' @importFrom rlang .data
@@ -64,12 +63,13 @@
 ##'                 gen = "Gen",
 ##'                 env = "Env",
 ##'                 repl = NULL,
+##'                 time = NULL,
 ##'                 reg = "Reg",
 ##'                 res.het = FALSE,
 ##'                 trait = "Y",
-##'                 iter = 2000, cores = 1, chain = 4)
+##'                 iter = 2000, cores = 1, chains = 4)
 ##'
-##' outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
+##' outs = extr_outs(data = soy, trait = "Y", model = mod,
 ##'                  effects = c('l','g','gl','m','gm'),
 ##'                  nenv = length(unique(soy$Env)),
 ##'                  probs = c(0.05, 0.95),
@@ -78,7 +78,7 @@
 ##'                  }
 ##' @export
 
-extr_outs = function(data, trait, gen, model, effects, nenv,
+extr_outs = function(data, trait, model, effects, nenv,
                      probs = c(0.025, 0.975), check.stan.diag = FALSE,
                      verbose = FALSE, ...){
 
