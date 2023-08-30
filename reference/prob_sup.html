@@ -19,7 +19,7 @@ of superior performance within environments (conditional output)."><!-- mathjax 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ProbBreed</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2.1</span>
       </span>
     </div>
 
@@ -63,6 +63,7 @@ of superior performance within environments (<code>conditional</code> output).</
 <span>  <span class="va">gen</span>,</span>
 <span>  <span class="va">env</span>,</span>
 <span>  reg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">mod.output</span>,</span>
 <span>  <span class="va">int</span>,</span>
 <span>  increase <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -80,13 +81,19 @@ of superior performance within environments (<code>conditional</code> output).</
 
 <dt>trait, gen, env</dt>
 <dd><p>A string. The name of the columns that corresponds to
-the variable, genotype and environment information, respectively</p></dd>
+the trait, genotype and environment information, respectively</p></dd>
 
 
 <dt>reg</dt>
 <dd><p>A string or NULL. If the dataset has information about regions,
 <code>reg</code> will be a string with the name of the column that corresponds to the
 region information. Otherwise, <code>reg = NULL</code> (default).</p></dd>
+
+
+<dt>time</dt>
+<dd><p>A string or NULL. If the data set has information about time-related
+environmental factors (years, seasons...), <code>time</code> will be a string with the
+name of the column that corresponds to the time information. Otherwise, <code>time = NULL</code> (default).</p></dd>
 
 
 <dt>mod.output</dt>
@@ -127,47 +134,47 @@ completed steps. Defaults to <code>FALSE</code>.</p></dd>
 another with the <code>conditional</code> probabilities.</p>
 
 
-<p>The <code>marginal</code> list has:</p><ul><li><p><code>df</code> : A list of data frames containing the calculated probabilities:</p><ul><li><p><code>perfo</code>: the probabilities of superior performance</p></li>
-<li><p><code>pair_perfo</code>: the pairwise probabilities of superior performance</p></li>
-<li><p><code>stabi</code>: the probabilities of superior stability. When <code>reg</code> is not
-<code>NULL</code>, <code>stabi</code> is divided into <code>stabi_gl</code> for the stability across environments, and
-<code>stabi_gm</code> for the stability across regions</p></li>
-<li><p><code>pair_stabi</code>: the pairwise probabilities of superior stability, which
-is also divided into <code>pair_stabi_gl</code> and <code>pair_stabi_gm</code> when <code>reg</code> is not <code>NULL</code></p></li>
-<li><p><code>joint_prob</code>: the joint probabilities of superior performance and stability</p></li>
+<p>The <code>marginal</code> list has:</p><ul><li><p><code>df</code> : A list of data frames containing the calculated probabilities:</p><ul><li><p><code>perfo</code>: the probabilities of superior performance.</p></li>
+<li><p><code>pair_perfo</code>: the pairwise probabilities of superior performance.</p></li>
+<li><p><code>stabi</code>: the probabilities of superior stability. Can be <code>stabi_gl</code>,
+<code>stabi_gm</code> (when <code>reg</code> is not <code>NULL</code>) or <code>stabi_gt</code> (when <code>time</code> is not <code>NULL</code>).</p></li>
+<li><p><code>pair_stabi</code>: the pairwise probabilities of superior stability.
+Can be <code>pair_stabi_gl</code>, <code>pair_stabi_gm</code> (when <code>reg</code> is not <code>NULL</code>) or
+<code>pair_stabi_gt</code> (when <code>time</code> is not <code>NULL</code>).</p></li>
+<li><p><code>joint_prob</code>: the joint probabilities of superior performance and stability.</p></li>
 </ul></li>
 <li><p><code>plot</code> : A list of ggplots illustrating the outputs:</p><ul><li><p><code>g_hpd</code>: a caterpillar plot representing the marginal genotypic value of
 each genotype, and their respective highest posterior density interval (95% represented by the
-thick line, and 97.5% represented by the thin line)</p></li>
+thick line, and 97.5% represented by the thin line).</p></li>
 <li><p><code>perfo</code>: a bar plot illustrating the probabilities of superior performance</p></li>
 <li><p><code>pair_perfo</code>: a heatmap representing the pairwise probability of superior
 performance (the probability of genotypes at the <em>x</em>-axis being superior
-to those on the <em>y</em>-axis)</p></li>
-<li><p><code>stabi</code>: a bar plot with the probabilities of superior stability. Like the data frames,
-when <code>reg</code> is not <code>NULL</code>, two different plots are generated, one for the stability across
-environments (<code>stabi_gl</code>), and another for the stability across regions (<code>stabi_gm</code>)</p></li>
-<li><p><code>pair_stabi</code>: a heatmap with the pairwise probabilities of superior stability
-(also divided into two different plots when <code>reg</code> is not <code>NULL</code>). This plot represents
+to those on the <em>y</em>-axis).</p></li>
+<li><p><code>stabi</code>: a bar plot with the probabilities of superior stability.
+Different plots are generated for <code>stabi_gl</code>, <code>stabi_gm</code> and <code>stabi_gt</code> if <code>reg</code>
+or/and <code>time</code> are not <code>NULL</code>.</p></li>
+<li><p><code>pair_stabi</code>: a heatmap with the pairwise probabilities of superior stability.
+Different plots are generated for <code>stabi_gl</code>, <code>stabi_gm</code> and <code>stabi_gt</code> if <code>reg</code>
+or/and <code>time</code> are not <code>NULL</code>. This plot represents
 the probability of genotypes at the <em>x</em>-axis being superior
-to those on <em>y</em>-axis</p></li>
+to those on <em>y</em>-axis.</p></li>
 <li><p><code>joint_prob</code>: a plot with the probabilities of superior performance,
 probabilities of superior stability and the joint probabilities of superior
 performance and stability.</p></li>
 </ul></li>
-</ul><p>The <code>conditional</code> list has:</p><ul><li><p><code>df</code> : A list with:</p><ul><li><p><code>perfo</code>: a data frame containing the probabilities of superior performance
-within environments. It also has the probabilities of superior performance within regions
-if <code>reg</code> is not <code>NULL</code>.</p></li>
-<li><p><code>pair_perfo</code>: a list with the pairwise probabilities of superior performance
-within environments. If <code>reg</code> is not <code>NULL</code>, two lists are generated.</p></li>
+</ul><p>The <code>conditional</code> list has:</p><ul><li><p><code>df</code> : A list with:</p><ul><li><p><code>prob</code>: data frames containing the probabilities of superior performance
+within environments. Can be <code>prob_env</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+<code>prob_time</code> (if <code>time</code> is not <code>NULL</code>).</p></li>
+<li><p><code>pwprob</code>: lists with the pairwise probabilities of superior performance
+within environments. Can be <code>pwprob_env</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+<code>pwprob_time</code> (if <code>time</code> is not <code>NULL</code>).</p></li>
 </ul></li>
-<li><p><code>plot</code> : A list with:</p><ul><li><p><code>perfo</code>: a heatmap with the probabilities of superior performance within
-environments. If <code>reg</code> is not <code>NULL</code>, there will be two heatmaps: <code>perfo_env</code>
-for the probabilities of superior performance within environments, and <code>perfo_reg</code>
-for the same probabilities within regions.</p></li>
-<li><p><code>pair_perfo</code>: a list of heatmaps representing the pairwise probability of superior
-performance within environments. If <code>reg</code> is not <code>NULL</code>, there will be two lists: <code>pair_perfo_env</code>
-for the probabilities of superior performance within environments, and <code>pair_perfo_reg</code>
-for the same probabilities within regions. The interpretation is the same as in the
+<li><p><code>plot</code> : A list with:</p><ul><li><p><code>prob</code>: heatmaps with the probabilities of superior performance within
+environments. Can be <code>prob_env</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+<code>prob_time</code> (if <code>time</code> is not <code>NULL</code>).</p></li>
+<li><p><code>pwprob</code>: a list of heatmaps representing the pairwise probability of superior
+performance within environments. Can be <code>pwprob_env</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+<code>pwprob_time</code> (if <code>time</code> is not <code>NULL</code>). The interpretation is the same as in the
 <code>pair_perfo</code> in the <code>marginal</code> list: the probability of genotypes at the <em>x</em>-axis being superior
 to those on <em>y</em>-axis.</p></li>
 </ul></li>
@@ -264,137 +271,20 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
 <span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Gen"</span>,</span></span>
 <span class="r-in"><span>                env <span class="op">=</span> <span class="st">"Env"</span>,</span></span>
 <span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>                time <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                reg <span class="op">=</span> <span class="st">"Reg"</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                trait <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
 <span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">1</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> recompiling to avoid crashing R session</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'BayesMET' NOW (CHAIN 1).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 0.000861 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 8.61 seconds.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 381.616 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                306.345 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                687.962 seconds (Total)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'BayesMET' NOW (CHAIN 2).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Gradient evaluation took 0.000774 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 7.74 seconds.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Adjust your expectations accordingly!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:  Elapsed Time: 431.437 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                543.542 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2:                974.979 seconds (Total)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'BayesMET' NOW (CHAIN 3).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Gradient evaluation took 0.0008 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 8 seconds.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Adjust your expectations accordingly!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:  Elapsed Time: 468.135 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                357.019 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3:                825.153 seconds (Total)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 3: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'BayesMET' NOW (CHAIN 4).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Gradient evaluation took 0.000781 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 7.81 seconds.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Adjust your expectations accordingly!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:  Elapsed Time: 272.342 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                285.282 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4:                557.624 seconds (Total)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 4: </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 32 divergent transitions after warmup. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 848 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 4 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bfmi-low</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Examine the pairs() plot to diagnose sampling problems</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.84, indicating chains have not mixed.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rstan::stan_model(model_code = stan_df, model_name = "BayesMET"):</span> Boost not found; call install.packages('BH')</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">outs</span> <span class="op">=</span> <span class="fu"><a href="extr_outs.html">extr_outs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>, trait <span class="op">=</span> <span class="st">"Y"</span>, gen <span class="op">=</span> <span class="st">"Gen"</span>, model <span class="op">=</span> <span class="va">mod</span>,</span></span>
+<span class="r-in"><span><span class="va">outs</span> <span class="op">=</span> <span class="fu"><a href="extr_outs.html">extr_outs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>, trait <span class="op">=</span> <span class="st">"Y"</span>, model <span class="op">=</span> <span class="va">mod</span>,</span></span>
 <span class="r-in"><span>                 effects <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'l'</span>,<span class="st">'g'</span>,<span class="st">'gl'</span>,<span class="st">'m'</span>,<span class="st">'gm'</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 nenv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">soy</span><span class="op">$</span><span class="va">Env</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 check.stan.diag <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 2 rows containing missing values (`geom_bar()`).</span>
-<span class="r-plt img"><img src="prob_sup-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'extract': object 'mod' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">=</span> <span class="fu">prob_sup</span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>,</span></span>
 <span class="r-in"><span>                   trait <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
@@ -402,11 +292,13 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
 <span class="r-in"><span>                   env <span class="op">=</span> <span class="st">"Env"</span>,</span></span>
 <span class="r-in"><span>                   mod.output <span class="op">=</span> <span class="va">outs</span>,</span></span>
 <span class="r-in"><span>                   reg <span class="op">=</span> <span class="st">'Reg'</span>,</span></span>
+<span class="r-in"><span>                   time <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                   int <span class="op">=</span> <span class="fl">.2</span>,</span></span>
 <span class="r-in"><span>                   increase <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                   save.df <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                   interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'outs' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
