@@ -61,19 +61,21 @@ mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
+                time = NULL,
                 reg = "Reg",
                 res.het = F,
                 trait = "Y",
                 iter = 2000, cores = 1, chains = 4)
 
-outs = extr_outs(data = soy, trait = "Y", gen = "Gen", model = mod,
+outs = extr_outs(data = soy, trait = "Y", model = mod,
                  effects = c('l','g','gl','m','gm'),
                  nenv = length(unique(soy$Env)),
-                 probs = c(0.05, 0.95), check.stan.diag = FALSE, 
+                 probs = c(0.05, 0.95),
+                 check.stan.diag = FALSE, 
                  verbose = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-                   mod.output = outs, reg = 'Reg', int = .2,
+                   mod.output = outs, reg = 'Reg', time = NULL, int = .2,
                    increase = TRUE, save.df = FALSE, interactive = FALSE, 
                    verbose = TRUE)
 ```
