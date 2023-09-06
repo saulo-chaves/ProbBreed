@@ -24,9 +24,9 @@
 ##' @param reg A string or NULL. If the data set has information about regions,
 ##' `reg` will be a string with the name of the column that corresponds to the
 ##' region information. Otherwise, `reg = NULL` (default).
-##' @param time A string or NULL. If the data set has information about time-related
-##' environmental factors (years, seasons...), `time` will be a string with the
-##' name of the column that corresponds to the time information. Otherwise, `time = NULL` (default).
+##' @param year A string or NULL. If the data set has information about time-related
+##' environmental factors (years, seasons...), `year` will be a string with the
+##' name of the column that corresponds to the time information. Otherwise, `year = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
 ##' residual variances. Default is `FALSE`. If `TRUE`, the model will estimate one
 ##' residual variance per environment (or location)
@@ -56,7 +56,7 @@
 ##'                 gen = "Gen",
 ##'                 env = "Env",
 ##'                 repl = NULL,
-##'                 time = NULL,
+##'                 year = NULL,
 ##'                 reg = "Reg",
 ##'                 res.het = FALSE,
 ##'                 trait = "Y",
@@ -64,7 +64,7 @@
 ##'                 }
 ##' @export
 
-bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
+bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
                      res.het = FALSE, iter = 2000, cores = 1, chains = 4,...){
 
   requireNamespace('rstan')
@@ -77,8 +77,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
 
   if(res.het){
   # Heterogeneous residual variances -----------------
-    if(is.null(time)){
-      # No time effect --------------------------
+    if(is.null(year)){
+      # No year effect --------------------------
       if(is.null(reg)){
         # No region effect ---------------------------
         if(is.null(repl)){
@@ -978,9 +978,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
 
 
 
-    }else # With time effect --------------------------
+    }else # With year effect --------------------------
       {
-      stopifnot("time is not in the data" = time %in% colnames(data))
+      stopifnot("year is not in the data" = year %in% colnames(data))
       if(is.null(reg)) # No region effect ---------------------------
         {
         if(is.null(repl)) # Only means --------------------------------
@@ -991,8 +991,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,env])
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p3 = ncol(Z3)
           p4 = ncol(Z4)
           p5 = ncol(Z5)
@@ -1058,7 +1058,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_t
     vector[p8] t;
 
-    // Genotype by time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt
     vector[p9] gt;
 
@@ -1101,11 +1101,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gl ~ cauchy(0, phi);
     gl ~ normal(0, s_gl);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -1140,8 +1140,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,env])
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
@@ -1210,11 +1210,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gl;
     vector[p5] gl;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] l;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gl;
 
@@ -1261,11 +1261,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gl ~ cauchy(0, phi);
     gl ~ normal(0, s_gl);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -1302,8 +1302,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,env])
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p2 <- ncol(Z2)
           p3 <- ncol(Z3)
@@ -1379,11 +1379,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gl;
     vector[p5] gl;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -1434,11 +1434,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gl ~ cauchy(0, phi);
     gl ~ normal(0, s_gl);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -1478,8 +1478,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
           p5 <- ncol(Z5)
@@ -1556,11 +1556,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gm;
     vector[p7] gm;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -1611,11 +1611,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -1652,8 +1652,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
@@ -1737,11 +1737,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gm;
     vector[p7] gm;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -1796,11 +1796,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -1840,8 +1840,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p2 <- ncol(Z2)
           p3 <- ncol(Z3)
@@ -1932,11 +1932,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gm;
     vector[p7] gm;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genptype by Time parameter/hyperparameters
+    // Genptype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -1995,11 +1995,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -2028,7 +2028,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
 
 }else # Homogeneous variances ------------------------------
   {
-  if(is.null(time)) # No time effect ------------------------
+  if(is.null(year)) # No year effect ------------------------
     {
     if(is.null(reg)) # No region information -----------------------------
       {
@@ -2876,7 +2876,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
         Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
       }
     }
-  }else # With time effect ------------------
+  }else # With year effect ------------------
     {
       if(is.null(reg)) # No region information -----------------------------
       {
@@ -2888,8 +2888,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,env])
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
           p5 <- ncol(Z5)
@@ -2947,11 +2947,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gl;
     vector[p5] gl;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Hybrid by Time parameter/hyperparameters
+    // Hybrid by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -2990,11 +2990,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gl ~ cauchy(0, phi);
     gl ~ normal(0, s_gl);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -3029,8 +3029,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,env])
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
@@ -3096,11 +3096,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gl;
     vector[p5] gl;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -3143,11 +3143,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gl ~ cauchy(0, phi);
     gl ~ normal(0, s_gl);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -3183,8 +3183,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,env])
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p2 <- ncol(Z2)
           p3 <- ncol(Z3)
@@ -3257,11 +3257,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gl;
     vector[p5] gl;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -3308,11 +3308,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gl ~ cauchy(0, phi);
     gl ~ normal(0, s_gl);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -3350,8 +3350,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
           p5 <- ncol(Z5)
@@ -3424,11 +3424,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gm;
     vector[p7] gm;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -3475,11 +3475,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
 
-    // Conditional prior probabilities distributions  for Time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by Time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -3516,8 +3516,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
@@ -3597,11 +3597,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gm;
     vector[p7] gm;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by Time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -3652,11 +3652,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
 
-    // Conditional prior probabilities distributions  for Time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by Time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 
@@ -3695,8 +3695,8 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
           Z5 = model.matrix(~-1 + data[,gen]:data[,env])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,time])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,time])
+          Z8 = model.matrix(~-1 + data[,year])
+          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
           p2 <- ncol(Z2)
           p3 <- ncol(Z3)
@@ -3784,11 +3784,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     real<lower=0> s_gm;
     vector[p7] gm;
 
-    // Time parameter/hyperparameters
+    // year parameter/hyperparameters
     real<lower=0> s_t;
     vector[p8] t;
 
-    // Genotype by time parameter/hyperparameters
+    // Genotype by year parameter/hyperparameters
     real<lower=0> s_gt;
     vector[p9] gt;
 
@@ -3843,11 +3843,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, time = NULL,
     s_gm ~ cauchy(0, phi);
     gm ~ normal(0, s_gm);
 
-    // Conditional prior probabilities distributions  for time
+    // Conditional prior probabilities distributions  for year
     s_t ~ cauchy(0, phi);
     t ~ normal(0, s_t);
 
-    // Conditional prior probabilities distributions  for genotype by time
+    // Conditional prior probabilities distributions  for genotype by year
     s_gt ~ cauchy(0, phi);
     gt ~ normal(0, s_gt);
 

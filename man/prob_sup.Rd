@@ -10,7 +10,7 @@ prob_sup(
   gen,
   env,
   reg = NULL,
-  time = NULL,
+  year = NULL,
   mod.output,
   int,
   increase = TRUE,
@@ -29,9 +29,9 @@ the trait, genotype and environment information, respectively}
 \code{reg} will be a string with the name of the column that corresponds to the
 region information. Otherwise, \code{reg = NULL} (default).}
 
-\item{time}{A string or NULL. If the data set has information about time-related
-environmental factors (years, seasons...), \code{time} will be a string with the
-name of the column that corresponds to the time information. Otherwise, \code{time = NULL} (default).}
+\item{year}{A string or NULL. If the data set has information about time-related
+environmental factors (years, seasons...), \code{year} will be a string with the
+name of the column that corresponds to the time information. Otherwise, \code{year = NULL} (default).}
 
 \item{mod.output}{An object from the \code{\link[=extr_outs]{extr_outs()}} function}
 
@@ -62,10 +62,10 @@ The \code{marginal} list has:
 \item \code{perfo}: the probabilities of superior performance.
 \item \code{pair_perfo}: the pairwise probabilities of superior performance.
 \item \code{stabi}: the probabilities of superior stability. Can be \code{stabi_gl},
-\code{stabi_gm} (when \code{reg} is not \code{NULL}) or \code{stabi_gt} (when \code{time} is not \code{NULL}).
+\code{stabi_gm} (when \code{reg} is not \code{NULL}) or \code{stabi_gt} (when \code{year} is not \code{NULL}).
 \item \code{pair_stabi}: the pairwise probabilities of superior stability.
 Can be \code{pair_stabi_gl}, \code{pair_stabi_gm} (when \code{reg} is not \code{NULL}) or
-\code{pair_stabi_gt} (when \code{time} is not \code{NULL}).
+\code{pair_stabi_gt} (when \code{year} is not \code{NULL}).
 \item \code{joint_prob}: the joint probabilities of superior performance and stability.
 }
 \item \code{plot} : A list of ggplots illustrating the outputs:
@@ -79,10 +79,10 @@ performance (the probability of genotypes at the \emph{x}-axis being superior
 to those on the \emph{y}-axis).
 \item \code{stabi}: a bar plot with the probabilities of superior stability.
 Different plots are generated for \code{stabi_gl}, \code{stabi_gm} and \code{stabi_gt} if \code{reg}
-or/and \code{time} are not \code{NULL}.
+or/and \code{year} are not \code{NULL}.
 \item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability.
 Different plots are generated for \code{stabi_gl}, \code{stabi_gm} and \code{stabi_gt} if \code{reg}
-or/and \code{time} are not \code{NULL}. This plot represents
+or/and \code{year} are not \code{NULL}. This plot represents
 the probability of genotypes at the \emph{x}-axis being superior
 to those on \emph{y}-axis.
 \item \code{joint_prob}: a plot with the probabilities of superior performance,
@@ -97,19 +97,19 @@ The \code{conditional} list has:
 \itemize{
 \item \code{prob}: data frames containing the probabilities of superior performance
 within environments. Can be \code{prob_env}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
-\code{prob_time} (if \code{time} is not \code{NULL}).
+\code{prob_year} (if \code{year} is not \code{NULL}).
 \item \code{pwprob}: lists with the pairwise probabilities of superior performance
 within environments. Can be \code{pwprob_env}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
-\code{pwprob_time} (if \code{time} is not \code{NULL}).
+\code{pwprob_year} (if \code{year} is not \code{NULL}).
 }
 \item \code{plot} : A list with:
 \itemize{
 \item \code{prob}: heatmaps with the probabilities of superior performance within
 environments. Can be \code{prob_env}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
-\code{prob_time} (if \code{time} is not \code{NULL}).
+\code{prob_year} (if \code{year} is not \code{NULL}).
 \item \code{pwprob}: a list of heatmaps representing the pairwise probability of superior
 performance within environments. Can be \code{pwprob_env}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
-\code{pwprob_time} (if \code{time} is not \code{NULL}). The interpretation is the same as in the
+\code{pwprob_year} (if \code{year} is not \code{NULL}). The interpretation is the same as in the
 \code{pair_perfo} in the \code{marginal} list: the probability of genotypes at the \emph{x}-axis being superior
 to those on \emph{y}-axis.
 }
@@ -225,7 +225,7 @@ mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
-                time = NULL,
+                year = NULL,
                 reg = "Reg",
                 res.het = FALSE,
                 trait = "Y",
@@ -244,7 +244,7 @@ results = prob_sup(data = soy,
                    env = "Env",
                    mod.output = outs,
                    reg = 'Reg',
-                   time = NULL,
+                   year = NULL,
                    int = .2,
                    increase = TRUE,
                    save.df = FALSE,

@@ -61,7 +61,7 @@ mod = bayes_met(data = soy,
                 gen = "Gen",
                 env = "Env",
                 repl = NULL,
-                time = NULL,
+                year = NULL,
                 reg = "Reg",
                 res.het = F,
                 trait = "Y",
@@ -75,7 +75,7 @@ outs = extr_outs(data = soy, trait = "Y", model = mod,
                  verbose = TRUE)
 
 results = prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env",
-                   mod.output = outs, reg = 'Reg', time = NULL, int = .2,
+                   mod.output = outs, reg = 'Reg', year = NULL, int = .2,
                    increase = TRUE, save.df = FALSE, interactive = FALSE, 
                    verbose = TRUE)
 ```

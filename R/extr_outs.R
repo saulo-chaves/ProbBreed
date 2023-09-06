@@ -27,8 +27,8 @@
 ##' \item \code{g} : genotypic effect
 ##' \item \code{gl} : genotype-by-environment effect
 ##' \item \code{gm} : genotype-by-region effect
-##' \item \code{t} : time effect
-##' \item \code{gt} : genotype-by-time effect
+##' \item \code{t} : year effect
+##' \item \code{gt} : genotype-by-year effect
 ##' }
 ##' @param nenv The number of environments in the analysis
 ##' @param probs A vector with two elements representing the probabilities
@@ -63,7 +63,7 @@
 ##'                 gen = "Gen",
 ##'                 env = "Env",
 ##'                 repl = NULL,
-##'                 time = NULL,
+##'                 year = NULL,
 ##'                 reg = "Reg",
 ##'                 res.het = FALSE,
 ##'                 trait = "Y",
