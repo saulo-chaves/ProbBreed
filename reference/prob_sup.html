@@ -63,7 +63,7 @@ of superior performance within environments (<code>conditional</code> output).</
 <span>  <span class="va">gen</span>,</span>
 <span>  <span class="va">env</span>,</span>
 <span>  reg <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  year <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">mod.output</span>,</span>
 <span>  <span class="va">int</span>,</span>
 <span>  increase <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -90,10 +90,10 @@ the trait, genotype and environment information, respectively</p></dd>
 region information. Otherwise, <code>reg = NULL</code> (default).</p></dd>
 
 
-<dt>time</dt>
+<dt>year</dt>
 <dd><p>A string or NULL. If the data set has information about time-related
-environmental factors (years, seasons...), <code>time</code> will be a string with the
-name of the column that corresponds to the time information. Otherwise, <code>time = NULL</code> (default).</p></dd>
+environmental factors (years, seasons...), <code>year</code> will be a string with the
+name of the column that corresponds to the time information. Otherwise, <code>year = NULL</code> (default).</p></dd>
 
 
 <dt>mod.output</dt>
@@ -137,10 +137,10 @@ another with the <code>conditional</code> probabilities.</p>
 <p>The <code>marginal</code> list has:</p><ul><li><p><code>df</code> : A list of data frames containing the calculated probabilities:</p><ul><li><p><code>perfo</code>: the probabilities of superior performance.</p></li>
 <li><p><code>pair_perfo</code>: the pairwise probabilities of superior performance.</p></li>
 <li><p><code>stabi</code>: the probabilities of superior stability. Can be <code>stabi_gl</code>,
-<code>stabi_gm</code> (when <code>reg</code> is not <code>NULL</code>) or <code>stabi_gt</code> (when <code>time</code> is not <code>NULL</code>).</p></li>
+<code>stabi_gm</code> (when <code>reg</code> is not <code>NULL</code>) or <code>stabi_gt</code> (when <code>year</code> is not <code>NULL</code>).</p></li>
 <li><p><code>pair_stabi</code>: the pairwise probabilities of superior stability.
 Can be <code>pair_stabi_gl</code>, <code>pair_stabi_gm</code> (when <code>reg</code> is not <code>NULL</code>) or
-<code>pair_stabi_gt</code> (when <code>time</code> is not <code>NULL</code>).</p></li>
+<code>pair_stabi_gt</code> (when <code>year</code> is not <code>NULL</code>).</p></li>
 <li><p><code>joint_prob</code>: the joint probabilities of superior performance and stability.</p></li>
 </ul></li>
 <li><p><code>plot</code> : A list of ggplots illustrating the outputs:</p><ul><li><p><code>g_hpd</code>: a caterpillar plot representing the marginal genotypic value of
@@ -152,10 +152,10 @@ performance (the probability of genotypes at the <em>x</em>-axis being superior
 to those on the <em>y</em>-axis).</p></li>
 <li><p><code>stabi</code>: a bar plot with the probabilities of superior stability.
 Different plots are generated for <code>stabi_gl</code>, <code>stabi_gm</code> and <code>stabi_gt</code> if <code>reg</code>
-or/and <code>time</code> are not <code>NULL</code>.</p></li>
+or/and <code>year</code> are not <code>NULL</code>.</p></li>
 <li><p><code>pair_stabi</code>: a heatmap with the pairwise probabilities of superior stability.
 Different plots are generated for <code>stabi_gl</code>, <code>stabi_gm</code> and <code>stabi_gt</code> if <code>reg</code>
-or/and <code>time</code> are not <code>NULL</code>. This plot represents
+or/and <code>year</code> are not <code>NULL</code>. This plot represents
 the probability of genotypes at the <em>x</em>-axis being superior
 to those on <em>y</em>-axis.</p></li>
 <li><p><code>joint_prob</code>: a plot with the probabilities of superior performance,
@@ -164,17 +164,17 @@ performance and stability.</p></li>
 </ul></li>
 </ul><p>The <code>conditional</code> list has:</p><ul><li><p><code>df</code> : A list with:</p><ul><li><p><code>prob</code>: data frames containing the probabilities of superior performance
 within environments. Can be <code>prob_env</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
-<code>prob_time</code> (if <code>time</code> is not <code>NULL</code>).</p></li>
+<code>prob_year</code> (if <code>year</code> is not <code>NULL</code>).</p></li>
 <li><p><code>pwprob</code>: lists with the pairwise probabilities of superior performance
 within environments. Can be <code>pwprob_env</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
-<code>pwprob_time</code> (if <code>time</code> is not <code>NULL</code>).</p></li>
+<code>pwprob_year</code> (if <code>year</code> is not <code>NULL</code>).</p></li>
 </ul></li>
 <li><p><code>plot</code> : A list with:</p><ul><li><p><code>prob</code>: heatmaps with the probabilities of superior performance within
 environments. Can be <code>prob_env</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
-<code>prob_time</code> (if <code>time</code> is not <code>NULL</code>).</p></li>
+<code>prob_year</code> (if <code>year</code> is not <code>NULL</code>).</p></li>
 <li><p><code>pwprob</code>: a list of heatmaps representing the pairwise probability of superior
 performance within environments. Can be <code>pwprob_env</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
-<code>pwprob_time</code> (if <code>time</code> is not <code>NULL</code>). The interpretation is the same as in the
+<code>pwprob_year</code> (if <code>year</code> is not <code>NULL</code>). The interpretation is the same as in the
 <code>pair_perfo</code> in the <code>marginal</code> list: the probability of genotypes at the <em>x</em>-axis being superior
 to those on <em>y</em>-axis.</p></li>
 </ul></li>
@@ -271,7 +271,7 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
 <span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Gen"</span>,</span></span>
 <span class="r-in"><span>                env <span class="op">=</span> <span class="st">"Env"</span>,</span></span>
 <span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                time <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                reg <span class="op">=</span> <span class="st">"Reg"</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                trait <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
@@ -292,7 +292,7 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
 <span class="r-in"><span>                   env <span class="op">=</span> <span class="st">"Env"</span>,</span></span>
 <span class="r-in"><span>                   mod.output <span class="op">=</span> <span class="va">outs</span>,</span></span>
 <span class="r-in"><span>                   reg <span class="op">=</span> <span class="st">'Reg'</span>,</span></span>
-<span class="r-in"><span>                   time <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>                   year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                   int <span class="op">=</span> <span class="fl">.2</span>,</span></span>
 <span class="r-in"><span>                   increase <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                   save.df <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
