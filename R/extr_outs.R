@@ -67,7 +67,7 @@
 ##'                 reg = "Reg",
 ##'                 res.het = FALSE,
 ##'                 trait = "Y",
-##'                 iter = 2000, cores = 1, chains = 4)
+##'                 iter = 2000, cores = 2, chains = 4)
 ##'
 ##' outs = extr_outs(data = soy, trait = "Y", model = mod,
 ##'                  effects = c('l','g','gl','m','gm'),
@@ -231,7 +231,7 @@ extr_outs = function(data, trait, model, effects, nenv,
       Eff_Npar = p_WAIC2,
       WAIC2 = WAIC2,
       mean_Rhat = mean(summary(model)$summar[,"Rhat"]),
-      n_eff = mean(summary(model)$summar[,"n_eff"])/4000
+      n_eff = mean(summary(model)$summar[,"n_eff"])/ns
     )
   ), 4)
   colnames(output_p_check) <-

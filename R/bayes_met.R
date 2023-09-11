@@ -60,12 +60,12 @@
 ##'                 reg = "Reg",
 ##'                 res.het = FALSE,
 ##'                 trait = "Y",
-##'                 iter = 2000, cores = 1, chains = 4)
+##'                 iter = 2000, cores = 2, chains = 4)
 ##'                 }
 ##' @export
 
 bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
-                     res.het = FALSE, iter = 2000, cores = 1, chains = 4,...){
+                     res.het = FALSE, iter = 2000, cores = 2, chains = 4,...){
 
   requireNamespace('rstan')
 
@@ -74,6 +74,10 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
   stopifnot("gen is not in the data" = gen %in% colnames(data))
   stopifnot("env is not in the data" = env %in% colnames(data))
   stopifnot("Please, specify the trait" = trait %in% colnames(data))
+  stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25'). Use the 'recod' function" = {
+    all(grepl('[A-Za-z]', data[, gen]))
+    all(grepl('[A-Za-z]', data[, env]))
+  })
 
   if(res.het){
   # Heterogeneous residual variances -----------------
@@ -490,6 +494,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }else{
         # With region effect ------------------------
         if(is.null(repl)){
+
+          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
+            all(grepl('[A-Za-z]', data[, reg]))
+          })
+
           # Only means ------------------------
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
@@ -981,6 +990,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
     }else # With year effect --------------------------
       {
       stopifnot("year is not in the data" = year %in% colnames(data))
+      stopifnot("Each 'year' must be represented by a string (e.g., 'Y08'). Use the 'recod' function" = {
+          all(grepl('[A-Za-z]', data[, year]))
+        })
       if(is.null(reg)) # No region effect ---------------------------
         {
         if(is.null(repl)) # Only means --------------------------------
@@ -1466,6 +1478,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }else # With region effect ------------------------
         {
           stopifnot("reg is not in the data" = reg %in% colnames(data))
+          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
+            all(grepl('[A-Za-z]', data[, reg]))
+          })
         if(is.null(repl)) # Only means ------------------------
           {
 
@@ -2416,6 +2431,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }
     }else # With region information -------------------------
       {
+        stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
+          all(grepl('[A-Za-z]', data[, reg]))
+        })
       if(is.null(repl)) # Only means --------------
         {
         data[,gen] = as.factor(data[,gen])
@@ -2878,6 +2896,10 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
     }
   }else # With year effect ------------------
     {
+      stopifnot("year is not in the data" = year %in% colnames(data))
+      stopifnot("Each 'year' must be represented by a string (e.g., 'Y08'). Use the 'recod' function" = {
+        all(grepl('[A-Za-z]', data[, year]))
+      })
       if(is.null(reg)) # No region information -----------------------------
       {
         if(is.null(repl)) # Only-means ---------------------------------
@@ -3339,6 +3361,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         }
       }else # With region information -------------------------
       {
+        stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
+          all(grepl('[A-Za-z]', data[, reg]))
+        })
         if(is.null(repl)) # Only means --------------
         {
           data[,gen] = as.factor(data[,gen])

@@ -220,7 +220,7 @@
 ##'                 reg = "Reg",
 ##'                 res.het = FALSE,
 ##'                 trait = "Y",
-##'                 iter = 2000, cores = 1, chains = 4)
+##'                 iter = 2000, cores = 2, chains = 4)
 ##'
 ##' outs = extr_outs(data = soy, trait = "Y", model = mod,
 ##'                  effects = c('l','g','gl','m','gm'),
@@ -249,7 +249,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
                     verbose = FALSE){
 
   # Conditions
-  stopifnot("Each 'gen' and 'env' must be represented by an alphanumeric code (e.g., 'G01' or 'L25')" = {
+  stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25'). Use the 'recod' function" = {
     all(grepl('[A-Za-z]', data[, gen]))
     all(grepl('[A-Za-z]', data[, env]))
   })
@@ -276,7 +276,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
     {
       if(!is.null(year)) # With year info ------------------
       {
-        stopifnot("Each 'year' must be represented by a string (e.g., 'Y08')" = {
+        stopifnot("Each 'year' must be represented by a string (e.g., 'Y08'). Use the 'recod' function" = {
           all(grepl('[A-Za-z]', data[, year]))
         })
 
@@ -289,7 +289,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
         if(!is.null(reg))  # With region info --------------------
         {
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08')" = {
+          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
             all(grepl('[A-Za-z]', data[, reg]))
           })
 
@@ -2953,7 +2953,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
     {
       if(!is.null(year)) # With year info ------------------
       {
-        stopifnot("Each 'year' must be represented by a string (e.g., 'T08')" = {
+        stopifnot("Each 'year' must be represented by a string (e.g., 'T08'). Use the 'recod' function" = {
           all(grepl('[A-Za-z]', data[, year]))
         })
 
@@ -2966,7 +2966,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
         if(!is.null(reg))  # With region info --------------------
         {
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08')" = {
+          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
             all(grepl('[A-Za-z]', data[, reg]))
           })
 
