@@ -249,10 +249,10 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
                     verbose = FALSE){
 
   # Conditions
-  stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25'). Use the 'recod' function" = {
-    all(grepl('[A-Za-z]', data[, gen]))
-    all(grepl('[A-Za-z]', data[, env]))
-  })
+  if(all(grepl('[A-Za-z]', data[, gen])) & all(grepl('[A-Za-z]', data[, env]))){
+    data[,gen] = paste("G", data[,gen], sep = "_")
+    data[,env] = paste("E", data[,env], sep = "_")
+  }
 
   stopifnot("Please, provide a valid selection intensity (number between 0 and 1)" = {
     is.numeric(int)
@@ -276,9 +276,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
     {
       if(!is.null(year)) # With year info ------------------
       {
-        stopifnot("Each 'year' must be represented by a string (e.g., 'Y08'). Use the 'recod' function" = {
-          all(grepl('[A-Za-z]', data[, year]))
-        })
+        if(all(grepl('[A-Za-z]', data[, year]))){
+          data[,year] = paste("Y", data[, year], sep = "_")
+        }
 
         name.year = levels(factor(data[,year]))
         num.year = nlevels(factor(data[,year]))
@@ -289,9 +289,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
         if(!is.null(reg))  # With region info --------------------
         {
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
-            all(grepl('[A-Za-z]', data[, reg]))
-          })
+          if(all(grepl('[A-Za-z]', data[, reg]))){
+            data[,reg] = paste("R", data[,reg], sep = "_")
+          }
 
           name.reg = levels(factor(data[,reg]))
           num.reg = nlevels(factor(data[,reg]))
@@ -638,15 +638,16 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category),
                        color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -656,17 +657,27 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
-            ))+
+            ))+ scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = 'Probabilities')
 
           if(verbose) message('9. Joint probability of superior performance and stability estimated')
 
@@ -1440,15 +1451,16 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category),
                        color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -1458,17 +1470,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = "Probabilities")
 
           if(verbose) message('7. Joint probability of superior performance and stability estimated')
 
@@ -1841,9 +1864,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
         if(!is.null(reg))  # With region info --------------------
         {
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08')" = {
-            all(grepl('[A-Za-z]', data[, reg]))
-          })
+          if(all(grepl('[A-Za-z]', data[, reg]))){
+            data[,reg] = paste("R", data[,reg], sep = "_")
+          }
 
           name.reg = levels(factor(data[,reg]))
           num.reg = nlevels(factor(data[,reg]))
@@ -2113,15 +2136,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
-                       color = 'black') +
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category), color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -2131,17 +2154,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = "Probabilities")
 
           if(verbose) message('7. Joint probability of superior performance and stability estimated')
 
@@ -2694,15 +2728,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
-                       color = 'black') +
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category), color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -2712,17 +2746,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = "Probabilities")
 
           if(verbose) message('5. Joint probability of superior performance and stability estimated')
 
@@ -2953,9 +2998,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
     {
       if(!is.null(year)) # With year info ------------------
       {
-        stopifnot("Each 'year' must be represented by a string (e.g., 'T08'). Use the 'recod' function" = {
-          all(grepl('[A-Za-z]', data[, year]))
-        })
+        if(all(grepl('[A-Za-z]', data[, year]))){
+          data[,year] = paste("Y", data[, year], sep = "_")
+        }
 
         name.year = levels(factor(data[,year]))
         num.year = nlevels(factor(data[,year]))
@@ -2966,9 +3011,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
         if(!is.null(reg))  # With region info --------------------
         {
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
-            all(grepl('[A-Za-z]', data[, reg]))
-          })
+          if(all(grepl('[A-Za-z]', data[, reg]))){
+            data[,reg] = paste("R", data[,reg], sep = "_")
+          }
 
           name.reg = levels(factor(data[,reg]))
           num.reg = nlevels(factor(data[,reg]))
@@ -3315,15 +3360,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
-                       color = 'black') +
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category), color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -3333,17 +3378,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = 'Probabilities')
 
           if(verbose) message('9. Joint probability of superior performance and stability estimated')
 
@@ -4118,15 +4174,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
-                       color = 'black') +
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category), color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -4136,17 +4192,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = "Probabilities")
 
           if(verbose) message('7. Joint probability of superior performance and stability estimated')
 
@@ -4518,9 +4585,9 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
         if(!is.null(reg))  # With region info --------------------
         {
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08')" = {
-            all(grepl('[A-Za-z]', data[, reg]))
-          })
+          if(all(grepl('[A-Za-z]', data[, reg]))){
+            data[,reg] = paste("R", data[,reg], sep = "_")
+          }
 
           name.reg = levels(factor(data[,reg]))
           num.reg = nlevels(factor(data[,reg]))
@@ -4790,15 +4857,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
-                       color = 'black') +
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category), color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -4808,17 +4875,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = "Probabilities")
 
           if(verbose) message('7. Joint probability of superior performance and stability estimated')
 
@@ -5373,15 +5451,15 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ),
             aes(x = .data$ID, y = 0, yend = .data$prob, xend = .data$ID),
             linewidth = 1.2) +
-            geom_point(aes(fill = .data$category, shape = .data$category), size = 2,
-                       color = 'black') +
+            geom_point(aes(fill = .data$category, shape = .data$category,
+                           size = .data$category), color = 'black') +
             theme(axis.text.x = element_text(angle = 90),
                   legend.position = 'top') +
             scale_fill_manual(
               label = c(
                 'Joint' = 'Joint probability',
-                'Performance' = 'Superior stability',
-                'Stability' = 'Superior performance'
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
               ),
               values = c(
                 'Joint' = '#1b9e77',
@@ -5391,17 +5469,28 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
             ) +
             scale_shape_manual(label = c(
               'Joint' = 'Joint probability',
-              'Performance' = 'Superior stability',
-              'Stability' = 'Superior performance'
+              'Performance' = 'Superior performance',
+              'Stability' = 'Superior stability'
             ),
             values = c(
               'Joint' = 21,
               'Performance' = 24,
               'Stability' = 25
             ))+
+            scale_size_manual(
+              label = c(
+                'Joint' = 'Joint probability',
+                'Performance' = 'Superior performance',
+                'Stability' = 'Superior stability'
+              ),
+              values = c(
+                'Joint' = 3,
+                'Performance' = 2,
+                'Stability' = 2
+              ))+
             ylim(0, 1) +
             labs(x = 'Genotype', y = 'Probabilities', fill = 'Probabilities',
-                 shape = 'Probabilities')
+                 shape = 'Probabilities', size = "Probabilities")
 
           if(verbose) message('5. Joint probability of superior performance and stability estimated')
 

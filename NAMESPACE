@@ -3,7 +3,6 @@
 export(bayes_met)
 export(extr_outs)
 export(prob_sup)
-export(recod)
 import(ggplot2)
 import(rstan)
 importFrom(lifecycle,deprecated)

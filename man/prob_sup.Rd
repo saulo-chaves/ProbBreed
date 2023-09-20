@@ -229,7 +229,7 @@ mod = bayes_met(data = soy,
                 reg = "Reg",
                 res.het = FALSE,
                 trait = "Y",
-                iter = 2000, cores = 1, chains = 4)
+                iter = 2000, cores = 2, chains = 4)
 
 outs = extr_outs(data = soy, trait = "Y", model = mod,
                  effects = c('l','g','gl','m','gm'),

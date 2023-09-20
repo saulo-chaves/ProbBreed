@@ -14,7 +14,7 @@ bayes_met(
   year = NULL,
   res.het = FALSE,
   iter = 2000,
-  cores = 1,
+  cores = 2,
   chains = 4,
   ...
 )
@@ -83,7 +83,7 @@ mod = bayes_met(data = soy,
                 reg = "Reg",
                 res.het = FALSE,
                 trait = "Y",
-                iter = 2000, cores = 1, chains = 4)
+                iter = 2000, cores = 2, chains = 4)
                 }
 }
 \seealso{

@@ -74,10 +74,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
   stopifnot("gen is not in the data" = gen %in% colnames(data))
   stopifnot("env is not in the data" = env %in% colnames(data))
   stopifnot("Please, specify the trait" = trait %in% colnames(data))
-  stopifnot("Each 'gen' and 'env' must be represented by a string (e.g., 'G01' or 'L25'). Use the 'recod' function" = {
-    all(grepl('[A-Za-z]', data[, gen]))
-    all(grepl('[A-Za-z]', data[, env]))
-  })
+
+  if(all(grepl('[A-Za-z]', data[, gen])) & all(grepl('[A-Za-z]', data[, env]))){
+    data[,gen] = paste("G", data[,gen], sep = "_")
+    data[,env] = paste("E", data[,env], sep = "_")
+  }
 
   if(res.het){
   # Heterogeneous residual variances -----------------
@@ -495,9 +496,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         # With region effect ------------------------
         if(is.null(repl)){
 
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
-            all(grepl('[A-Za-z]', data[, reg]))
-          })
+          if(all(grepl('[A-Za-z]', data[, reg]))){
+            data[,reg] = paste("R", data[,reg], sep = "_")
+          }
 
           # Only means ------------------------
           data[,gen] = as.factor(data[,gen])
@@ -983,16 +984,14 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
 
 
 
-
-
-
-
     }else # With year effect --------------------------
       {
       stopifnot("year is not in the data" = year %in% colnames(data))
-      stopifnot("Each 'year' must be represented by a string (e.g., 'Y08'). Use the 'recod' function" = {
-          all(grepl('[A-Za-z]', data[, year]))
-        })
+
+      if(all(grepl('[A-Za-z]', data[, year]))){
+          data[,year] = paste("Y", data[, year], sep = "_")
+        }
+
       if(is.null(reg)) # No region effect ---------------------------
         {
         if(is.null(repl)) # Only means --------------------------------
@@ -1478,9 +1477,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }else # With region effect ------------------------
         {
           stopifnot("reg is not in the data" = reg %in% colnames(data))
-          stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
-            all(grepl('[A-Za-z]', data[, reg]))
-          })
+          if(all(grepl('[A-Za-z]', data[, reg]))){
+            data[,reg] = paste("R", data[,reg], sep = "_")
+          }
         if(is.null(repl)) # Only means ------------------------
           {
 
@@ -2431,9 +2430,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }
     }else # With region information -------------------------
       {
-        stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
-          all(grepl('[A-Za-z]', data[, reg]))
-        })
+        if(all(grepl('[A-Za-z]', data[, reg]))){
+          data[,reg] = paste("R", data[,reg], sep = "_")
+        }
       if(is.null(repl)) # Only means --------------
         {
         data[,gen] = as.factor(data[,gen])
@@ -2897,9 +2896,10 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
   }else # With year effect ------------------
     {
       stopifnot("year is not in the data" = year %in% colnames(data))
-      stopifnot("Each 'year' must be represented by a string (e.g., 'Y08'). Use the 'recod' function" = {
-        all(grepl('[A-Za-z]', data[, year]))
-      })
+      if(all(grepl('[A-Za-z]', data[, year]))){
+        data[,year] = paste("Y", data[, year], sep = "_")
+      }
+
       if(is.null(reg)) # No region information -----------------------------
       {
         if(is.null(repl)) # Only-means ---------------------------------
@@ -3361,9 +3361,9 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         }
       }else # With region information -------------------------
       {
-        stopifnot("Each 'reg' must be represented by a string (e.g., 'R08'). Use the 'recod' function" = {
-          all(grepl('[A-Za-z]', data[, reg]))
-        })
+        if(all(grepl('[A-Za-z]', data[, reg]))){
+          data[,reg] = paste("R", data[,reg], sep = "_")
+        }
         if(is.null(repl)) # Only means --------------
         {
           data[,gen] = as.factor(data[,gen])
