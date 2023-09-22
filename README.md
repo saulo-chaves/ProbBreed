@@ -55,8 +55,6 @@ mod = bayes_met(data = soy,
                 iter = 2000, cores = 2, chains = 4)
 
 outs = extr_outs(data = soy, trait = "Y", model = mod,
-                 effects = c('l','g','gl','m','gm'),
-                 nenv = length(unique(soy$Env)),
                  probs = c(0.05, 0.95),
                  check.stan.diag = FALSE, 
                  verbose = TRUE)
