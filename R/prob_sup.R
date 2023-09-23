@@ -955,7 +955,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
           v.names = 'prob',
           idvar = 'gen', timevar = 'reg'
         ),
-        aes(x = .data$reg, y = .data$gen, fill = .data$prob)
+        aes(x = .data$reg, y = factor(.data$gen, levels = ord_gen), fill = .data$prob)
       ) +
         geom_tile(colour = 'white') +
         theme(axis.text.x = element_text(angle = 90),
@@ -1059,7 +1059,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
           v.names = 'prob',
           idvar = 'gen', timevar = 'year'
         ),
-        aes(x = .data$year, y = .data$gen, fill = .data$prob)
+        aes(x = .data$year, y = factor(.data$gen, levels = ord_gen), fill = .data$prob)
       ) +
         geom_tile(colour = 'white') +
         theme(axis.text.x = element_text(angle = 90),
@@ -1896,7 +1896,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
           v.names = 'prob',
           idvar = 'gen', timevar = 'year'
         ),
-        aes(x = .data$year, y = .data$gen, fill = .data$prob)
+        aes(x = .data$year, y = factor(.data$gen, levels = ord_gen), fill = .data$prob)
       ) +
         geom_tile(colour = 'white') +
         theme(axis.text.x = element_text(angle = 90),
@@ -2686,7 +2686,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
           v.names = 'prob',
           idvar = 'gen', timevar = 'reg'
         ),
-        aes(x = .data$reg, y = .data$gen, fill = .data$prob)
+        aes(x = .data$reg, y = factor(.data$gen, levels = ord_gen), fill = .data$prob)
       ) +
         geom_tile(colour = 'white') +
         theme(axis.text.x = element_text(angle = 90),
