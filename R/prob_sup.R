@@ -967,7 +967,8 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
              fill = expression(bold(Pr(g %in% Omega)))) +
         guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5,
                                      title.position = 'top',
-                                     title.hjust = .5))
+                                     title.hjust = .5))+
+        scale_y_discrete(limits = rev)
 
       if(verbose) message('12. Probability of superior performance within regions estimated')
 
@@ -1071,7 +1072,8 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
              fill = expression(bold(Pr(g %in% Omega)))) +
         guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5,
                                      title.position = 'top',
-                                     title.hjust = .5))
+                                     title.hjust = .5))+
+        scale_y_discrete(limits = rev)
 
       if(verbose) message('14. Probability of superior performance within year estimated')
 
@@ -1908,7 +1910,8 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
              fill = expression(bold(Pr(g %in% Omega)))) +
         guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5,
                                      title.position = 'top',
-                                     title.hjust = .5))
+                                     title.hjust = .5))+
+        scale_y_discrete(limits = rev)
 
       if(verbose) message('10. Probability of superior performance within year estimated')
 
@@ -2698,7 +2701,8 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
              fill = expression(bold(Pr(g %in% Omega)))) +
         guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5,
                                      title.position = 'top',
-                                     title.hjust = .5))
+                                     title.hjust = .5))+
+        scale_y_discrete(limits = rev)
 
       if(verbose) message('10. Probability of superior performance within regions estimated')
 
