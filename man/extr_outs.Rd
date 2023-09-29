@@ -9,7 +9,7 @@ extr_outs(
   trait,
   model,
   probs = c(0.025, 0.975),
-  check.stan.diag = FALSE,
+  check.stan.diag = TRUE,
   verbose = FALSE,
   ...
 )

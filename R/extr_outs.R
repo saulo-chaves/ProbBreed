@@ -63,7 +63,7 @@
 ##' @export
 
 extr_outs = function(data, trait, model, probs = c(0.025, 0.975),
-                     check.stan.diag = FALSE, verbose = FALSE, ...){
+                     check.stan.diag = TRUE, verbose = FALSE, ...){
 
   requireNamespace('ggplot2')
   requireNamespace('rstan')
@@ -117,11 +117,11 @@ extr_outs = function(data, trait, model, probs = c(0.025, 0.975),
     }
     variances = data.frame(
       'effect' = c(effects,'error'),
-      'var' = variances,
-      'sd' = std.dev,
-      'naive.se' = naive.se,
-      'HPD1' = prob[1,],
-      'HPD2' = prob[2,],
+      'var' = round(variances,3),
+      'sd' = round(std.dev,3),
+      'naive.se' = round(naive.se,3),
+      'HPD1' = round(prob[1,],3),
+      'HPD2' = round(prob[2,],3),
       row.names = NULL
     )
 
@@ -150,15 +150,15 @@ extr_outs = function(data, trait, model, probs = c(0.025, 0.975),
 
     variances = data.frame(
       'effect' = c(effects, paste0('error_env', 1:nenv)),
-      'var' = c(variances, apply(out[['sigma']]^2, 2, mean)),
-      'sd' = c(std.dev, apply(out[['sigma']]^2, 2, sd)),
-      'naive.se' = c(naive.se,
-                     apply(out[['sigma']]^2, 2,
-                           function(x) sd(x)/sqrt(length(x)))),
-      'HPD1' = c(prob[1,], apply(out[['sigma']]^2, 2,
-                                   function(x) quantile(x, probs = probs))[1,]),
-      'HPD2' = c(prob[2,], apply(out[['sigma']]^2, 2,
-                                 function(x) quantile(x, probs = probs))[2,]),
+      'var' = c(round(variances, 3), round(apply(out[['sigma']]^2, 2, mean),3)),
+      'sd' = c(round(std.dev,3), round(apply(out[['sigma']]^2, 2, sd),3)),
+      'naive.se' = c(round(naive.se,3),
+                     round(apply(out[['sigma']]^2, 2,
+                           function(x) sd(x)/sqrt(length(x))), 3)),
+      'HPD1' = c(round(prob[1,],3), round(apply(out[['sigma']]^2, 2,
+                                   function(x) quantile(x, probs = probs))[1,],3)),
+      'HPD2' = c(round(prob[2,],3), round(apply(out[['sigma']]^2, 2,
+                                 function(x) quantile(x, probs = probs))[2,],3)),
       row.names = NULL
     )
 

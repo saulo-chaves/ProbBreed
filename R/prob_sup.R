@@ -3136,7 +3136,7 @@ prob_sup = function(data, trait, gen, env, reg = NULL, year = NULL, mod.output, 
 
       j_prob.plot = ggplot(cbind(j_prob, V4 = paste(j_prob$ID, j_prob$level, sep = '@#_')),
                            aes(x = stats::reorder(.data$V4, -.data$prob), y = .data$prob)) +
-        facet_wrap(.~.data$level, ncol = 1, scales = "free_x") +
+        #facet_wrap(.~.data$level, ncol = 1, scales = "free_x") +
         theme(axis.text.x = element_text(angle = 90)) +
         scale_x_discrete(labels = retrieve) +
         geom_segment(aes(x = reorder(.data$V4, -.data$prob), xend = .data$V4,
