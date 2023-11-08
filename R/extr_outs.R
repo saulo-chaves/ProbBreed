@@ -58,7 +58,7 @@
 ##' outs = extr_outs(data = soy, trait = "Y", model = mod,
 ##'                  probs = c(0.05, 0.95),
 ##'                  check.stan.diag = TRUE,
-##'                  verbose = FALSE)
+##'                  verbose = TRUE)
 ##'                  }
 ##' @export
 
@@ -298,14 +298,14 @@ extr_outs = function(data, trait, model, probs = c(0.025, 0.975),
 
   temp = df.post.list$sampled.Y
   temp$chain = "Sampled"
-  temp = rbind(temp, data.frame(value = y, iter = 1:length(y), chain = 'Real'))
+  temp = rbind(temp, data.frame(value = y, iter = 1:length(y), chain = 'Empirical'))
 
   densities$sampled.Y = ggplot(data = temp, aes(x = .data$value, color = .data$chain)) +
     geom_density(linewidth = 1.3, alpha = .5)  +
     labs(x = "Y", y = 'Frequency', fill = '', color = '') +
     theme(legend.position = 'top') +
     #scale_fill_manual(values = c('Real' = '#1f78b4', 'Sampled' = "#33a02c")) +
-    scale_color_manual(values = c('Real' = '#1f78b4', 'Sampled' = "#33a02c"))
+    scale_color_manual(values = c('Empirical' = '#1f78b4', 'Sampled' = "#33a02c"))
 
   rm(temp)
 
