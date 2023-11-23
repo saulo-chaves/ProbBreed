@@ -22,7 +22,7 @@ prob_sup(
 \arguments{
 \item{data}{A data frame containing the phenotypic data}
 
-\item{trait, gen, env}{A string. The name of the columns that corresponds to
+\item{trait, gen, env}{A string. The name of the columns that correspond to
 the trait, genotype and environment information, respectively}
 
 \item{reg}{A string or NULL. If the dataset has information about regions,

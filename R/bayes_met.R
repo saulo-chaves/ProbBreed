@@ -10,10 +10,14 @@
 ##' @details
 ##' More details about the usage of `bayes_met`, as well as the other function of
 ##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
+##' Information on solutions to solve convergence or mixing issue can be found at
+##' \url{https://mc-stan.org/misc/warnings.html}.
 ##'
-##' @param data  A data frame containing the observations
-##' @param gen,env  A string. The name of the
-##' column that corresponds to the evaluated genotype or environment.
+##' @param data  A data frame containing the observations.
+##' @param gen,loc  A string. The name of the
+##' column that corresponds to the evaluated genotype and location, respectively. If
+##' the environment is a combination of other factors (for instance, location-year),
+##' the name of the column that contains this information must be attributed to `loc`.
 ##' @param repl  A string, a vector, or `NULL`. If the trial is randomized in complete blocks,
 ##' `repl` will be a string representing the name of the column
 ##' that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
@@ -29,7 +33,7 @@
 ##' name of the column that corresponds to the time information. Otherwise, `year = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
 ##' residual variances. Default is `FALSE`. If `TRUE`, the model will estimate one
-##' residual variance per environment (or location)
+##' residual variance per location.
 ##' @param chains Inherited from [rstan::sampling()].
 ##' A positive integer specifying the number of Markov chains. The default is 4.
 ##' @param iter Inherited from [rstan::sampling()].
@@ -52,19 +56,19 @@
 ##'
 ##' @examples
 ##' \donttest{
-##' mod = bayes_met(data = soy,
-##'                 gen = "Gen",
-##'                 env = "Env",
-##'                 repl = NULL,
+##' mod = bayes_met(data = maize,
+##'                 gen = "Hybrid",
+##'                 loc = "Location",
+##'                 repl = c("Rep", "Block"),
 ##'                 year = NULL,
-##'                 reg = "Reg",
+##'                 reg = 'Region',
 ##'                 res.het = FALSE,
-##'                 trait = "Y",
-##'                 iter = 2000, cores = 2, chains = 4)
+##'                 trait = 'GY',
+##'                 iter = 2000, cores = 4, chains = 4)
 ##'                 }
 ##' @export
 
-bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
+bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                      res.het = FALSE, iter = 2000, cores = 2, chains = 4,...){
 
   requireNamespace('rstan')
@@ -72,11 +76,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
   data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
 
   stopifnot("gen is not in the data" = gen %in% colnames(data))
-  stopifnot("env is not in the data" = env %in% colnames(data))
+  stopifnot("loc is not in the data" = loc %in% colnames(data))
   stopifnot("Please, specify the trait" = trait %in% colnames(data))
 
   if(!all(grepl('[A-Za-z]', data[, gen]))){data[,gen] = paste("G", data[,gen], sep = "_")}
-  if(!all(grepl('[A-Za-z]', data[, env]))){data[,env] = paste("E", data[,env], sep = "_")}
+  if(!all(grepl('[A-Za-z]', data[, loc]))){data[,loc] = paste("E", data[,loc], sep = "_")}
 
   if(res.het){
   # Heterogeneous residual variances -----------------
@@ -87,16 +91,16 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         if(is.null(repl)){
           # Only means --------------------------------
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
           p5 <- ncol(Z5)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p3 = p3, p4 = p4,
                          p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5,
@@ -210,19 +214,19 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           # RCB ------------------------
           stopifnot("repl is not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl] = as.factor(data[,repl])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           p1 <- ncol(Z1)
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
           p5 <- ncol(Z5)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4,
                          p5 = p5, Z1 = Z1, Z3 = Z3, Z4 = Z4,Z5 = Z5,
@@ -345,22 +349,22 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           # incomplete blocks ------------------------
           stopifnot("repl are not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
           data[,repl[2]] = as.factor(data[,repl[2]])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           p1 <- ncol(Z1)
           p2 <- ncol(Z2)
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
           p5 <- ncol(Z5)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5,
                          Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5,
@@ -499,11 +503,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           # Only means ------------------------
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           p3 <- ncol(Z3)
@@ -512,7 +516,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p6 <- ncol(Z6)
           p7 <- ncol(Z7)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                          p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
@@ -646,13 +650,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           # RCB -------------------------
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl] = as.factor(data[,repl])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           p1 <- ncol(Z1)
@@ -662,7 +666,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p6 <- ncol(Z6)
           p7 <- ncol(Z7)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                          p7 = p7, Z1 = Z1, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
@@ -807,15 +811,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           stopifnot("repl is are not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
           data[,repl[2]] = as.factor(data[,repl[2]])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           p1 <- ncol(Z1)
@@ -826,7 +830,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p6 <- ncol(Z6)
           p7 <- ncol(Z7)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                          p7 = p7, Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
@@ -989,11 +993,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         if(is.null(repl)) # Only means --------------------------------
           {
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z8 = model.matrix(~-1 + data[,year])
           Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p3 = ncol(Z3)
@@ -1002,7 +1006,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p8 = ncol(Z8)
           p9 = ncol(Z9)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p8 = p8, p9 = p9,
                          Z3 = Z3, Z4 = Z4, Z5 = Z5, Z8 = Z8, Z9 = Z9,
@@ -1136,13 +1140,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           {
           stopifnot("repl is not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl] = as.factor(data[,repl])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z8 = model.matrix(~-1 + data[,year])
           Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
@@ -1152,7 +1156,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p8 = ncol(Z8)
           p9 = ncol(Z9)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p8 = p8,
                          p9 = p9,  Z1 = Z1, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z8 = Z8,
@@ -1296,15 +1300,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           {
           stopifnot("repl are not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
           data[,repl[2]] = as.factor(data[,repl[2]])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z8 = model.matrix(~-1 + data[,year])
           Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
@@ -1315,7 +1319,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p8 = ncol(Z8)
           p9 = ncol(Z9)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5,
                          p8 = p8, p9 = p9, Z1 = Z1, Z2 = Z2, Z3 = Z3, Z4 = Z4,
@@ -1477,11 +1481,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
 
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           Z8 = model.matrix(~-1 + data[,year])
@@ -1494,7 +1498,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p8 = ncol(Z8)
           p9 = ncol(Z9)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                          p7 = p7, p8 = p8, p9 = p9, Z3 = Z3, Z4 = Z4, Z5 = Z5,
@@ -1649,13 +1653,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           {
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl] = as.factor(data[,repl])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           Z8 = model.matrix(~-1 + data[,year])
@@ -1669,7 +1673,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p8 = ncol(Z8)
           p9 = ncol(Z9)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                          p7 = p7, p8 = p8, p9 = p9, Z1 = Z1, Z3 = Z3, Z4 = Z4,
@@ -1835,15 +1839,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           stopifnot("repl is are not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
           data[,repl[2]] = as.factor(data[,repl[2]])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           Z8 = model.matrix(~-1 + data[,year])
@@ -1858,7 +1862,7 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
           p8 = ncol(Z8)
           p9 = ncol(Z9)
           y = data[,trait]
-          index = rep(1:nlevels(data[,env]), times = as.numeric(table(data[,env])))
+          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
           df_stan = list(n = n, p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
                          p7 = p7, p8 = p8, p9 = p9, Z1 = Z1, Z2 = Z2, Z3 = Z3,
@@ -2041,11 +2045,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       if(is.null(repl)) # Only-means ---------------------------------
         {
         data[,gen] = as.factor(data[,gen])
-        data[,env] = as.factor(data[,env])
+        data[,loc] = as.factor(data[,loc])
         n = nrow(data)
         Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,env])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+        Z4 = model.matrix(~-1 + data[,loc])
+        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
         p3 <- ncol(Z3)
         p4 <- ncol(Z4)
         p5 <- ncol(Z5)
@@ -2156,13 +2160,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }else if(length(repl) == 1) # RCB ---------------------
         {
         data[,gen] = as.factor(data[,gen])
-        data[,env] = as.factor(data[,env])
+        data[,loc] = as.factor(data[,loc])
         data[,repl] = as.factor(data[,repl])
         n = nrow(data)
-        Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+        Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
         Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,env])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+        Z4 = model.matrix(~-1 + data[,loc])
+        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
         p1 <- ncol(Z1)
         p3 <- ncol(Z3)
         p4 <- ncol(Z4)
@@ -2282,15 +2286,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
       }else if(length(repl) == 2) # incomplete blocks --------------------------
         {
         data[,gen] = as.factor(data[,gen])
-        data[,env] = as.factor(data[,env])
+        data[,loc] = as.factor(data[,loc])
         data[,repl[1]] = as.factor(data[,repl[1]])
         data[,repl[2]] = as.factor(data[,repl[2]])
         n = nrow(data)
-        Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-        Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+        Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+        Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
         Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,env])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+        Z4 = model.matrix(~-1 + data[,loc])
+        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
         p1 <- ncol(Z1)
         p2 <- ncol(Z2)
         p3 <- ncol(Z3)
@@ -2427,11 +2431,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         {
         data[,gen] = as.factor(data[,gen])
         data[,reg] = as.factor(data[,reg])
-        data[,env] = as.factor(data[,env])
+        data[,loc] = as.factor(data[,loc])
         n = nrow(data)
         Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,env])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+        Z4 = model.matrix(~-1 + data[,loc])
+        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
         Z6 = model.matrix(~-1 + data[,reg])
         Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
         p3 <- ncol(Z3)
@@ -2567,13 +2571,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         {
         data[,gen] = as.factor(data[,gen])
         data[,reg] = as.factor(data[,reg])
-        data[,env] = as.factor(data[,env])
+        data[,loc] = as.factor(data[,loc])
         data[,repl] = as.factor(data[,repl])
         n = nrow(data)
-        Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+        Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
         Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,env])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+        Z4 = model.matrix(~-1 + data[,loc])
+        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
         Z6 = model.matrix(~-1 + data[,reg])
         Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
         p1 <- ncol(Z1)
@@ -2720,15 +2724,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         {
         data[,gen] = as.factor(data[,gen])
         data[,reg] = as.factor(data[,reg])
-        data[,env] = as.factor(data[,env])
+        data[,loc] = as.factor(data[,loc])
         data[,repl[1]] = as.factor(data[,repl[1]])
         data[,repl[2]] = as.factor(data[,repl[2]])
         n = nrow(data)
-        Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-        Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+        Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+        Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
         Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,env])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+        Z4 = model.matrix(~-1 + data[,loc])
+        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
         Z6 = model.matrix(~-1 + data[,reg])
         Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
         p1 <- ncol(Z1)
@@ -2892,11 +2896,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         if(is.null(repl)) # Only-means ---------------------------------
         {
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z8 = model.matrix(~-1 + data[,year])
           Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p3 <- ncol(Z3)
@@ -3031,13 +3035,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         }else if(length(repl) == 1) # RCB ---------------------
         {
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl] = as.factor(data[,repl])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z8 = model.matrix(~-1 + data[,year])
           Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
@@ -3183,15 +3187,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         }else if(length(repl) == 2) # incomplete blocks --------------------------
         {
           data[,gen] = as.factor(data[,gen])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
           data[,repl[2]] = as.factor(data[,repl[2]])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z8 = model.matrix(~-1 + data[,year])
           Z9 = model.matrix(~-1 + data[,gen]:data[,year])
           p1 <- ncol(Z1)
@@ -3354,11 +3358,11 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         {
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           Z8 = model.matrix(~-1 + data[,year])
@@ -3518,13 +3522,13 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         {
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl] = as.factor(data[,repl])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           Z8 = model.matrix(~-1 + data[,year])
@@ -3695,15 +3699,15 @@ bayes_met = function(data, gen, env, repl, trait, reg = NULL, year = NULL,
         {
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
-          data[,env] = as.factor(data[,env])
+          data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
           data[,repl[2]] = as.factor(data[,repl[2]])
           n = nrow(data)
-          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,env])
-          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,env])
+          Z1 = model.matrix(~-1 + data[,repl[1]]:data[,loc])
+          Z2 = model.matrix(~-1 + data[,repl[2]]:data[,loc])
           Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,env])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,env])
+          Z4 = model.matrix(~-1 + data[,loc])
+          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           Z6 = model.matrix(~-1 + data[,reg])
           Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
           Z8 = model.matrix(~-1 + data[,year])
