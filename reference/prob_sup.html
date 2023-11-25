@@ -61,7 +61,7 @@ of superior performance within environments (<code>conditional</code> output).</
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">trait</span>,</span>
 <span>  <span class="va">gen</span>,</span>
-<span>  <span class="va">env</span>,</span>
+<span>  <span class="va">loc</span>,</span>
 <span>  reg <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  year <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">mod.output</span>,</span>
@@ -79,9 +79,11 @@ of superior performance within environments (<code>conditional</code> output).</
 <dd><p>A data frame containing the phenotypic data</p></dd>
 
 
-<dt>trait, gen, env</dt>
+<dt>trait, gen, loc</dt>
 <dd><p>A string. The name of the columns that correspond to
-the trait, genotype and environment information, respectively</p></dd>
+the trait, genotype and location information, respectively. If
+the environment is a combination of other factors (for instance, location-year),
+the name of the column that contains this information must be attributed to <code>loc</code>.</p></dd>
 
 
 <dt>reg</dt>
@@ -163,17 +165,17 @@ probabilities of superior stability and the joint probabilities of superior
 performance and stability.</p></li>
 </ul></li>
 </ul><p>The <code>conditional</code> list has:</p><ul><li><p><code>df</code> : A list with:</p><ul><li><p><code>prob</code>: data frames containing the probabilities of superior performance
-within environments. Can be <code>prob_env</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+within environments. Can be <code>prob_loc</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
 <code>prob_year</code> (if <code>year</code> is not <code>NULL</code>).</p></li>
 <li><p><code>pwprob</code>: lists with the pairwise probabilities of superior performance
-within environments. Can be <code>pwprob_env</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+within environments. Can be <code>pwprob_loc</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
 <code>pwprob_year</code> (if <code>year</code> is not <code>NULL</code>).</p></li>
 </ul></li>
 <li><p><code>plot</code> : A list with:</p><ul><li><p><code>prob</code>: heatmaps with the probabilities of superior performance within
-environments. Can be <code>prob_env</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+environments. Can be <code>prob_loc</code>, <code>prob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
 <code>prob_year</code> (if <code>year</code> is not <code>NULL</code>).</p></li>
 <li><p><code>pwprob</code>: a list of heatmaps representing the pairwise probability of superior
-performance within environments. Can be <code>pwprob_env</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
+performance within environments. Can be <code>pwprob_loc</code>, <code>pwprob_reg</code> (if <code>reg</code> is not <code>NULL</code>), and
 <code>pwprob_year</code> (if <code>year</code> is not <code>NULL</code>). The interpretation is the same as in the
 <code>pair_perfo</code> in the <code>marginal</code> list: the probability of genotypes at the <em>x</em>-axis being superior
 to those on <em>y</em>-axis.</p></li>
@@ -267,28 +269,28 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>,</span></span>
-<span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Gen"</span>,</span></span>
-<span class="r-in"><span>                env <span class="op">=</span> <span class="st">"Env"</span>,</span></span>
-<span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">maize</span>,</span></span>
+<span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Hybrid"</span>,</span></span>
+<span class="r-in"><span>                loc <span class="op">=</span> <span class="st">"Location"</span>,</span></span>
+<span class="r-in"><span>                repl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Rep"</span>, <span class="st">"Block"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                reg <span class="op">=</span> <span class="st">"Reg"</span>,</span></span>
+<span class="r-in"><span>                reg <span class="op">=</span> <span class="st">'Region'</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>                trait <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
-<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'soy' not found</span>
+<span class="r-in"><span>                trait <span class="op">=</span> <span class="st">'GY'</span>,</span></span>
+<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">6000</span>, cores <span class="op">=</span> <span class="fl">4</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rstan::stan_model(model_code = stan_df, model_name = "BayesMET"):</span> Boost not found; call install.packages('BH')</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">outs</span> <span class="op">=</span> <span class="fu"><a href="extr_outs.html">extr_outs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>, trait <span class="op">=</span> <span class="st">"Y"</span>, model <span class="op">=</span> <span class="va">mod</span>,</span></span>
+<span class="r-in"><span><span class="va">outs</span> <span class="op">=</span> <span class="fu"><a href="extr_outs.html">extr_outs</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">maize</span>, trait <span class="op">=</span> <span class="st">"GY"</span>, model <span class="op">=</span> <span class="va">mod</span>,</span></span>
 <span class="r-in"><span>                 probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 check.stan.diag <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'soy' not found</span>
+<span class="r-in"><span>                 verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'extract': object 'mod' not found</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">results</span> <span class="op">=</span> <span class="fu">prob_sup</span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>,</span></span>
-<span class="r-in"><span>                   trait <span class="op">=</span> <span class="st">"Y"</span>,</span></span>
-<span class="r-in"><span>                   gen <span class="op">=</span> <span class="st">"Gen"</span>,</span></span>
-<span class="r-in"><span>                   env <span class="op">=</span> <span class="st">"Env"</span>,</span></span>
-<span class="r-in"><span>                   reg <span class="op">=</span> <span class="st">'Reg'</span>,</span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">=</span> <span class="fu">prob_sup</span><span class="op">(</span>data <span class="op">=</span> <span class="va">maize</span>,</span></span>
+<span class="r-in"><span>                   trait <span class="op">=</span> <span class="st">"GY"</span>,</span></span>
+<span class="r-in"><span>                   gen <span class="op">=</span> <span class="st">"Hybrid"</span>,</span></span>
+<span class="r-in"><span>                   loc <span class="op">=</span> <span class="st">"Location"</span>,</span></span>
+<span class="r-in"><span>                   reg <span class="op">=</span> <span class="st">'Region'</span>,</span></span>
 <span class="r-in"><span>                   year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                   mod.output <span class="op">=</span> <span class="va">outs</span>,</span></span>
 <span class="r-in"><span>                   int <span class="op">=</span> <span class="fl">.2</span>,</span></span>
@@ -296,7 +298,7 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
 <span class="r-in"><span>                   save.df <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                   interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in prob_sup(data = soy, trait = "Y", gen = "Gen", env = "Env", reg = "Reg",     year = NULL, mod.output = outs, int = 0.2, increase = TRUE,     save.df = FALSE, interactive = FALSE, verbose = FALSE):</span> unused argument (env = "Env")</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'outs' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
