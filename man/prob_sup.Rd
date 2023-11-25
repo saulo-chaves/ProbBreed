@@ -8,7 +8,7 @@ prob_sup(
   data,
   trait,
   gen,
-  env,
+  loc,
   reg = NULL,
   year = NULL,
   mod.output,
@@ -22,8 +22,10 @@ prob_sup(
 \arguments{
 \item{data}{A data frame containing the phenotypic data}
 
-\item{trait, gen, env}{A string. The name of the columns that correspond to
-the trait, genotype and environment information, respectively}
+\item{trait, gen, loc}{A string. The name of the columns that correspond to
+the trait, genotype and location information, respectively. If
+the environment is a combination of other factors (for instance, location-year),
+the name of the column that contains this information must be attributed to \code{loc}.}
 
 \item{reg}{A string or NULL. If the dataset has information about regions,
 \code{reg} will be a string with the name of the column that corresponds to the
@@ -96,19 +98,19 @@ The \code{conditional} list has:
 \item \code{df} : A list with:
 \itemize{
 \item \code{prob}: data frames containing the probabilities of superior performance
-within environments. Can be \code{prob_env}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
+within environments. Can be \code{prob_loc}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
 \code{prob_year} (if \code{year} is not \code{NULL}).
 \item \code{pwprob}: lists with the pairwise probabilities of superior performance
-within environments. Can be \code{pwprob_env}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
+within environments. Can be \code{pwprob_loc}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
 \code{pwprob_year} (if \code{year} is not \code{NULL}).
 }
 \item \code{plot} : A list with:
 \itemize{
 \item \code{prob}: heatmaps with the probabilities of superior performance within
-environments. Can be \code{prob_env}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
+environments. Can be \code{prob_loc}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
 \code{prob_year} (if \code{year} is not \code{NULL}).
 \item \code{pwprob}: a list of heatmaps representing the pairwise probability of superior
-performance within environments. Can be \code{pwprob_env}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
+performance within environments. Can be \code{pwprob_loc}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
 \code{pwprob_year} (if \code{year} is not \code{NULL}). The interpretation is the same as in the
 \code{pair_perfo} in the \code{marginal} list: the probability of genotypes at the \emph{x}-axis being superior
 to those on \emph{y}-axis.
@@ -221,26 +223,26 @@ the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io
 }
 \examples{
 \donttest{
-mod = bayes_met(data = soy,
-                gen = "Gen",
-                env = "Env",
-                repl = NULL,
+mod = bayes_met(data = maize,
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep", "Block"),
                 year = NULL,
-                reg = "Reg",
+                reg = 'Region',
                 res.het = FALSE,
-                trait = "Y",
-                iter = 2000, cores = 2, chains = 4)
+                trait = 'GY',
+                iter = 6000, cores = 4, chains = 4)
 
-outs = extr_outs(data = soy, trait = "Y", model = mod,
+outs = extr_outs(data = maize, trait = "GY", model = mod,
                  probs = c(0.05, 0.95),
                  check.stan.diag = TRUE,
-                 verbose = FALSE)
+                 verbose = TRUE)
 
-results = prob_sup(data = soy,
-                   trait = "Y",
-                   gen = "Gen",
-                   env = "Env",
-                   reg = 'Reg',
+results = prob_sup(data = maize,
+                   trait = "GY",
+                   gen = "Hybrid",
+                   loc = "Location",
+                   reg = 'Region',
                    year = NULL,
                    mod.output = outs,
                    int = .2,

@@ -1,17 +1,9 @@
-## Function bayes_met
-##
-##' @title
-##' Bayesian model for multi-environment trials
+##' @title Bayesian model for multi-environment trials
 ##'
 ##' @description
 ##' This function runs a Bayesian model for analyzing data from
 ##' Multi-environment trials using `rstan`, the `R` interface to `Stan`.
 ##'
-##' @details
-##' More details about the usage of `bayes_met`, as well as the other function of
-##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
-##' Information on solutions to solve convergence or mixing issue can be found at
-##' \url{https://mc-stan.org/misc/warnings.html}.
 ##'
 ##' @param data  A data frame containing the observations.
 ##' @param gen,loc  A string. The name of the
@@ -25,30 +17,27 @@
 ##' the replicate and block effects on the first and second positions, respectively.
 ##' If the data do not have replicates, `repl` will be `NULL`.
 ##' @param trait A string. The name of the column that corresponds to the analysed variable.
-##' @param reg A string or NULL. If the data set has information about regions,
+##' @param reg A string or NULL. If the data has information of regions,
 ##' `reg` will be a string with the name of the column that corresponds to the
 ##' region information. Otherwise, `reg = NULL` (default).
-##' @param year A string or NULL. If the data set has information about time-related
+##' @param year A string or NULL. If the data set has information of time-related
 ##' environmental factors (years, seasons...), `year` will be a string with the
 ##' name of the column that corresponds to the time information. Otherwise, `year = NULL` (default).
 ##' @param res.het Logical, indicating if the model should consider heterogeneous
 ##' residual variances. Default is `FALSE`. If `TRUE`, the model will estimate one
 ##' residual variance per location.
-##' @param chains Inherited from [rstan::sampling()].
-##' A positive integer specifying the number of Markov chains. The default is 4.
-##' @param iter Inherited from [rstan::sampling()].
-##' A positive integer specifying the number of iterations for each chains
-##' (including warmup). The default is 2000.
-##' @param cores Inherited from [rstan::sampling()].
-##' A positive integer specifying the number of cores to use when executing the
-##' chains in parallel (defaults to 1).
-##' @param ... Additional arguments passed to the [rstan::sampling()] function
-##' (for instance, to change the thin number, or to set a specific seed).
-##' For more information, see [rstan::sampling()] manual
-##' @return The function returns an object of S4 class stanfit containing the
-##' fitted results
+##' @inheritParams rstan::sampling
 ##'
-##' @seealso [rstan::sampling()]
+##' @inheritSection rstan::sampling Methods
+##' @inherit rstan::sampling return
+##'
+##' @details
+##' More details about the usage of `bayes_met` and other function of
+##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
+##' Information on solutions to solve convergence or mixing issue can be found at
+##' \url{https://mc-stan.org/misc/warnings.html}.
+##'
+##' @seealso [rstan::sampling()], [rstan::stan()], [rstan::stanfit()]
 ##'
 ##' @import rstan
 ##' @importFrom stats density median model.matrix na.exclude quantile reorder sd var
@@ -64,12 +53,18 @@
 ##'                 reg = 'Region',
 ##'                 res.het = FALSE,
 ##'                 trait = 'GY',
-##'                 iter = 2000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 4, chains = 4)
 ##'                 }
 ##' @export
 
 bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
-                     res.het = FALSE, iter = 2000, cores = 2, chains = 4,...){
+                     res.het = FALSE, iter = 2000, cores = 2, chains = 4,
+                     pars = NA, warmup = floor(iter/2), thin = 1,
+                     seed = sample.int(.Machine$integer.max, 1),
+                     init = 'random', verbose = FALSE,
+                     algorithm = c("NUTS", "HMC", "Fixed_param"),
+                     control = NULL, include = TRUE, show_messages = TRUE, ...)
+  {
 
   requireNamespace('rstan')
 
@@ -208,7 +203,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 1){
           # RCB ------------------------
@@ -343,7 +343,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 2){
           # incomplete blocks ------------------------
@@ -491,7 +496,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }
       }else{
@@ -644,7 +654,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         } else if(length(repl) == 1){
           # RCB -------------------------
@@ -804,7 +819,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 2){
           # incomplete blocks ------------------------
@@ -978,7 +998,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
         }
       }
 
@@ -1134,7 +1159,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 1) # RCBD ------------------------
           {
@@ -1294,7 +1324,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 2) # Incomplete blocks ------------------------
           {
@@ -1467,7 +1502,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }
       }else # With region effect ------------------------
@@ -1647,7 +1687,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         } else if(length(repl) == 1) # RCB -------------------------
           {
@@ -1832,7 +1877,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 2) # incomplete blocks ------------------------
           {
@@ -2031,7 +2081,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
         }
       }
     }
@@ -2155,7 +2210,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
         stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                cores = cores, chains = chains, pars = pars,
+                                warmup = warmup, thin = thin, seed = seed,
+                                init = init, verbose = verbose,
+                                algorithm = algorithm, control = control,
+                                include = include, show_messages = show_messages, ...)
 
       }else if(length(repl) == 1) # RCB ---------------------
         {
@@ -2281,7 +2341,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
         stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                cores = cores, chains = chains, pars = pars,
+                                warmup = warmup, thin = thin, seed = seed,
+                                init = init, verbose = verbose,
+                                algorithm = algorithm, control = control,
+                                include = include, show_messages = show_messages, ...)
 
       }else if(length(repl) == 2) # incomplete blocks --------------------------
         {
@@ -2421,7 +2486,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
         stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                cores = cores, chains = chains, pars = pars,
+                                warmup = warmup, thin = thin, seed = seed,
+                                init = init, verbose = verbose,
+                                algorithm = algorithm, control = control,
+                                include = include, show_messages = show_messages, ...)
 
       }
     }else # With region information -------------------------
@@ -2565,7 +2635,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
         stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                cores = cores, chains = chains, pars = pars,
+                                warmup = warmup, thin = thin, seed = seed,
+                                init = init, verbose = verbose,
+                                algorithm = algorithm, control = control,
+                                include = include, show_messages = show_messages, ...)
 
       } else if(length(repl) == 1) # RCDB --------------------
         {
@@ -2718,7 +2793,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
         stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                cores = cores, chains = chains, pars = pars,
+                                warmup = warmup, thin = thin, seed = seed,
+                                init = init, verbose = verbose,
+                                algorithm = algorithm, control = control,
+                                include = include, show_messages = show_messages, ...)
 
       }else if(length(repl) == 2) # Incomplete blocks --------------------------
         {
@@ -2884,7 +2964,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 } "
         stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                cores = cores, chains = chains, pars = pars,
+                                warmup = warmup, thin = thin, seed = seed,
+                                init = init, verbose = verbose,
+                                algorithm = algorithm, control = control,
+                                include = include, show_messages = show_messages, ...)
       }
     }
   }else # With year effect ------------------
@@ -3030,7 +3115,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 1) # RCB ---------------------
         {
@@ -3182,7 +3272,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 2) # incomplete blocks --------------------------
         {
@@ -3347,7 +3442,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }
       }else # With region information -------------------------
@@ -3516,7 +3616,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         } else if(length(repl) == 1) # RCDB --------------------
         {
@@ -3693,7 +3798,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
 
         }else if(length(repl) == 2) # Incomplete blocks --------------------------
         {
@@ -3884,7 +3994,12 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 } "
           stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
 
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter, cores = cores, chains = chains, ...)
+          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
+                                  cores = cores, chains = chains, pars = pars,
+                                  warmup = warmup, thin = thin, seed = seed,
+                                  init = init, verbose = verbose,
+                                  algorithm = algorithm, control = control,
+                                  include = include, show_messages = show_messages, ...)
         }
       }
   }

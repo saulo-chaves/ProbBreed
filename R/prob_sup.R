@@ -222,7 +222,7 @@
 ##'                 reg = 'Region',
 ##'                 res.het = FALSE,
 ##'                 trait = 'GY',
-##'                 iter = 2000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 4, chains = 4)
 ##'
 ##' outs = extr_outs(data = maize, trait = "GY", model = mod,
 ##'                  probs = c(0.05, 0.95),

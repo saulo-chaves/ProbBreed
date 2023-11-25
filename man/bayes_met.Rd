@@ -7,7 +7,7 @@
 bayes_met(
   data,
   gen,
-  env,
+  loc,
   repl,
   trait,
   reg = NULL,
@@ -16,14 +16,26 @@ bayes_met(
   iter = 2000,
   cores = 2,
   chains = 4,
+  pars = NA,
+  warmup = floor(iter/2),
+  thin = 1,
+  seed = sample.int(.Machine$integer.max, 1),
+  init = "random",
+  verbose = FALSE,
+  algorithm = c("NUTS", "HMC", "Fixed_param"),
+  control = NULL,
+  include = TRUE,
+  show_messages = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{A data frame containing the observations}
+\item{data}{A data frame containing the observations.}
 
-\item{gen, env}{A string. The name of the
-column that corresponds to the evaluated genotype or environment.}
+\item{gen, loc}{A string. The name of the
+column that corresponds to the evaluated genotype and location, respectively. If
+the environment is a combination of other factors (for instance, location-year),
+the name of the column that contains this information must be attributed to \code{loc}.}
 
 \item{repl}{A string, a vector, or \code{NULL}. If the trial is randomized in complete blocks,
 \code{repl} will be a string representing the name of the column
@@ -34,58 +46,127 @@ If the data do not have replicates, \code{repl} will be \code{NULL}.}
 
 \item{trait}{A string. The name of the column that corresponds to the analysed variable.}
 
-\item{reg}{A string or NULL. If the data set has information about regions,
+\item{reg}{A string or NULL. If the data has information of regions,
 \code{reg} will be a string with the name of the column that corresponds to the
 region information. Otherwise, \code{reg = NULL} (default).}
 
-\item{year}{A string or NULL. If the data set has information about time-related
+\item{year}{A string or NULL. If the data set has information of time-related
 environmental factors (years, seasons...), \code{year} will be a string with the
 name of the column that corresponds to the time information. Otherwise, \code{year = NULL} (default).}
 
 \item{res.het}{Logical, indicating if the model should consider heterogeneous
 residual variances. Default is \code{FALSE}. If \code{TRUE}, the model will estimate one
-residual variance per environment (or location)}
+residual variance per location.}
 
-\item{iter}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
-A positive integer specifying the number of iterations for each chains
-(including warmup). The default is 2000.}
+\item{iter}{A positive integer specifying the number of iterations for each 
+    chain (including warmup). The default is 2000.}
 
-\item{cores}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
-A positive integer specifying the number of cores to use when executing the
-chains in parallel (defaults to 1).}
+\item{cores}{Number of cores to use when executing the chains in parallel,
+    which defaults to 1 but we recommend setting the \code{mc.cores} option 
+    to be as many processors as the hardware and RAM allow (up to the 
+    number of chains).}
 
-\item{chains}{Inherited from \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.
-A positive integer specifying the number of Markov chains. The default is 4.}
+\item{chains}{A positive integer specifying the number of Markov chains. 
+    The default is 4.}
 
-\item{...}{Additional arguments passed to the \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} function
-(for instance, to change the thin number, or to set a specific seed).
-For more information, see \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} manual}
+\item{pars}{A vector of character strings specifying parameters of interest. 
+    The default is \code{NA} indicating all parameters in the model. 
+    If \code{include = TRUE}, only samples for parameters named in \code{pars} 
+    are stored in the fitted results. Conversely, if \code{include = FALSE}, 
+    samples for all parameters \emph{except} those named in \code{pars} are 
+    stored in the fitted results.}
+
+\item{warmup}{A positive integer specifying the number of warmup (aka burnin)
+    iterations per chain. If step-size adaptation is on (which it is by default), 
+    this also controls the number of iterations for which adaptation is run (and
+    hence these warmup samples should not be used for inference). The number of 
+    warmup iterations should be smaller than \code{iter} and the default is
+    \code{iter/2}.}
+
+\item{thin}{A positive integer specifying the period for saving samples. 
+    The default is 1, which is usually the recommended value.}
+
+\item{seed}{The seed for random number generation. The default is generated 
+    from 1 to the maximum integer supported by \R on the machine. Even if 
+    multiple chains are used, only one seed is needed, with other chains having 
+    seeds derived from that of the first chain to avoid dependent samples.
+    When a seed is specified by a number, \code{as.integer} will be applied to it. 
+    If \code{as.integer} produces \code{NA}, the seed is generated randomly. 
+    The seed can also be specified as a character string of digits, such as
+    \code{"12345"}, which is converted to integer.}
+
+\item{init}{Initial values specification. See the detailed documentation for 
+    the init argument in \code{\link[rstan]{stan}}.}
+
+\item{verbose}{\code{TRUE} or \code{FALSE}: flag indicating whether 
+    to print intermediate output from Stan on the console, which might
+    be helpful for model debugging.}
+
+\item{algorithm}{One of sampling algorithms that are implemented in Stan. 
+    Current options are \code{"NUTS"} (No-U-Turn sampler, Hoffman and Gelman 2011, Betancourt 2017), 
+    \code{"HMC"} (static HMC), or \code{"Fixed_param"}. The default and 
+    preferred algorithm is \code{"NUTS"}.}
+
+\item{control}{A named \code{list} of parameters to control the sampler's
+    behavior. See the details in the documentation for the \code{control} argument
+    in \code{\link[rstan]{stan}}.}
+
+\item{include}{Logical scalar defaulting to \code{TRUE} indicating
+    whether to include or exclude the parameters given by the 
+    \code{pars} argument. If \code{FALSE}, only entire multidimensional
+    parameters can be excluded, rather than particular elements of them.}
+
+\item{show_messages}{Either a logical scalar (defaulting to \code{TRUE})
+    indicating whether to print the summary of Informational Messages to
+    the screen after a chain is finished or a character string naming a path
+    where the summary is stored. Setting to \code{FALSE} is not recommended
+    unless you are very sure that the model is correct up to numerical 
+    error.}
+
+\item{...}{Additional arguments can be \code{chain_id}, \code{init_r}, 
+    \code{test_grad}, \code{append_samples}, \code{refresh},
+    \code{enable_random_init}. See the documentation in \code{\link[rstan]{stan}}.}
 }
 \value{
-The function returns an object of S4 class stanfit containing the
-fitted results
+An object of S4 class \code{stanfit} representing
+   the fitted results. Slot \code{mode} for this object
+   indicates if the sampling is done or not.
 }
 \description{
 This function runs a Bayesian model for analyzing data from
 Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Stan}.
 }
 \details{
-More details about the usage of \code{bayes_met}, as well as the other function of
+More details about the usage of \code{bayes_met} and other function of
 the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
+Information on solutions to solve convergence or mixing issue can be found at
+\url{https://mc-stan.org/misc/warnings.html}.
 }
+\section{Methods}{
+
+  \describe{
+    \item{\code{sampling}}{\code{signature(object = "stanmodel")}
+      Call a sampler (NUTS, HMC, or Fixed_param depending on parameters) 
+      to draw samples from the model defined by S4 class \code{stanmodel} 
+      given the data, initial values, etc. 
+    }
+  }
+
+}
+
 \examples{
 \donttest{
-mod = bayes_met(data = soy,
-                gen = "Gen",
-                env = "Env",
-                repl = NULL,
+mod = bayes_met(data = maize,
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep", "Block"),
                 year = NULL,
-                reg = "Reg",
+                reg = 'Region',
                 res.het = FALSE,
-                trait = "Y",
-                iter = 2000, cores = 2, chains = 4)
+                trait = 'GY',
+                iter = 6000, cores = 4, chains = 4)
                 }
 }
 \seealso{
-\code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}
+\code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}, \code{\link[rstan:stan]{rstan::stan()}}, \code{\link[rstan:stanfit-class]{rstan::stanfit()}}
 }
