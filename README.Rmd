@@ -51,14 +51,15 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 reg = "Region",
                 res.het = F,
-                trait = "GY")
+                trait = "GY",
+                iter = 6000, cores = 4, chains = 4)
 
 outs = extr_outs(data = maize, trait = "GY", model = mod,
                  probs = c(0.05, 0.95),
                  check.stan.diag = FALSE, 
                  verbose = TRUE)
 
-results = prob_sup(data = soy, trait = "GY", gen = "Hybrid", loc = "Location",
+results = prob_sup(data = maize, trait = "GY", gen = "Hybrid", loc = "Location",
                    mod.output = outs, reg = 'Region', year = NULL, int = .2,
                    increase = TRUE, save.df = FALSE, interactive = FALSE, 
                    verbose = TRUE)
