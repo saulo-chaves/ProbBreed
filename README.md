@@ -64,3 +64,11 @@ results = prob_sup(data = maize, trait = "GY", gen = "Hybrid", loc = "Location",
                    increase = TRUE, save.df = FALSE, interactive = FALSE, 
                    verbose = TRUE)
 ```
+
+## Citation
+
+For citing the package, use:
+
+``` r
+citation('ProbBreed')
+```

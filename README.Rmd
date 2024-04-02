@@ -66,4 +66,12 @@ results = prob_sup(data = maize, trait = "GY", gen = "Hybrid", loc = "Location",
 
 ```
 
+## Citation
+
+For citing the package, use: 
+
+```{r eval=FALSE, echo=TRUE}
+citation('ProbBreed')
+```
+
 
