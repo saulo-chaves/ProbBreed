@@ -15,7 +15,6 @@ prob_sup(
   int,
   increase = TRUE,
   save.df = FALSE,
-  interactive = FALSE,
   verbose = FALSE
 )
 }
@@ -46,75 +45,31 @@ name of the column that corresponds to the time information. Otherwise, \code{ye
 \item{save.df}{Logical. Should the data frames be saved in the work directory?
 \code{TRUE} for saving, \code{FALSE} (default) otherwise.}
 
-\item{interactive}{Logical. Should ggplots be converted into interactive plots?
-If \code{TRUE}, the function loads the \code{plotly} package and uses the \code{\link[plotly:ggplotly]{plotly::ggplotly()}}
-command.}
-
 \item{verbose}{A logical value. If \code{TRUE}, the function will indicate the
 completed steps. Defaults to \code{FALSE}.}
 }
 \value{
 The function returns an object of class \code{probsup}, which contains two lists,
-one with the \code{across} environment probabilities, and another with the \code{within} environments probabilities.
+one with the \code{across}-environment probabilities, and another with the \code{within}-environments probabilities.
 
-The \code{across} list has:
+The \code{across} list has the following elements:
 \itemize{
-\item \code{df} : A list of data frames containing the calculated probabilities:
-\itemize{
+\item \code{g_hpd}: Highest posterior density (HPD) of the posterior genotypic main effects.
 \item \code{perfo}: the probabilities of superior performance.
 \item \code{pair_perfo}: the pairwise probabilities of superior performance.
-\item \code{stabi}: the probabilities of superior stability. Can be \code{stabi_gl},
-\code{stabi_gm} (when \code{reg} is not \code{NULL}) or \code{stabi_gt} (when \code{year} is not \code{NULL}).
-\item \code{pair_stabi}: the pairwise probabilities of superior stability.
-Can be \code{pair_stabi_gl}, \code{pair_stabi_gm} (when \code{reg} is not \code{NULL}) or
-\code{pair_stabi_gt} (when \code{year} is not \code{NULL}).
+\item \code{stabi}: a list with the probabilities of superior stability. It can contain the data frames \code{gl},
+\code{gm} (when \code{reg} is not \code{NULL}) and \code{gt} (when \code{year} is not \code{NULL}).
+\item \code{pair_stabi}: a list with the pairwise probabilities of superior stability. It can contain the data frames \code{gl},
+\code{gm} (when \code{reg} is not \code{NULL}) and \code{gt} (when \code{year} is not \code{NULL}).
 \item \code{joint_prob}: the joint probabilities of superior performance and stability.
 }
-\item \code{plot} : A list of ggplots illustrating the outputs:
-\itemize{
-\item \code{g_hpd}: a caterpillar plot representing the marginal genotypic value of
-each genotype, and their respective highest posterior density interval (95\% represented by the
-thick line, and 97.5\% represented by the thin line).
-\item \code{perfo}: a bar plot illustrating the probabilities of superior performance
-\item \code{pair_perfo}: a heatmap representing the pairwise probability of superior
-performance (the probability of genotypes at the \emph{x}-axis being superior
-to those on the \emph{y}-axis).
-\item \code{stabi}: a bar plot with the probabilities of superior stability.
-Different plots are generated for \code{stabi_gl}, \code{stabi_gm} and \code{stabi_gt} if \code{reg}
-or/and \code{year} are not \code{NULL}.
-\item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability.
-Different plots are generated for \code{stabi_gl}, \code{stabi_gm} and \code{stabi_gt} if \code{reg}
-or/and \code{year} are not \code{NULL}. This plot represents
-the probability of genotypes at the \emph{x}-axis being superior
-to those on \emph{y}-axis.
-\item \code{joint_prob}: a plot with the probabilities of superior performance,
-probabilities of superior stability and the joint probabilities of superior
-performance and stability.
-}
-}
 
-The \code{within} list has:
+The \code{within} list has the following elements:
 \itemize{
-\item \code{df} : A list with:
-\itemize{
-\item \code{prob}: data frames containing the probabilities of superior performance
-within environments. Can be \code{prob_loc}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
-\code{prob_year} (if \code{year} is not \code{NULL}).
-\item \code{pwprob}: lists with the pairwise probabilities of superior performance
-within environments. Can be \code{pwprob_loc}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
-\code{pwprob_year} (if \code{year} is not \code{NULL}).
-}
-\item \code{plot} : A list with:
-\itemize{
-\item \code{prob}: heatmaps with the probabilities of superior performance within
-environments. Can be \code{prob_loc}, \code{prob_reg} (if \code{reg} is not \code{NULL}), and
-\code{prob_year} (if \code{year} is not \code{NULL}).
-\item \code{pwprob}: a list of heatmaps representing the pairwise probability of superior
-performance within environments. Can be \code{pwprob_loc}, \code{pwprob_reg} (if \code{reg} is not \code{NULL}), and
-\code{pwprob_year} (if \code{year} is not \code{NULL}). The interpretation is the same as in the
-\code{pair_perfo} in the \code{marginal} list: the probability of genotypes at the \emph{x}-axis being superior
-to those on \emph{y}-axis.
-}
+\item \code{perfo}: a list of data frames containing the probabilities of superior performance
+within locations (\code{gl}), regions (\code{gm}) and years (\code{gt}).
+\item \code{pair_perfo}: lists with the pairwise probabilities of superior performance
+within locations (\code{gl}), regions (\code{gm}) and years (\code{gt}).
 }
 }
 \description{
@@ -223,26 +178,25 @@ the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io
 }
 \examples{
 \donttest{
-mod = bayes_met(data = maize,
-                gen = "Hybrid",
-                loc = "Location",
-                repl = c("Rep", "Block"),
+mod = bayes_met(data = soy,
+                gen = "Gen",
+                loc = "Loc",
+                repl = NULL,
                 year = NULL,
-                reg = 'Region',
+                reg = NULL,
                 res.het = FALSE,
-                trait = 'GY',
+                trait = 'Y',
                 iter = 6000, cores = 4, chains = 4)
 
-outs = extr_outs(data = maize, trait = "GY", model = mod,
-                 probs = c(0.05, 0.95),
-                 plots = TRUE,
+outs = extr_outs(data = soy, trait = "Y", model = mod,
+                 probs = c(0.05, 0.95), plots = TRUE,
                  verbose = TRUE)
 
-results = prob_sup(data = maize,
-                   trait = "GY",
-                   gen = "Hybrid",
-                   loc = "Location",
-                   reg = 'Region',
+results = prob_sup(data = soy,
+                   trait = "Y",
+                   gen = "Gen",
+                   loc = "Loc",
+                   reg = NULL,
                    year = NULL,
                    mod.output = outs,
                    int = .2,

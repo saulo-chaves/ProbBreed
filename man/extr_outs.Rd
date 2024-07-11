@@ -56,17 +56,17 @@ the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io
 }
 \examples{
 \donttest{
-mod = bayes_met(data = maize,
-                gen = "Hybrid",
-                loc = "Location",
-                repl = c("Rep", "Block"),
+mod = bayes_met(data = soy,
+                gen = "Gen",
+                loc = "Loc",
+                repl = NULL,
                 year = NULL,
-                reg = 'Region',
+                reg = NULL,
                 res.het = FALSE,
-                trait = 'GY',
+                trait = 'Y',
                 iter = 6000, cores = 4, chains = 4)
 
-outs = extr_outs(data = maize, trait = "GY", model = mod,
+outs = extr_outs(data = soy, trait = "Y", model = mod,
                  probs = c(0.05, 0.95), plots = TRUE,
                  verbose = TRUE)
                  }

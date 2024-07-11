@@ -43,17 +43,17 @@
 ##'
 ##' @examples
 ##' \donttest{
-##' mod = bayes_met(data = maize,
-##'                 gen = "Hybrid",
-##'                 loc = "Location",
-##'                 repl = c("Rep", "Block"),
+##' mod = bayes_met(data = soy,
+##'                 gen = "Gen",
+##'                 loc = "Loc",
+##'                 repl = NULL,
 ##'                 year = NULL,
-##'                 reg = 'Region',
+##'                 reg = NULL,
 ##'                 res.het = FALSE,
-##'                 trait = 'GY',
+##'                 trait = 'Y',
 ##'                 iter = 6000, cores = 4, chains = 4)
 ##'
-##' outs = extr_outs(data = maize, trait = "GY", model = mod,
+##' outs = extr_outs(data = soy, trait = "Y", model = mod,
 ##'                  probs = c(0.05, 0.95), plots = TRUE,
 ##'                  verbose = TRUE)
 ##'                  }
@@ -217,7 +217,7 @@ extr_outs = function(data, trait, model, probs = c(0.025, 0.975), plots = TRUE,
 
   # Diagnostics -------------------
   ns = length(out$mu)
-  y = data[,trait]
+  y = as.numeric(data[,trait])
   N = length(y)
   temp = apply(out$y_gen, 1, function(x) {
     c(
@@ -348,23 +348,7 @@ extr_outs = function(data, trait, model, probs = c(0.025, 0.975), plots = TRUE,
 #'
 #' @export
 #'
-#' @examples
-#' \donttest{
-##' mod = bayes_met(data = maize,
-##'                 gen = "Hybrid",
-##'                 loc = "Location",
-##'                 repl = c("Rep", "Block"),
-##'                 year = NULL,
-##'                 reg = 'Region',
-##'                 res.het = FALSE,
-##'                 trait = 'GY',
-##'                 iter = 6000, cores = 4, chains = 4)
-##'
-##' outs = extr_outs(data = maize, trait = "GY", model = mod,
-##'                  probs = c(0.05, 0.95), plots = TRUE,
-##'                  verbose = TRUE)
-##' print(outs)
-##'                  }
+
 
 
 print.extr = function(obj){

@@ -89,14 +89,14 @@
 ##'
 ##' @examples
 ##' \donttest{
-##' mod = bayes_met(data = maize,
-##'                 gen = "Hybrid",
-##'                 loc = "Location",
-##'                 repl = c("Rep", "Block"),
+##' mod = bayes_met(data = soy,
+##'                 gen = "Gen",
+##'                 loc = "Loc",
+##'                 repl = NULL,
 ##'                 year = NULL,
-##'                 reg = 'Region',
+##'                 reg = NULL,
 ##'                 res.het = FALSE,
-##'                 trait = 'GY',
+##'                 trait = 'Y',
 ##'                 iter = 6000, cores = 4, chains = 4)
 ##'                 }
 ##' @export
