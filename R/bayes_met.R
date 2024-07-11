@@ -1,40 +1,84 @@
 ##' @title Bayesian model for multi-environment trials
 ##'
 ##' @description
-##' This function runs a Bayesian model for analyzing data from
+##' This function runs a Bayesian model for analysing data from
 ##' Multi-environment trials using `rstan`, the `R` interface to `Stan`.
 ##'
-##'
 ##' @param data  A data frame containing the observations.
-##' @param gen,loc  A string. The name of the
-##' column that corresponds to the evaluated genotype and location, respectively. If
-##' the environment is a combination of other factors (for instance, location-year),
-##' the name of the column that contains this information must be attributed to `loc`.
-##' @param repl  A string, a vector, or `NULL`. If the trial is randomized in complete blocks,
-##' `repl` will be a string representing the name of the column
-##' that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
-##' `repl` will be a string vector containing the name of the column that corresponds to
-##' the replicate and block effects on the first and second positions, respectively.
+##' @param gen,loc  A string. The name of the columns that contain the evaluated
+##' candidates and locations (or environments, if you are working with factor combinations), respectively.
+##' @param repl  A string, a string vector, or `NULL`. If the trial is randomized in complete blocks design,
+##' `repl` will be a string representing the name of the column that corresponds to the blocks.
+##' If the trial is randomized in incomplete blocks design, `repl` will be a string vector
+##' containing the name of the columns that correspond to the replicate and block effects on
+##' the first and second positions, respectively (c(replicate, block)).
 ##' If the data do not have replicates, `repl` will be `NULL`.
 ##' @param trait A string. The name of the column that corresponds to the analysed variable.
-##' @param reg A string or NULL. If the data has information of regions,
-##' `reg` will be a string with the name of the column that corresponds to the
-##' region information. Otherwise, `reg = NULL` (default).
-##' @param year A string or NULL. If the data set has information of time-related
-##' environmental factors (years, seasons...), `year` will be a string with the
-##' name of the column that corresponds to the time information. Otherwise, `year = NULL` (default).
-##' @param res.het Logical, indicating if the model should consider heterogeneous
-##' residual variances. Default is `FALSE`. If `TRUE`, the model will estimate one
-##' residual variance per location.
+##' @param reg A string or NULL. The name of the column that contain information on
+##' regions or mega-environments. `NULL` (default) if not applicable.
+##' @param year A string or NULL. The name of the column that contain information on
+##' years (or seasons). `NULL` (default) if not applicable.
+##' @param res.het Should the model consider heterogeneous residual variances?
+##' Defaults for `FALSE`. If `TRUE`, the model will estimate one
+##' residual variance per location (or environmnet). If `repl = NULL`, `res.het` must be `TRUE`.
 ##' @inheritParams rstan::sampling
 ##'
 ##' @inheritSection rstan::sampling Methods
 ##' @inherit rstan::sampling return
 ##'
 ##' @details
-##' More details about the usage of `bayes_met` and other function of
+##' The function has nine available models, which will be fitted according to the
+##' options set in the arguments:
+##' \enumerate{
+##' \item{Entry-mean model} : fitted when `repl = NULL`, `reg = NULL` and `year = NULL`:
+##' \deqn{y = \mu + g + l + \varepsilon}
+##' Where \eqn{y} is the phenotype, \eqn{\mu} is the intercept, \eqn{g} is the genotypic
+##' effect, \eqn{l} is the location (or environment) effect, and \eqn{\varepsilon} is
+##' the residue (which contains the genotype-by-location interaction, in this case).
+##'
+##' \item{Randomized complete blocks design} : fitted when `repl` is a single string.
+##' It will fit different models depending if `reg` and `year` are `NULL`:
+##'   \itemize{
+##'     \item{`reg = NULL` and `year = NULL`} :
+##'       \deqn{y = \mu + g + l + gl + r + \varepsilon}
+##'       where \eqn{gl} is the genotype-by-location effect, and \eqn{r} is the replicate effect.
+##'     \item{`reg = "reg"` and `year = NULL`} :
+##'       \deqn{y = \mu + g + m + l + gl + gm + r + \varepsilon}
+##'       where \eqn{m} is the region effect, and \eqn{gm} is the genotype-by-region effect.
+##'     \item{`reg = NULL` and `year = "year"`} :
+##'       \deqn{y = \mu + g + t + l + gl + gt + r + \varepsilon}
+##'       where \eqn{t} is the year effect, and \eqn{gt} is the genotype-by-year effect.
+##'     \item{`reg = "reg"` and `year = "year"`} :
+##'       \deqn{y = \mu + g + m + t + l + gl + gm + gt + r + \varepsilon}
+##'   }
+##'
+##' \item{Incomplete blocks design} : fitted when `repl` is a string vector of size 2.
+##' It will fit different models depending if `reg` and `year` are `NULL`:
+##'   \itemize{
+##'     \item{`reg = NULL` and `year = NULL`} :
+##'       \deqn{y = \mu + g + l + gl + r + b + \varepsilon}
+##'       where \eqn{b} is the block within replicates effect.
+##'     \item{`reg = "reg"` and `year = NULL`} :
+##'       \deqn{y = \mu + g + m + l + gl + gm + r + b + \varepsilon}
+##'     \item{`reg = NULL` and `year = "year"`} :
+##'       \deqn{y = \mu + g + t + l + gl + gt + r + b + \varepsilon}
+##'     \item{`reg = "reg"` and `year = "year"`} :
+##'       \deqn{y = \mu + g + m + t + l + gl + gm + gt + r + b + \varepsilon}
+##'   }
+##'
+##' }
+##' The models described above have predefined priors:
+##' \deqn{x \sim \mathcal{N} \left( 0, S^{[x]} \right)}
+##' \deqn{\sigma \sim \mathcal{HalfCauchy}\left( 0, S^{[\sigma]} \right)}
+##' where \eqn{x} can be any effect but the error, and \eqn{\sigma} is the standard
+##' deviation of the likelihood. If `res.het = TRUE`, then \eqn{\sigma_k \sim \mathcal{HalfCauchy}\left( 0, S^{\left[ \sigma_k \right]} \right)}.
+##' The hyperpriors are set as follows:
+##' \deqn{S^{[x]} \sim \mathcal{HalfCauchy}\left( 0, \phi \right)}
+##' where \eqn{\phi} is the known global hyperparameter defined such as \eqn{\phi = max(y) \times 10}.
+##'
+##' More details about the usage of `bayes_met` and other functions of
 ##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
-##' Information on solutions to solve convergence or mixing issue can be found at
+##' Information on solutions to solve convergence or mixing issues can be found at
 ##' \url{https://mc-stan.org/misc/warnings.html}.
 ##'
 ##' @seealso [rstan::sampling()], [rstan::stan()], [rstan::stanfit()]
@@ -73,6 +117,11 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
   stopifnot("gen is not in the data" = gen %in% colnames(data))
   stopifnot("loc is not in the data" = loc %in% colnames(data))
   stopifnot("Please, specify the trait" = trait %in% colnames(data))
+  if(is.null(repl)){
+    stopifnot("By default, a model with no replicates can only be fitted with heterogeneous residual variances (res.het = TRUE)" = res.het)
+    stopifnot("'reg' must be NULL to fit an entry-mean model (G + L + error)" = is.null(reg))
+    stopifnot("'year' must be NULL to fit an entry-mean model (G + L + error)" = is.null(year))
+  }
 
   if(!all(grepl('[A-Za-z]', data[, gen]))){data[,gen] = paste("G", data[,gen], sep = "_")}
   if(!all(grepl('[A-Za-z]', data[, loc]))){data[,loc] = paste("E", data[,loc], sep = "_")}
@@ -90,16 +139,23 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
           n = nrow(data)
           Z3 = model.matrix(~-1 + data[,gen])
           Z4 = model.matrix(~-1 + data[,loc])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
+          # Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
           p3 <- ncol(Z3)
           p4 <- ncol(Z4)
-          p5 <- ncol(Z5)
+          # p5 <- ncol(Z5)
           y = data[,trait]
           index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
           phi = max(y) * 10
-          df_stan = list(n = n, p3 = p3, p4 = p4,
-                         p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5,
-                         index = index, y = y, phi = phi)
+          df_stan = list(n = n,
+                         p3 = p3,
+                         p4 = p4,
+                         # p5 = p5,
+                         Z3 = Z3,
+                         Z4 = Z4,
+                         #Z5 = Z5,
+                         index = index,
+                         y = y,
+                         phi = phi)
 
           stan_df = "
   data{
@@ -109,12 +165,10 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
     // Number of parameters
     int<lower=1> p3;
     int<lower=1> p4;
-    int<lower=1> p5;
 
     // Designs matrices
     matrix[n, p3] Z3;
     matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
 
     // Phenotype vector
     real y[n];
@@ -142,10 +196,6 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
     real<lower=0> s_l;
     vector[p4] l;
 
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
     // Defining variable to generate data from the model
     real y_gen[n];
   }
@@ -159,7 +209,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
     vector<lower=0>[n] sigma_vec;
 
     // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl;
+    expectation = mu + Z3*g + Z4*l;
 
     sigma_vec = to_vector(sigma[index]);
   }
@@ -180,10 +230,6 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
     // Conditional prior probabilities distributions  for locations
     s_l ~ cauchy(0, phi);
     l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
 
     // Specifying the likelihood
     y ~ normal(expectation, sigma_vec);
@@ -352,7 +398,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
         }else if(length(repl) == 2){
           # incomplete blocks ------------------------
-          stopifnot("repl are not in the data" = repl %in% colnames(data))
+          stopifnot("repl effects are not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
           data[,loc] = as.factor(data[,loc])
           data[,repl[1]] = as.factor(data[,repl[1]])
@@ -506,162 +552,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
         }
       }else{
         # With region effect ------------------------
-        if(is.null(repl)){
-
-          if(!all(grepl('[A-Za-z]', data[, reg]))){data[,reg] = paste("R", data[,reg], sep = "_")}
-
-          # Only means ------------------------
-          data[,gen] = as.factor(data[,gen])
-          data[,reg] = as.factor(data[,reg])
-          data[,loc] = as.factor(data[,loc])
-          n = nrow(data)
-          Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,loc])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-          Z6 = model.matrix(~-1 + data[,reg])
-          Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          p3 <- ncol(Z3)
-          p4 <- ncol(Z4)
-          p5 <- ncol(Z5)
-          p6 <- ncol(Z6)
-          p7 <- ncol(Z7)
-          y = data[,trait]
-          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
-          phi = max(y) * 10
-          df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
-                         p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
-                         Z7 = Z7, index = index, y = y, phi = phi)
-
-          stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-    int<lower=1> p6;
-    int<lower=1> p7;
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-    matrix[n, p6] Z6;
-    matrix[n, p7] Z7;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-    // Indexation vector for sigma
-   int index[n];
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma[p4];
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // Region parameter/hyperparameters
-    real<lower=0> s_m;
-    vector[p6] m;
-
-    // Hybrid by Region parameter/hyperparameters
-    real<lower=0> s_gm;
-    vector[p7] gm;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Declaring the vector with the residual standard deviations
-    vector<lower=0>[n] sigma_vec;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl + Z6*m + Z7*gm;
-
-    sigma_vec = to_vector(sigma[index]);
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Conditional prior probabilities distributions  for Regions
-    s_m ~ cauchy(0, phi);
-    m ~ normal(0, s_m);
-
-    // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ cauchy(0, phi);
-    gm ~ normal(0, s_gm);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma_vec);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
-      }
-
-} "
-
-          stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                  cores = cores, chains = chains, pars = pars,
-                                  warmup = warmup, thin = thin, seed = seed,
-                                  init = init, verbose = verbose,
-                                  algorithm = algorithm, control = control,
-                                  include = include, show_messages = show_messages, ...)
-
-        } else if(length(repl) == 1){
+        if(length(repl) == 1){
           # RCB -------------------------
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
@@ -1015,158 +906,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
       if(is.null(reg)) # No region effect ---------------------------
         {
-        if(is.null(repl)) # Only means --------------------------------
-          {
-          data[,gen] = as.factor(data[,gen])
-          data[,loc] = as.factor(data[,loc])
-          n = nrow(data)
-          Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,loc])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-          Z8 = model.matrix(~-1 + data[,year])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
-          p3 = ncol(Z3)
-          p4 = ncol(Z4)
-          p5 = ncol(Z5)
-          p8 = ncol(Z8)
-          p9 = ncol(Z9)
-          y = data[,trait]
-          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
-          phi = max(y) * 10
-          df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p8 = p8, p9 = p9,
-                         Z3 = Z3, Z4 = Z4, Z5 = Z5, Z8 = Z8, Z9 = Z9,
-                         index = index, y = y, phi = phi)
-
-          stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-    int<lower=1> p8;
-    int<lower=1> p9;
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-    matrix[n, p8] Z8;
-    matrix[n, p9] Z9;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-    // Indexation vector for sigma
-   int index[n];
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma[p4];
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Genotype by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // Year parameter/hyperparameters
-    real<lower=0> s_t
-    vector[p8] t;
-
-    // Genotype by year parameter/hyperparameters
-    real<lower=0> s_gt
-    vector[p9] gt;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Declaring the vector with the residual standard deviations
-    vector<lower=0>[n] sigma_vec;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl + Z8*t + Z9*gt;
-
-    sigma_vec = to_vector(sigma[index]);
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Conditional prior probabilities distributions  for year
-    s_t ~ cauchy(0, phi);
-    t ~ normal(0, s_t);
-
-    // Conditional prior probabilities distributions  for genotype by year
-    s_gt ~ cauchy(0, phi);
-    gt ~ normal(0, s_gt);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma_vec);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
-      }
-
-} "
-
-          stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                  cores = cores, chains = chains, pars = pars,
-                                  warmup = warmup, thin = thin, seed = seed,
-                                  init = init, verbose = verbose,
-                                  algorithm = algorithm, control = control,
-                                  include = include, show_messages = show_messages, ...)
-
-        }else if(length(repl) == 1) # RCBD ------------------------
+        if(length(repl) == 1) # RCBD ------------------------
           {
           stopifnot("repl is not in the data" = repl %in% colnames(data))
           data[,gen] = as.factor(data[,gen])
@@ -1516,185 +1256,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
           if(!all(grepl('[A-Za-z]', data[, reg]))){data[,reg] = paste("R", data[,reg], sep = "_")}
 
-        if(is.null(repl)) # Only means ------------------------
-          {
-
-          data[,gen] = as.factor(data[,gen])
-          data[,reg] = as.factor(data[,reg])
-          data[,loc] = as.factor(data[,loc])
-          n = nrow(data)
-          Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,loc])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-          Z6 = model.matrix(~-1 + data[,reg])
-          Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,year])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
-          p3 <- ncol(Z3)
-          p4 <- ncol(Z4)
-          p5 <- ncol(Z5)
-          p6 <- ncol(Z6)
-          p7 <- ncol(Z7)
-          p8 = ncol(Z8)
-          p9 = ncol(Z9)
-          y = data[,trait]
-          index = rep(1:nlevels(data[,loc]), times = as.numeric(table(data[,loc])))
-          phi = max(y) * 10
-          df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
-                         p7 = p7, p8 = p8, p9 = p9, Z3 = Z3, Z4 = Z4, Z5 = Z5,
-                         Z6 = Z6, Z7 = Z7, Z8 = Z8, Z9 = Z9, index = index,
-                         y = y, phi = phi)
-
-          stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-    int<lower=1> p6;
-    int<lower=1> p7;
-    int<lower=1> p8;
-    int<lower=1> p9
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-    matrix[n, p6] Z6;
-    matrix[n, p7] Z7;
-    matrix[n, p8] Z8;
-    matrix[n, p9] Z9;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-    // Indexation vector for sigma
-   int index[n];
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma[p4];
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // Region parameter/hyperparameters
-    real<lower=0> s_m;
-    vector[p6] m;
-
-    // Genotype by Region parameter/hyperparameters
-    real<lower=0> s_gm;
-    vector[p7] gm;
-
-    // year parameter/hyperparameters
-    real<lower=0> s_t;
-    vector[p8] t;
-
-    // Genotype by year parameter/hyperparameters
-    real<lower=0> s_gt;
-    vector[p9] gt;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Declaring the vector with the residual standard deviations
-    vector<lower=0>[n] sigma_vec;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl + Z6*m + Z7*gm + Z8*t + Z9*gt;
-
-    sigma_vec = to_vector(sigma[index]);
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Conditional prior probabilities distributions  for Regions
-    s_m ~ cauchy(0, phi);
-    m ~ normal(0, s_m);
-
-    // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ cauchy(0, phi);
-    gm ~ normal(0, s_gm);
-
-    // Conditional prior probabilities distributions  for year
-    s_t ~ cauchy(0, phi);
-    t ~ normal(0, s_t);
-
-    // Conditional prior probabilities distributions  for genotype by year
-    s_gt ~ cauchy(0, phi);
-    gt ~ normal(0, s_gt);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma_vec);
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma_vec);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma_vec[j]);
-      }
-
-} "
-
-          stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                  cores = cores, chains = chains, pars = pars,
-                                  warmup = warmup, thin = thin, seed = seed,
-                                  init = init, verbose = verbose,
-                                  algorithm = algorithm, control = control,
-                                  include = include, show_messages = show_messages, ...)
-
-        } else if(length(repl) == 1) # RCB -------------------------
+        if(length(repl) == 1) # RCB -------------------------
           {
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])
@@ -2097,127 +1659,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
     {
     if(is.null(reg)) # No region information -----------------------------
       {
-      if(is.null(repl)) # Only-means ---------------------------------
-        {
-        data[,gen] = as.factor(data[,gen])
-        data[,loc] = as.factor(data[,loc])
-        n = nrow(data)
-        Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,loc])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-        p3 <- ncol(Z3)
-        p4 <- ncol(Z4)
-        p5 <- ncol(Z5)
-        y = data[,trait]
-        phi = max(y) * 10
-        df_stan = list(n = n, p3 = p3, p4 = p4,
-                       p5 = p5, Z3 = Z3, Z4 = Z4,Z5 = Z5, y = y, phi = phi)
-
-        stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma;
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl;
-
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma);
-
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
-      }
-
-} "
-
-        stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                cores = cores, chains = chains, pars = pars,
-                                warmup = warmup, thin = thin, seed = seed,
-                                init = init, verbose = verbose,
-                                algorithm = algorithm, control = control,
-                                include = include, show_messages = show_messages, ...)
-
-      }else if(length(repl) == 1) # RCB ---------------------
+      if(length(repl) == 1) # RCB ---------------------
         {
         data[,gen] = as.factor(data[,gen])
         data[,loc] = as.factor(data[,loc])
@@ -2497,152 +1939,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
     }else # With region information -------------------------
       {
         if(!all(grepl('[A-Za-z]', data[, reg]))){data[,reg] = paste("R", data[,reg], sep = "_")}
-      if(is.null(repl)) # Only means --------------
-        {
-        data[,gen] = as.factor(data[,gen])
-        data[,reg] = as.factor(data[,reg])
-        data[,loc] = as.factor(data[,loc])
-        n = nrow(data)
-        Z3 = model.matrix(~-1 + data[,gen])
-        Z4 = model.matrix(~-1 + data[,loc])
-        Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-        Z6 = model.matrix(~-1 + data[,reg])
-        Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-        p3 <- ncol(Z3)
-        p4 <- ncol(Z4)
-        p5 <- ncol(Z5)
-        p6 <- ncol(Z6)
-        p7 <- ncol(Z7)
-        y = data[,trait]
-        phi = max(y) * 10
-        df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6,
-                       p7 = p7, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
-                       Z7 = Z7, y = y, phi = phi)
-
-        stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-    int<lower=1> p6;
-    int<lower=1> p7;
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-    matrix[n, p6] Z6;
-    matrix[n, p7] Z7;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma;
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // Region parameter/hyperparameters
-    real<lower=0> s_m;
-    vector[p6] m;
-
-    // Hybrid by Region parameter/hyperparameters
-    real<lower=0> s_gm;
-    vector[p7] gm;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl + Z6*m + Z7*gm;
-
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Conditional prior probabilities distributions  for Regions
-    s_m ~ cauchy(0, phi);
-    m ~ normal(0, s_m);
-
-    // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ cauchy(0, phi);
-    gm ~ normal(0, s_gm);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma);
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
-      }
-
-} "
-
-        stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-        Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                cores = cores, chains = chains, pars = pars,
-                                warmup = warmup, thin = thin, seed = seed,
-                                init = init, verbose = verbose,
-                                algorithm = algorithm, control = control,
-                                include = include, show_messages = show_messages, ...)
-
-      } else if(length(repl) == 1) # RCDB --------------------
+      if(length(repl) == 1) # RCDB --------------------
         {
         data[,gen] = as.factor(data[,gen])
         data[,reg] = as.factor(data[,reg])
@@ -2978,151 +2275,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
       if(is.null(reg)) # No region information -----------------------------
       {
-        if(is.null(repl)) # Only-means ---------------------------------
-        {
-          data[,gen] = as.factor(data[,gen])
-          data[,loc] = as.factor(data[,loc])
-          n = nrow(data)
-          Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,loc])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-          Z8 = model.matrix(~-1 + data[,year])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
-          p3 <- ncol(Z3)
-          p4 <- ncol(Z4)
-          p5 <- ncol(Z5)
-          p8 = ncol(Z8)
-          p9 = ncol(Z9)
-          y = data[,trait]
-          phi = max(y) * 10
-          df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p8 = p8, p9 = p9,
-                         Z3 = Z3, Z4 = Z4,Z5 = Z5, Z8 = Z8, Z9 = Z9, y = y, phi = phi)
-
-          stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-    int<lower=1> p8;
-    int<lower=1> p9;
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-    matrix[n, p8] Z8;
-    matrix[n, p9] Z9;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma;
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // year parameter/hyperparameters
-    real<lower=0> s_t;
-    vector[p8] t;
-
-    // Hybrid by year parameter/hyperparameters
-    real<lower=0> s_gt;
-    vector[p9] gt;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl + Z8*t + Z9*gt;
-
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Conditional prior probabilities distributions  for year
-    s_t ~ cauchy(0, phi);
-    t ~ normal(0, s_t);
-
-    // Conditional prior probabilities distributions  for genotype by year
-    s_gt ~ cauchy(0, phi);
-    gt ~ normal(0, s_gt);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma);
-
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
-      }
-
-} "
-
-          stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                  cores = cores, chains = chains, pars = pars,
-                                  warmup = warmup, thin = thin, seed = seed,
-                                  init = init, verbose = verbose,
-                                  algorithm = algorithm, control = control,
-                                  include = include, show_messages = show_messages, ...)
-
-        }else if(length(repl) == 1) # RCB ---------------------
+        if(length(repl) == 1) # RCB ---------------------
         {
           data[,gen] = as.factor(data[,gen])
           data[,loc] = as.factor(data[,loc])
@@ -3454,176 +2607,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
       {
         if(!all(grepl('[A-Za-z]', data[, reg]))){data[,reg] = paste("R", data[,reg], sep = "_")}
 
-        if(is.null(repl)) # Only means --------------
-        {
-          data[,gen] = as.factor(data[,gen])
-          data[,reg] = as.factor(data[,reg])
-          data[,loc] = as.factor(data[,loc])
-          n = nrow(data)
-          Z3 = model.matrix(~-1 + data[,gen])
-          Z4 = model.matrix(~-1 + data[,loc])
-          Z5 = model.matrix(~-1 + data[,gen]:data[,loc])
-          Z6 = model.matrix(~-1 + data[,reg])
-          Z7 = model.matrix(~-1 + data[,gen]:data[,reg])
-          Z8 = model.matrix(~-1 + data[,year])
-          Z9 = model.matrix(~-1 + data[,gen]:data[,year])
-          p3 <- ncol(Z3)
-          p4 <- ncol(Z4)
-          p5 <- ncol(Z5)
-          p6 <- ncol(Z6)
-          p7 <- ncol(Z7)
-          p8 = ncol(Z8)
-          p9 = ncol(Z9)
-          y = data[,trait]
-          phi = max(y) * 10
-          df_stan = list(n = n, p3 = p3, p4 = p4, p5 = p5, p6 = p6, p7 = p7,
-                         p8 = p8, p9 = p9, Z3 = Z3, Z4 = Z4, Z5 = Z5, Z6 = Z6,
-                         Z7 = Z7, Z8 = Z8, Z9 = Z9, y = y, phi = phi)
-
-          stan_df = "
-  data{
-    // Number of observations
-    int<lower=1> n;
-
-    // Number of parameters
-    int<lower=1> p3;
-    int<lower=1> p4;
-    int<lower=1> p5;
-    int<lower=1> p6;
-    int<lower=1> p7;
-    int<lower=1> p8;
-    int<lower=1> p9;
-
-    // Designs matrices
-    matrix[n, p3] Z3;
-    matrix[n, p4] Z4;
-    matrix[n, p5] Z5;
-    matrix[n, p6] Z6;
-    matrix[n, p7] Z7;
-    matrix[n, p8] Z8;
-    matrix[n, p9] Z9;
-
-    // Phenotype vector
-    real y[n];
-
-    // Global hyperparameter
-    real phi;
-
-  }
-    parameters{
-    // Residual standard deviation parameter/hyperparameters
-    real<lower=0> s_sigma;
-    real<lower=0> sigma;
-
-    // Mean parameter/hyperparameters
-    real<lower=0> s_mu;
-    real mu;
-
-    // Genotype parameter/hyperparameters
-    real<lower=0> s_g;
-    vector[p3] g;
-
-    // Location parameter/hyperparameters
-    real<lower=0> s_l;
-    vector[p4] l;
-
-    // Hybrid by Location parameter/hyperparameters
-    real<lower=0> s_gl;
-    vector[p5] gl;
-
-    // Region parameter/hyperparameters
-    real<lower=0> s_m;
-    vector[p6] m;
-
-    // Genotype by Region parameter/hyperparameters
-    real<lower=0> s_gm;
-    vector[p7] gm;
-
-    // year parameter/hyperparameters
-    real<lower=0> s_t;
-    vector[p8] t;
-
-    // Genotype by year parameter/hyperparameters
-    real<lower=0> s_gt;
-    vector[p9] gt;
-
-    // Defining variable to generate data from the model
-    real y_gen[n];
-  }
-
-  transformed parameters{
-
-    // Declaring variables to receive input
-    vector[n] expectation;
-
-    // Computing the expectation of the likelihood function
-    expectation = mu + Z3*g + Z4*l + Z5*gl + Z6*m + Z7*gm + Z8*t + Z9*gt;
-
-  }
-  model{
-
-    // Conditional prior probabilities distributions for residual standard deviation
-    s_sigma ~ cauchy(0, phi);
-    sigma ~ cauchy(0, s_sigma);
-
-    // Conditional prior probabilities distributions for the mean
-    s_mu ~ cauchy(0, phi);
-    mu ~ normal(0, s_mu);
-
-    // Conditional prior probabilities distributions for genotypes
-    s_g ~ cauchy(0, phi);
-    g ~ normal(0, s_g);
-
-    // Conditional prior probabilities distributions  for locations
-    s_l ~ cauchy(0, phi);
-    l ~ normal(0, s_l);
-
-    // Conditional prior probabilities distributions  for genotype by location
-    s_gl ~ cauchy(0, phi);
-    gl ~ normal(0, s_gl);
-
-    // Conditional prior probabilities distributions  for Regions
-    s_m ~ cauchy(0, phi);
-    m ~ normal(0, s_m);
-
-    // Conditional prior probabilities distributions  for genotype by Region
-    s_gm ~ cauchy(0, phi);
-    gm ~ normal(0, s_gm);
-
-    // Conditional prior probabilities distributions  for year
-    s_t ~ cauchy(0, phi);
-    t ~ normal(0, s_t);
-
-    // Conditional prior probabilities distributions  for genotype by year
-    s_gt ~ cauchy(0, phi);
-    gt ~ normal(0, s_gt);
-
-    // Specifying the likelihood
-    y ~ normal(expectation, sigma);
-    // Generating data from the model
-    y_gen ~ normal(expectation, sigma);
-
-  }
-
-  generated quantities {
-    real y_log_like[n];
-      for (j in 1:n) {
-      // Computing log-likelihood of the observed data:
-      y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
-      }
-
-} "
-
-          stan_df_comp = rstan::stan_model(model_code = stan_df, model_name = "BayesMET")
-
-          Model = rstan::sampling(stan_df_comp, data = df_stan, iter = iter,
-                                  cores = cores, chains = chains, pars = pars,
-                                  warmup = warmup, thin = thin, seed = seed,
-                                  init = init, verbose = verbose,
-                                  algorithm = algorithm, control = control,
-                                  include = include, show_messages = show_messages, ...)
-
-        } else if(length(repl) == 1) # RCDB --------------------
+        if(length(repl) == 1) # RCDB --------------------
         {
           data[,gen] = as.factor(data[,gen])
           data[,reg] = as.factor(data[,reg])

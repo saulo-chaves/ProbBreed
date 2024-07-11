@@ -35,7 +35,7 @@ region information. Otherwise, \code{reg = NULL} (default).}
 environmental factors (years, seasons...), \code{year} will be a string with the
 name of the column that corresponds to the time information. Otherwise, \code{year = NULL} (default).}
 
-\item{mod.output}{An object from the \code{\link[=extr_outs]{extr_outs()}} function}
+\item{mod.output}{An object of class \code{extr}, obtained from the \code{\link[=extr_outs]{extr_outs()}} function}
 
 \item{int}{A number representing the selection intensity
 (between 0 and 1)}
@@ -54,10 +54,10 @@ command.}
 completed steps. Defaults to \code{FALSE}.}
 }
 \value{
-The function returns two lists, one with the \code{marginal} probabilities, and
-another with the \code{conditional} probabilities.
+The function returns an object of class \code{probsup}, which contains two lists,
+one with the \code{across} environment probabilities, and another with the \code{within} environments probabilities.
 
-The \code{marginal} list has:
+The \code{across} list has:
 \itemize{
 \item \code{df} : A list of data frames containing the calculated probabilities:
 \itemize{
@@ -93,7 +93,7 @@ performance and stability.
 }
 }
 
-The \code{conditional} list has:
+The \code{within} list has:
 \itemize{
 \item \code{df} : A list with:
 \itemize{
@@ -235,7 +235,7 @@ mod = bayes_met(data = maize,
 
 outs = extr_outs(data = maize, trait = "GY", model = mod,
                  probs = c(0.05, 0.95),
-                 check.stan.diag = TRUE,
+                 plots = TRUE,
                  verbose = TRUE)
 
 results = prob_sup(data = maize,

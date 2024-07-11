@@ -32,31 +32,27 @@ bayes_met(
 \arguments{
 \item{data}{A data frame containing the observations.}
 
-\item{gen, loc}{A string. The name of the
-column that corresponds to the evaluated genotype and location, respectively. If
-the environment is a combination of other factors (for instance, location-year),
-the name of the column that contains this information must be attributed to \code{loc}.}
+\item{gen, loc}{A string. The name of the columns that contain the evaluated
+candidates and locations (or environments, if you are working with factor combinations), respectively.}
 
-\item{repl}{A string, a vector, or \code{NULL}. If the trial is randomized in complete blocks,
-\code{repl} will be a string representing the name of the column
-that corresponds to the blocks. If the trial is randomized in incomplete blocks design,
-\code{repl} will be a string vector containing the name of the column that corresponds to
-the replicate and block effects on the first and second positions, respectively.
+\item{repl}{A string, a string vector, or \code{NULL}. If the trial is randomized in complete blocks design,
+\code{repl} will be a string representing the name of the column that corresponds to the blocks.
+If the trial is randomized in incomplete blocks design, \code{repl} will be a string vector
+containing the name of the columns that correspond to the replicate and block effects on
+the first and second positions, respectively (c(replicate, block)).
 If the data do not have replicates, \code{repl} will be \code{NULL}.}
 
 \item{trait}{A string. The name of the column that corresponds to the analysed variable.}
 
-\item{reg}{A string or NULL. If the data has information of regions,
-\code{reg} will be a string with the name of the column that corresponds to the
-region information. Otherwise, \code{reg = NULL} (default).}
+\item{reg}{A string or NULL. The name of the column that contain information on
+regions or mega-environments. \code{NULL} (default) if not applicable.}
 
-\item{year}{A string or NULL. If the data set has information of time-related
-environmental factors (years, seasons...), \code{year} will be a string with the
-name of the column that corresponds to the time information. Otherwise, \code{year = NULL} (default).}
+\item{year}{A string or NULL. The name of the column that contain information on
+years (or seasons). \code{NULL} (default) if not applicable.}
 
-\item{res.het}{Logical, indicating if the model should consider heterogeneous
-residual variances. Default is \code{FALSE}. If \code{TRUE}, the model will estimate one
-residual variance per location.}
+\item{res.het}{Should the model consider heterogeneous residual variances?
+Defaults for \code{FALSE}. If \code{TRUE}, the model will estimate one
+residual variance per location (or environmnet). If \code{repl = NULL}, \code{res.het} must be \code{TRUE}.}
 
 \item{iter}{A positive integer specifying the number of iterations for each 
     chain (including warmup). The default is 2000.}
@@ -133,13 +129,62 @@ An object of S4 class \code{stanfit} representing
    indicates if the sampling is done or not.
 }
 \description{
-This function runs a Bayesian model for analyzing data from
+This function runs a Bayesian model for analysing data from
 Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Stan}.
 }
 \details{
-More details about the usage of \code{bayes_met} and other function of
+The function has nine available models, which will be fitted according to the
+options set in the arguments:
+\enumerate{
+\item{Entry-mean model} : fitted when \code{repl = NULL}, \code{reg = NULL} and \code{year = NULL}:
+\deqn{y = \mu + g + l + \varepsilon}
+Where \eqn{y} is the phenotype, \eqn{\mu} is the intercept, \eqn{g} is the genotypic
+effect, \eqn{l} is the location (or environment) effect, and \eqn{\varepsilon} is
+the residue (which contains the genotype-by-location interaction, in this case).
+
+\item{Randomized complete blocks design} : fitted when \code{repl} is a single string.
+It will fit different models depending if \code{reg} and \code{year} are \code{NULL}:
+\itemize{
+\item{\code{reg = NULL} and \code{year = NULL}} :
+\deqn{y = \mu + g + l + gl + r + \varepsilon}
+where \eqn{gl} is the genotype-by-location effect, and \eqn{r} is the replicate effect.
+\item{\code{reg = "reg"} and \code{year = NULL}} :
+\deqn{y = \mu + g + m + l + gl + gm + r + \varepsilon}
+where \eqn{m} is the region effect, and \eqn{gm} is the genotype-by-region effect.
+\item{\code{reg = NULL} and \code{year = "year"}} :
+\deqn{y = \mu + g + t + l + gl + gt + r + \varepsilon}
+where \eqn{t} is the year effect, and \eqn{gt} is the genotype-by-year effect.
+\item{\code{reg = "reg"} and \code{year = "year"}} :
+\deqn{y = \mu + g + m + t + l + gl + gm + gt + r + \varepsilon}
+}
+
+\item{Incomplete blocks design} : fitted when \code{repl} is a string vector of size 2.
+It will fit different models depending if \code{reg} and \code{year} are \code{NULL}:
+\itemize{
+\item{\code{reg = NULL} and \code{year = NULL}} :
+\deqn{y = \mu + g + l + gl + r + b + \varepsilon}
+where \eqn{b} is the block within replicates effect.
+\item{\code{reg = "reg"} and \code{year = NULL}} :
+\deqn{y = \mu + g + m + l + gl + gm + r + b + \varepsilon}
+\item{\code{reg = NULL} and \code{year = "year"}} :
+\deqn{y = \mu + g + t + l + gl + gt + r + b + \varepsilon}
+\item{\code{reg = "reg"} and \code{year = "year"}} :
+\deqn{y = \mu + g + m + t + l + gl + gm + gt + r + b + \varepsilon}
+}
+
+}
+The models described above have predefined priors:
+\deqn{x \sim \mathcal{N} \left( 0, S^{[x]} \right)}
+\deqn{\sigma \sim \mathcal{HalfCauchy}\left( 0, S^{[\sigma]} \right)}
+where \eqn{x} can be any effect but the error, and \eqn{\sigma} is the standard
+deviation of the likelihood. If \code{res.het = TRUE}, then \eqn{\sigma_k \sim \mathcal{HalfCauchy}\left( 0, S^{\left[ \sigma_k \right]} \right)}.
+The hyperpriors are set as follows:
+\deqn{S^{[x]} \sim \mathcal{HalfCauchy}\left( 0, \phi \right)}
+where \eqn{\phi} is the known global hyperparameter defined such as \eqn{\phi = max(y) \times 10}.
+
+More details about the usage of \code{bayes_met} and other functions of
 the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
-Information on solutions to solve convergence or mixing issue can be found at
+Information on solutions to solve convergence or mixing issues can be found at
 \url{https://mc-stan.org/misc/warnings.html}.
 }
 \section{Methods}{

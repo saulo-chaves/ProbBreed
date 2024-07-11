@@ -18,7 +18,7 @@
 ##' @param year A string or NULL. If the data set has information about time-related
 ##' environmental factors (years, seasons...), `year` will be a string with the
 ##' name of the column that corresponds to the time information. Otherwise, `year = NULL` (default).
-##' @param mod.output An object from the [extr_outs()] function
+##' @param mod.output An object of class `extr`, obtained from the [extr_outs()] function
 ##' @param int A number representing the selection intensity
 ##' (between 0 and 1)
 ##' @param increase Logical. Indicates the direction of the selection.
@@ -31,10 +31,10 @@
 ##' @param verbose A logical value. If `TRUE`, the function will indicate the
 ##' completed steps. Defaults to `FALSE`.
 ##'
-##' @return The function returns two lists, one with the `marginal` probabilities, and
-##' another with the `conditional` probabilities.
+##' @return The function returns an object of class `probsup`, which contains two lists,
+##' one with the `across` environment probabilities, and another with the `within` environments probabilities.
 ##'
-##' The `marginal` list has:
+##' The `across` list has:
 ##' \itemize{
 ##' \item \code{df} : A list of data frames containing the calculated probabilities:
 ##' \itemize{
@@ -70,7 +70,7 @@
 ##' }
 ##' }
 ##'
-##' The `conditional` list has:
+##' The `within` list has:
 ##' \itemize{
 ##' \item \code{df} : A list with:
 ##' \itemize{
@@ -226,7 +226,7 @@
 ##'
 ##' outs = extr_outs(data = maize, trait = "GY", model = mod,
 ##'                  probs = c(0.05, 0.95),
-##'                  check.stan.diag = TRUE,
+##'                  plots = TRUE,
 ##'                  verbose = TRUE)
 ##'
 ##' results = prob_sup(data = maize,
@@ -310,8 +310,11 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
       aux = unique(data[,c(gen,loc,year,reg)])
       Z1 = stats::model.matrix(~-1 + aux[,gen])
       Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
+      Z2 = Z2[,-which(colSums(Z2) == 0)]
       Z3 = stats::model.matrix(~-1 + aux[,gen]:aux[,year])
+      Z3 = Z3[,-which(colSums(Z3) == 0)]
       Z4 = stats::model.matrix(~-1 + aux[,gen]:aux[,reg])
+      Z4 = Z4[,-which(colSums(Z4) == 0)]
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -1336,7 +1339,8 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
 
       # Final output -----------
       if(verbose) message('Process completed!')
-      output = list(marginal = marg_prob, conditional = cond_prob)
+      output = list(across = marg_prob, within = cond_prob)
+      class(output) = "probsup"
       return(output)
 
     }
@@ -1348,7 +1352,9 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
       aux = unique(data[,c(gen,loc,year)])
       Z1 = stats::model.matrix(~-1 + aux[,gen])
       Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
+      Z2 = Z2[,-which(colSums(Z2) == 0)]
       Z3 = stats::model.matrix(~-1 + aux[,gen]:aux[,year])
+      Z3 = Z3[,-which(colSums(Z3) == 0)]
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -2117,7 +2123,8 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
 
       # Final output -----------
       if(verbose) message('Process completed!')
-      output = list(marginal = marg_prob, conditional = cond_prob)
+      output = list(across = marg_prob, within = cond_prob)
+      class(output) = "probsup"
       return(output)
 
     }
@@ -2140,7 +2147,9 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
       aux = unique(data[,c(gen,loc,reg)])
       Z1 = stats::model.matrix(~-1 + aux[,gen])
       Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
+      Z2 = Z2[,-which(colSums(Z2) == 0)]
       Z4 = stats::model.matrix(~-1 + aux[,gen]:aux[,reg])
+      Z4 = Z4[,-which(colSums(Z4) == 0)]
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -2906,18 +2915,20 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
 
       # Final output -----------
       if(verbose) message('Process completed!')
-      output = list(marginal = marg_prob, conditional = cond_prob)
+      output = list(across = marg_prob, within = cond_prob)
+      class(output) = "probsup"
       return(output)
 
     }
     else # Without region info --------------------
     {
-      colnames(mod$post$gl) = paste('Gen',rep(name.gen,  times = num.loc),
-                                    "loc", rep(name.loc,  each = num.gen), sep = '_@#')
-
       aux = unique(data[,c(gen,loc)])
-      Z1 = stats::model.matrix(~-1 + aux[,gen])
-      Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
+      Z1 = stats::model.matrix(~-1 + aux[,gen], data = data)
+      colnames(Z1) = gsub("aux\\[, gen\\]",'', colnames(Z1))
+      Z2 = stats::model.matrix.lm(~-1 + aux[,gen]:aux[,loc], data = data)
+      Z2 = Z2[,-which(colSums(Z2) == 0)]
+      colnames(Z2) = gsub("aux\\[, gen\\]",'', gsub("aux\\[, loc\\]",'_@#', colnames(Z2)))
+      colnames(mod$post$gl) = paste("Gen",aux[,1], "loc", aux[,2], sep = "_@#")
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -3025,7 +3036,7 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
           geom_tile(aes(fill = .data$prob), colour = 'white') +
           labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))))+
           theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
-                legend.position = c(.8,.15), legend.direction = 'horizontal')+
+                legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
           scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
                                option = 'turbo')+
           guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
@@ -3048,7 +3059,7 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
       ## Probability of superior stability - Location -----------------
       staprob_gl = mod$post$gl
       colnames(staprob_gl) = sub(
-        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#loc'))[,1]
+        'Gen_@#', '', do.call(rbind, strsplit(colnames(staprob_gl),'_@#loc'))[,1]
       )
       probsta = do.call(cbind, lapply(
         lapply(
@@ -3423,7 +3434,8 @@ prob_sup = function(data, trait, gen, loc, reg = NULL, year = NULL, mod.output, 
 
       # Final output -----------
       if(verbose) message('Process completed!')
-      output = list(marginal = marg_prob, conditional = cond_prob)
+      output = list(across = marg_prob, within = cond_prob)
+      class(output) = "probsup"
       return(output)
 
     }
