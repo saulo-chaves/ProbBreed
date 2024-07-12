@@ -44,27 +44,35 @@ A basic workflow using the available data is:
 ```{r, eval=FALSE, echo=TRUE}
 library(ProbBreed)
 
-mod = bayes_met(data = maize,
-                gen = "Hybrid",
-                loc = "Location",
-                repl = c("Rep", "Block"),
+model = bayes_met(data = soy,
+                gen = "Gen",
+                loc = "Loc",
+                repl = NULL,
                 year = NULL,
-                reg = "Region",
-                res.het = F,
-                trait = "GY",
-                iter = 6000, cores = 4, chains = 4)
+                reg = NULL,
+                res.het = TRUE,
+                trait = 'Y',
+                iter = 8000, cores = 4, chains = 4)
 
-outs = extr_outs(data = maize, trait = "GY", model = mod,
+outs = extr_outs(data = soy, trait = "Y", model = model,
                  probs = c(0.05, 0.95),
-                 check.stan.diag = FALSE, 
+                 plots = TRUE,
                  verbose = TRUE)
 
-results = prob_sup(data = maize, trait = "GY", gen = "Hybrid", loc = "Location",
-                   mod.output = outs, reg = 'Region', year = NULL, int = .2,
-                   increase = TRUE, save.df = FALSE, interactive = FALSE, 
+results = prob_sup(data = soy, 
+                   trait = "Y", 
+                   gen = "Gen", 
+                   loc = "Loc",
+                   mod.output = outs, 
+                   reg = NULL, 
+                   year = NULL,
+                   int = .2,
+                   increase = TRUE, 
+                   save.df = FALSE, 
                    verbose = TRUE)
-
 ```
+
+Several plots are available from the S3 method `plot` using the `probsup` object obtained from the `prob_sup` function. See `help(plot.probsup)` for more details. 
 
 ## Citation
 

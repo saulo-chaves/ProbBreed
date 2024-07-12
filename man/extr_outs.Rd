@@ -25,13 +25,13 @@ corresponds to the analysed trait}
 \item{probs}{A vector with two elements representing the probabilities
 (in decimal scale) that will be considered for computing the quantiles.}
 
+\item{plots}{Should the function build diagnostic plots? If \code{TRUE} (default),
+it will provide histograms, density plots and traceplots of each effect declared in the model.}
+
 \item{verbose}{A logical value. If \code{TRUE}, the function will indicate the
 completed steps. Defaults to \code{FALSE}}
 
 \item{...}{Passed to \code{\link[rstan:stan_plot_diagnostics]{rstan::stan_diag()}}}
-
-\item{plot}{Should the function build diagnostic plots? If \code{TRUE} (default),
-it will provide histograms, density plots and traceplots of each effect declared in the model.}
 }
 \value{
 The function returns an object of class \code{extr}, which is a list with:

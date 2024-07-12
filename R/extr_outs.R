@@ -18,7 +18,7 @@
 ##' @param model An object of class `stanfit`, obtained using [ProbBreed::bayes_met()]
 ##' @param probs A vector with two elements representing the probabilities
 ##' (in decimal scale) that will be considered for computing the quantiles.
-##' @param plot Should the function build diagnostic plots? If `TRUE` (default),
+##' @param plots Should the function build diagnostic plots? If `TRUE` (default),
 ##' it will provide histograms, density plots and traceplots of each effect declared in the model.
 ##' @param verbose A logical value. If `TRUE`, the function will indicate the
 ##' completed steps. Defaults to `FALSE`
@@ -342,16 +342,15 @@ extr_outs = function(data, trait, model, probs = c(0.025, 0.975), plots = TRUE,
 #' Print a `extr` object in R console
 #'
 #' @param obj An object of class `extr`
+#' @param ... currently not used
 #' @method print extr
 #'
-#' @seealso [ProbBreed::extr_out]
+#' @seealso [ProbBreed::extr_outs]
 #'
 #' @export
 #'
 
-
-
-print.extr = function(obj){
+print.extr = function(obj, ...){
 
   message("======> Variances")
   print(obj$variances)

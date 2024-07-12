@@ -4,14 +4,16 @@
 \alias{print.extr}
 \title{Print an object of class \code{extr}}
 \usage{
-\method{print}{extr}(obj)
+\method{print}{extr}(obj, ...)
 }
 \arguments{
 \item{obj}{An object of class \code{extr}}
+
+\item{...}{currently not used}
 }
 \description{
 Print a \code{extr} object in R console
 }
 \seealso{
-\link{extr_out}
+\link{extr_outs}
 }
