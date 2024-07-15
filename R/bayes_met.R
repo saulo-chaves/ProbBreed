@@ -1,19 +1,18 @@
 ##' @title Bayesian model for multi-environment trials
 ##'
 ##' @description
-##' This function runs a Bayesian model for analysing data from
-##' Multi-environment trials using `rstan`, the `R` interface to `Stan`.
+##' Fits a Bayesian multi-environment model using `rstan`, the `R` interface to `Stan`.
 ##'
-##' @param data  A data frame containing the observations.
+##' @param data A data frame in which to interpret the variables declared in the other arguments.
 ##' @param gen,loc  A string. The name of the columns that contain the evaluated
 ##' candidates and locations (or environments, if you are working with factor combinations), respectively.
-##' @param repl  A string, a string vector, or `NULL`. If the trial is randomized in complete blocks design,
+##' @param repl  A string, a vector, or `NULL`. If the trial is randomized in complete blocks design,
 ##' `repl` will be a string representing the name of the column that corresponds to the blocks.
 ##' If the trial is randomized in incomplete blocks design, `repl` will be a string vector
 ##' containing the name of the columns that correspond to the replicate and block effects on
-##' the first and second positions, respectively (c(replicate, block)).
-##' If the data do not have replicates, `repl` will be `NULL`.
-##' @param trait A string. The name of the column that corresponds to the analysed variable.
+##' the first and second positions, respectively (`c(replicate, block)`).
+##' If the data does not have replicates, `repl` will be `NULL`.
+##' @param trait A string. The analysed variable. Currently, only single-trait models are fitted.
 ##' @param reg A string or NULL. The name of the column that contain information on
 ##' regions or mega-environments. `NULL` (default) if not applicable.
 ##' @param year A string or NULL. The name of the column that contain information on
@@ -78,10 +77,10 @@
 ##'
 ##' More details about the usage of `bayes_met` and other functions of
 ##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
-##' Information on solutions to solve convergence or mixing issues can be found at
+##' Solutions to convergence or mixing issues can be found at
 ##' \url{https://mc-stan.org/misc/warnings.html}.
 ##'
-##' @seealso [rstan::sampling()], [rstan::stan()], [rstan::stanfit()]
+##' @seealso [rstan::sampling], [rstan::stan], [rstan::stanfit]
 ##'
 ##' @import rstan
 ##' @importFrom stats density median model.matrix na.exclude quantile reorder sd var
@@ -95,7 +94,7 @@
 ##'                 repl = NULL,
 ##'                 year = NULL,
 ##'                 reg = NULL,
-##'                 res.het = FALSE,
+##'                 res.het = TRUE,
 ##'                 trait = 'Y',
 ##'                 iter = 6000, cores = 4, chains = 4)
 ##'                 }
@@ -2987,7 +2986,15 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
         }
       }
   }
-}
-return(Model)
+  }
+
+  attr(Model, "declared_eff") = data.frame(trait = trait, gen = gen,
+                                           repl = ifelse(is.null(repl), 0, repl[1]),
+                                           blk = ifelse(length(repl) == 2, repl[2],0),
+                                           loc = loc, reg = ifelse(is.null(reg), 0, reg),
+                                           year = ifelse(is.null(year), 0, year),
+                                           res.het = res.het)
+  attr(Model, "data") = data
+  return(Model)
 }
 

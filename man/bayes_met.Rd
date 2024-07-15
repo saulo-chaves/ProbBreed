@@ -30,19 +30,19 @@ bayes_met(
 )
 }
 \arguments{
-\item{data}{A data frame containing the observations.}
+\item{data}{A data frame in which to interpret the variables declared in the other arguments.}
 
 \item{gen, loc}{A string. The name of the columns that contain the evaluated
 candidates and locations (or environments, if you are working with factor combinations), respectively.}
 
-\item{repl}{A string, a string vector, or \code{NULL}. If the trial is randomized in complete blocks design,
+\item{repl}{A string, a vector, or \code{NULL}. If the trial is randomized in complete blocks design,
 \code{repl} will be a string representing the name of the column that corresponds to the blocks.
 If the trial is randomized in incomplete blocks design, \code{repl} will be a string vector
 containing the name of the columns that correspond to the replicate and block effects on
-the first and second positions, respectively (c(replicate, block)).
-If the data do not have replicates, \code{repl} will be \code{NULL}.}
+the first and second positions, respectively (\code{c(replicate, block)}).
+If the data does not have replicates, \code{repl} will be \code{NULL}.}
 
-\item{trait}{A string. The name of the column that corresponds to the analysed variable.}
+\item{trait}{A string. The analysed variable. Currently, only single-trait models are fitted.}
 
 \item{reg}{A string or NULL. The name of the column that contain information on
 regions or mega-environments. \code{NULL} (default) if not applicable.}
@@ -129,8 +129,7 @@ An object of S4 class \code{stanfit} representing
    indicates if the sampling is done or not.
 }
 \description{
-This function runs a Bayesian model for analysing data from
-Multi-environment trials using \code{rstan}, the \code{R} interface to \code{Stan}.
+Fits a Bayesian multi-environment model using \code{rstan}, the \code{R} interface to \code{Stan}.
 }
 \details{
 The function has nine available models, which will be fitted according to the
@@ -184,7 +183,7 @@ where \eqn{\phi} is the known global hyperparameter defined such as \eqn{\phi = 
 
 More details about the usage of \code{bayes_met} and other functions of
 the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
-Information on solutions to solve convergence or mixing issues can be found at
+Solutions to convergence or mixing issues can be found at
 \url{https://mc-stan.org/misc/warnings.html}.
 }
 \section{Methods}{
@@ -207,11 +206,11 @@ mod = bayes_met(data = soy,
                 repl = NULL,
                 year = NULL,
                 reg = NULL,
-                res.het = FALSE,
+                res.het = TRUE,
                 trait = 'Y',
                 iter = 6000, cores = 4, chains = 4)
                 }
 }
 \seealso{
-\code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}, \code{\link[rstan:stan]{rstan::stan()}}, \code{\link[rstan:stanfit-class]{rstan::stanfit()}}
+\link[rstan:stanmodel-method-sampling]{rstan::sampling}, \link[rstan:stan]{rstan::stan}, \link[rstan:stanfit-class]{rstan::stanfit}
 }

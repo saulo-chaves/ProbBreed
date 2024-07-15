@@ -13,7 +13,7 @@
 
 \item{level}{A string indicating the information level to be used for building
 the plots. Options are \code{"across"} for focusing on the probabilities across environments,
-or \code{"within"} to focus on the within-environment effects. Defaults \code{"across"}.}
+or \code{"within"} to focus on the within-environment effects. Defaults to \code{"across"}.}
 
 \item{...}{currently not used}
 }
@@ -36,7 +36,7 @@ Available only if \code{level = "across"}.
 performance (the probability of genotypes at the \emph{x}-axis being superior
 to those on the \emph{y}-axis). If \code{level = "within"}, a list of heatmaps representing the pairwise probability of superior
 performance within environments.  If a model with \code{reg} and/or \code{year} is fitted, multiple plots (and multiple lists) are produced.
-If you set this option, it is mandatory to store the outputs in an object
+Should this option is set, it is mandatory to store the outputs in an object
 (e.g., \code{pl <- plot(obj, category = "pair_perfo", level = "within")}) so they can be visualized one at a time.
 \item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability
 (the probability of genotypes at the \emph{x}-axis being more stable than those on the \emph{y}-axis).
@@ -56,21 +56,14 @@ mod = bayes_met(data = soy,
                 trait = 'Y',
                 iter = 6000, cores = 4, chains = 4)
 
-outs = extr_outs(data = soy, trait = "Y", model = mod,
+outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95), plots = TRUE,
                  verbose = TRUE)
 
-results = prob_sup(data = soy,
-                   trait = "Y",
-                   gen = "Gen",
-                   loc = "Loc",
-                   reg = NULL,
-                   year = NULL,
-                   mod.output = outs,
+results = prob_sup(extr = outs,
                    int = .2,
                    increase = TRUE,
                    save.df = FALSE,
-                   interactive = FALSE,
                    verbose = FALSE)
 
 plot(results, category = "hpd")

@@ -1,8 +1,7 @@
 language: r
-sudo: false
 cache: packages
- 
-script: 
+
+script:
 - ./travis-tool.sh run_tests
 - R CMD build .
 - R CMD check *tar.gz --as-cran
