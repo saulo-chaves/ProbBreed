@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://github.com/saulo-chaves/ProbBreed}
   \item \url{https://saulo-chaves.github.io/ProbBreed_site/}
+  \item \url{https://saulo-chaves.github.io/ProbBreed/}
   \item Report bugs at \url{https://github.com/saulo-chaves/ProbBreed/issues}
 }
 
