@@ -45,7 +45,7 @@ If a model with \code{reg} and/or \code{year} is fitted, multiple plots are prod
 }
 }
 \examples{
-\donttest{
+
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 loc = "Loc",
@@ -57,7 +57,7 @@ mod = bayes_met(data = soy,
                 iter = 6000, cores = 4, chains = 4)
 
 outs = extr_outs(model = mod,
-                 probs = c(0.05, 0.95), plots = TRUE,
+                 probs = c(0.05, 0.95),
                  verbose = TRUE)
 
 results = prob_sup(extr = outs,
@@ -74,7 +74,7 @@ plot(results, category = "pair_perfo", level = "across")
 plwithin = plot(results, category = "pair_perfo", level = "within")
 plot(results, category = "pair_stabi")
 plot(results, category = "joint")
- }
+
 
 }
 \seealso{

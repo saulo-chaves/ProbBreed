@@ -28,7 +28,6 @@ model's convergence.
 }
 }
 \examples{
-\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 loc = "Loc",
@@ -46,7 +45,7 @@ plot(results, category = "ppdensity")
 plot(results, category = "density")
 plot(results, category = "histogram")
 plot(results, category = "traceplot")
- }
+
 
 }
 \seealso{

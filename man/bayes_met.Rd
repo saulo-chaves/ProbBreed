@@ -199,7 +199,6 @@ Solutions to convergence or mixing issues can be found at
 }
 
 \examples{
-\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 loc = "Loc",
@@ -209,7 +208,7 @@ mod = bayes_met(data = soy,
                 res.het = TRUE,
                 trait = 'Y',
                 iter = 6000, cores = 4, chains = 4)
-                }
+
 }
 \seealso{
 \link[rstan:stanmodel-method-sampling]{rstan::sampling}, \link[rstan:stan]{rstan::stan}, \link[rstan:stanfit-class]{rstan::stanfit}

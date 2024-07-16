@@ -38,7 +38,6 @@ More details about the usage of \code{extr_outs} and other functions of
 the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
 }
 \examples{
-\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 loc = "Loc",
@@ -52,7 +51,7 @@ mod = bayes_met(data = soy,
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),
                  verbose = TRUE)
-                 }
+
 }
 \seealso{
 \link[rstan:stan_plot_diagnostics]{rstan::stan_diag}, \link[ggplot2:ggplot]{ggplot2::ggplot}, \link[rstan:check_hmc_diagnostics]{rstan::check_hmc_diagnostics}, \link{plot.extr}

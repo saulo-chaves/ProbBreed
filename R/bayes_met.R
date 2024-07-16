@@ -87,7 +87,6 @@
 ##' @importFrom utils globalVariables
 ##'
 ##' @examples
-##' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 loc = "Loc",
@@ -97,7 +96,7 @@
 ##'                 res.het = TRUE,
 ##'                 trait = 'Y',
 ##'                 iter = 6000, cores = 4, chains = 4)
-##'                 }
+##'
 ##' @export
 
 bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,

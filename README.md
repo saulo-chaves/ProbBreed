@@ -11,6 +11,8 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 status](https://www.r-pkg.org/badges/version/ProbBreed)](https://CRAN.R-project.org/package=ProbBreed)
 [![ProbBreed status
 badge](https://saulo-chaves.r-universe.dev/badges/ProbBreed)](https://saulo-chaves.r-universe.dev/ProbBreed)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/ProbBreed)](https://cran.rstudio.com/web/packages/ProbBreed/index.html)
 <!-- badges: end -->
 
 ProbBreed employs Bayesian statistics to analyse multi-environment
@@ -87,33 +89,33 @@ components and some posterior predictive checks. Here are them:
 ``` r
 outs$variances
 #>         effect     var      sd naive.se HPD_0.05 HPD_0.95
-#> 1          Gen   3.369   1.289    0.012    1.651    5.799
-#> 2          Loc 248.323 126.592    1.156  117.603  475.241
-#> 3   error_env1  10.123   2.728    0.025    6.421   15.083
-#> 4   error_env2  28.859   7.279    0.066   19.233   42.122
-#> 5   error_env3  11.741   3.428    0.031    7.267   18.156
-#> 6   error_env4  18.466   4.727    0.043   12.068   27.123
-#> 7   error_env5  51.440  12.842    0.117   34.059   75.790
-#> 8   error_env6  15.438   3.979    0.036   10.065   22.845
-#> 9   error_env7  19.381   4.976    0.045   12.710   28.589
-#> 10  error_env8  21.217   5.448    0.050   14.014   31.290
-#> 11  error_env9  14.856   3.868    0.035    9.701   22.063
-#> 12 error_env10  13.653   5.684    0.052    6.969   24.071
-#> 13 error_env11  21.807   8.461    0.077   11.612   37.294
-#> 14 error_env12   7.625   3.355    0.031    3.680   13.946
-#> 15 error_env13  14.640   5.961    0.054    7.605   26.214
-#> 16 error_env14  10.885   4.540    0.041    5.560   19.377
+#> 1          Gen   3.408   1.330    0.012    1.612    5.836
+#> 2          Loc 246.226 123.049    1.123  117.373  470.302
+#> 3   error_env1   9.997   2.725    0.025    6.339   14.891
+#> 4   error_env2  29.014   7.321    0.067   19.152   42.443
+#> 5   error_env3  11.762   3.417    0.031    7.280   18.002
+#> 6   error_env4  18.509   4.756    0.043   12.039   27.148
+#> 7   error_env5  51.092  12.659    0.116   33.804   74.392
+#> 8   error_env6  15.539   4.018    0.037   10.115   22.999
+#> 9   error_env7  19.393   4.942    0.045   12.746   28.504
+#> 10  error_env8  21.225   5.457    0.050   13.891   31.278
+#> 11  error_env9  14.901   3.913    0.036    9.647   22.065
+#> 12 error_env10  13.500   5.625    0.051    6.946   23.890
+#> 13 error_env11  21.848   8.684    0.079   11.655   37.470
+#> 14 error_env12   7.618   3.376    0.031    3.652   13.786
+#> 15 error_env13  14.762   6.061    0.055    7.547   26.118
+#> 16 error_env14  10.925   4.505    0.041    5.631   19.516
 outs$ppcheck
 #>                   Diagnostics
-#> p.val_max              0.9208
-#> p.val_min              0.3505
-#> p.val_median           0.7315
-#> p.val_mean             0.5196
-#> p.val_sd               0.5615
-#> Eff_No_parameters     27.5034
-#> WAIC2               2715.8907
-#> mean_Rhat              1.0003
-#> Eff_sample_size        0.6534
+#> p.val_max              0.9206
+#> p.val_min              0.3518
+#> p.val_median           0.7252
+#> p.val_mean             0.5091
+#> p.val_sd               0.5616
+#> Eff_No_parameters     27.4413
+#> WAIC2               2715.5238
+#> mean_Rhat              1.0002
+#> Eff_sample_size        0.7212
 ```
 
 You can also the `plot` S3 method for some useful visualizations. For
@@ -151,34 +153,27 @@ superior performances across and within environments:
 ``` r
 head(results$across$perfo)
 #>     ID      prob
-#> 36 G36 0.9843333
-#> 9  G09 0.8266667
-#> 20 G20 0.8189167
-#> 38 G38 0.7265000
-#> 31 G31 0.6671667
-#> 1  G01 0.5247500
+#> 36 G36 0.9832500
+#> 9  G09 0.8360000
+#> 20 G20 0.8129167
+#> 38 G38 0.7249167
+#> 31 G31 0.6755833
+#> 1  G01 0.5131667
 head(results$within$perfo$gl)
 #>   gen         E01         E02         E03         E04         E05         E06
-#> 1 G01 0.524750000 0.524750000 0.656916667 0.524750000 0.524750000 0.524750000
-#> 2 G02 0.006000000 0.006000000 0.012083333 0.006000000 0.006000000 0.006000000
-#> 3 G03 0.164083333 0.164083333 0.252083333 0.164083333 0.164083333 0.164083333
-#> 4 G04 0.013083333 0.013083333 0.026250000 0.013083333 0.013083333 0.013083333
-#> 5 G05 0.001166667 0.001166667 0.002833333 0.001166667 0.001166667 0.001166667
-#> 6 G06 0.197500000 0.197500000 0.292000000 0.197500000 0.197500000 0.197500000
-#>           E07         E08         E09       E10       E11       E12       E13
-#> 1 0.524750000 0.524750000 0.524750000 0.9555833 0.9555833 0.9555833 0.9555833
-#> 2 0.006000000 0.006000000 0.006000000        NA        NA        NA        NA
-#> 3 0.164083333 0.164083333 0.164083333        NA        NA        NA        NA
-#> 4 0.013083333 0.013083333 0.013083333        NA        NA        NA        NA
-#> 5 0.001166667 0.001166667 0.001166667        NA        NA        NA        NA
-#> 6 0.197500000 0.197500000 0.197500000        NA        NA        NA        NA
-#>         E14
-#> 1 0.9555833
-#> 2        NA
-#> 3        NA
-#> 4        NA
-#> 5        NA
-#> 6        NA
+#> 1 G01 0.513166667 0.513166667 0.655583333 0.513166667 0.513166667 0.513166667
+#> 2 G02 0.006416667 0.006416667 0.013750000 0.006416667 0.006416667 0.006416667
+#> 3 G03 0.162916667 0.162916667 0.242750000 0.162916667 0.162916667 0.162916667
+#> 4 G04 0.014583333 0.014583333 0.028833333 0.014583333 0.014583333 0.014583333
+#> 5 G05 0.000750000 0.000750000 0.002666667 0.000750000 0.000750000 0.000750000
+#> 6 G06 0.196416667 0.196416667 0.291416667 0.196416667 0.196416667 0.196416667
+#>           E07         E08         E09   E10   E11   E12   E13   E14
+#> 1 0.513166667 0.513166667 0.513166667 0.952 0.952 0.952 0.952 0.952
+#> 2 0.006416667 0.006416667 0.006416667    NA    NA    NA    NA    NA
+#> 3 0.162916667 0.162916667 0.162916667    NA    NA    NA    NA    NA
+#> 4 0.014583333 0.014583333 0.014583333    NA    NA    NA    NA    NA
+#> 5 0.000750000 0.000750000 0.000750000    NA    NA    NA    NA    NA
+#> 6 0.196416667 0.196416667 0.196416667    NA    NA    NA    NA    NA
 ```
 
 The S3 method `plot` is also available for `probsup` objects. Here are
@@ -241,6 +236,9 @@ questions that constantly arises in plant breeding, like:
 
 - **What is the probability that a given selection candidate having a
   superior and invariable performance across environments?**
+
+For a more detailed tutorial, see
+<https://saulo-chaves.github.io/ProbBreed_site/>.
 
 ## Citation
 
