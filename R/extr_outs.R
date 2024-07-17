@@ -37,6 +37,7 @@
 ##' @importFrom rlang .data
 ##'
 ##' @examples
+##' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 loc = "Loc",
@@ -50,7 +51,7 @@
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
 ##'                  verbose = TRUE)
-##'
+##' }
 ##' @export
 
 extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
@@ -305,6 +306,7 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 #' @export
 #'
 #' @examples
+#' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 loc = "Loc",
@@ -322,7 +324,7 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 ##' plot(results, category = "density")
 ##' plot(results, category = "histogram")
 ##' plot(results, category = "traceplot")
-#'
+#' }
 #'
 
 plot.extr = function(obj, category = "ppdensity", ...){

@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN status](https://www.r-pkg.org/badges/version/ProbBreed)](https://CRAN.R-project.org/package=ProbBreed)
 [![ProbBreed status badge](https://saulo-chaves.r-universe.dev/badges/ProbBreed)](https://saulo-chaves.r-universe.dev/ProbBreed)
-[![CRAN downloads](https://cranlogs.r-pkg.org/badges/ProbBreed)](https://cran.rstudio.com/web/packages/ProbBreed/index.html)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/ProbBreed)](https://cran.r-project.org/package=ProbBreed)
 <!-- badges: end -->
 
 ProbBreed employs Bayesian statistics to analyse multi-environment trials' data, and uses its outputs to estimate the marginal and pairwise probabilities of superior performance and superior stability of the genotypes, as well as their conditional probability of superior performance. The method is thoroughly described at https://doi.org/10.1007/s00122-022-04041-y.

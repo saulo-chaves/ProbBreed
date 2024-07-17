@@ -45,7 +45,7 @@ If a model with \code{reg} and/or \code{year} is fitted, multiple plots are prod
 }
 }
 \examples{
-
+\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 loc = "Loc",
@@ -74,7 +74,7 @@ plot(results, category = "pair_perfo", level = "across")
 plwithin = plot(results, category = "pair_perfo", level = "within")
 plot(results, category = "pair_stabi")
 plot(results, category = "joint")
-
+}
 
 }
 \seealso{

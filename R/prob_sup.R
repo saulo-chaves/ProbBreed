@@ -156,6 +156,7 @@
 ##' @export
 ##'
 ##' @examples
+##' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 loc = "Loc",
@@ -175,6 +176,7 @@
 ##'                    increase = TRUE,
 ##'                    save.df = FALSE,
 ##'                    verbose = FALSE)
+##' }
 ##'
 
 prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE){
@@ -1869,7 +1871,7 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 #' @export
 #'
 #' @examples
-#'
+#' \donttest{
 ##' mod = bayes_met(data = soy,
 ##'                 gen = "Gen",
 ##'                 loc = "Loc",
@@ -1898,7 +1900,7 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 ##' plwithin = plot(results, category = "pair_perfo", level = "within")
 ##' plot(results, category = "pair_stabi")
 ##' plot(results, category = "joint")
-#'
+#' }
 #'
 
 plot.probsup = function(obj, category = "perfo", level = "across", ...){

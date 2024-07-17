@@ -145,6 +145,7 @@ More details about the usage of \code{prob_sup}, as well as the other function o
 the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
 }
 \examples{
+\donttest{
 mod = bayes_met(data = soy,
                 gen = "Gen",
                 loc = "Loc",
@@ -164,6 +165,7 @@ results = prob_sup(extr = outs,
                    increase = TRUE,
                    save.df = FALSE,
                    verbose = FALSE)
+}
 
 }
 \references{
