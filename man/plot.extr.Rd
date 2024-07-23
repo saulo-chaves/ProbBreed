@@ -4,15 +4,15 @@
 \alias{plot.extr}
 \title{Plots for the \code{extr} object}
 \usage{
-\method{plot}{extr}(obj, category = "ppdensity", ...)
+\method{plot}{extr}(x, ..., category = "ppdensity")
 }
 \arguments{
-\item{obj}{An object of class \code{extr}.}
-
-\item{category}{A string indicating which plot to build. See options in the Details section.}
+\item{x}{An object of class \code{extr}.}
 
 \item{...}{Passed to \link[ggplot2:geom_histogram]{ggplot2::geom_histogram}, when \code{category = histogram}. Useful to change the
 number of bins.}
+
+\item{category}{A string indicating which plot to build. See options in the Details section.}
 }
 \description{
 Build plots using the outputs stored in the \code{extr} object.
@@ -37,7 +37,7 @@ mod = bayes_met(data = soy,
                 reg = NULL,
                 res.het = FALSE,
                 trait = 'Y',
-                iter = 6000, cores = 4, chains = 4)
+                iter = 6000, cores = 1, chains = 4)
 
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),
@@ -50,5 +50,5 @@ plot(results, category = "traceplot")
 
 }
 \seealso{
-\link{ggplot2}, \link{extr_outs}
+\link{extr_outs}
 }

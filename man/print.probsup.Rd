@@ -4,10 +4,10 @@
 \alias{print.probsup}
 \title{Print an object of class \code{probsup}}
 \usage{
-\method{print}{probsup}(obj, ...)
+\method{print}{probsup}(x, ...)
 }
 \arguments{
-\item{obj}{An object of class \code{probsup}}
+\item{x}{An object of class \code{probsup}}
 
 \item{...}{currently not used}
 }

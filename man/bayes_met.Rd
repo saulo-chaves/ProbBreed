@@ -14,7 +14,7 @@ bayes_met(
   year = NULL,
   res.het = FALSE,
   iter = 2000,
-  cores = 2,
+  cores = 1,
   chains = 4,
   pars = NA,
   warmup = floor(iter/2),
@@ -208,7 +208,7 @@ mod = bayes_met(data = soy,
                 reg = NULL,
                 res.het = TRUE,
                 trait = 'Y',
-                iter = 6000, cores = 4, chains = 4)
+                iter = 6000, cores = 1, chains = 4)
 }
 }
 \seealso{

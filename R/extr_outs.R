@@ -46,7 +46,7 @@
 ##'                 reg = NULL,
 ##'                 res.het = TRUE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 1, chains = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -281,7 +281,7 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 #' Build plots using the outputs stored in the `extr` object.
 #'
 #'
-#' @param obj An object of class `extr`.
+#' @param x An object of class `extr`.
 #' @param category A string indicating which plot to build. See options in the Details section.
 #' @param ... Passed to [ggplot2::geom_histogram], when `category = histogram`. Useful to change the
 #' number of bins.
@@ -298,11 +298,12 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 ##'   }
 #'
 #'
-#' @seealso  [ggplot2], [ProbBreed::extr_outs]
+#' @seealso  [ProbBreed::extr_outs]
 #'
 ##' @import ggplot2
 ##' @importFrom rlang .data
 #'
+#' @rdname plot.extr
 #' @export
 #'
 #' @examples
@@ -315,7 +316,7 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 ##'                 reg = NULL,
 ##'                 res.het = FALSE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 1, chains = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -327,8 +328,9 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 #' }
 #'
 
-plot.extr = function(obj, category = "ppdensity", ...){
+plot.extr = function(x, ..., category = "ppdensity"){
 
+  obj = x
   # Namespaces
   requireNamespace('ggplot2')
 
@@ -402,7 +404,7 @@ plot.extr = function(obj, category = "ppdensity", ...){
 #'
 #' Print a `extr` object in R console
 #'
-#' @param obj An object of class `extr`
+#' @param x An object of class `extr`
 #' @param ... currently not used
 #' @method print extr
 #'
@@ -411,8 +413,9 @@ plot.extr = function(obj, category = "ppdensity", ...){
 #' @export
 #'
 
-print.extr = function(obj, ...){
+print.extr = function(x, ...){
 
+  obj = x
   message("======> Variances")
   print(obj$variances)
   message("======> Posterior predictive checks")

@@ -1,6 +1,6 @@
 Package: ProbBreed
 Title: Probability Theory for Selecting Candidates in Plant Breeding
-Version: 1.0.4.0
+Version: 1.0.4.1
 Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
                      email = "saulo.chaves@ufv.br",
                      comment = c(ORCID = "0000-0002-0694-1798")),
@@ -22,7 +22,6 @@ Imports:
     lifecycle
 Suggests: 
     knitr,
-    plotly,
     rmarkdown
 Encoding: UTF-8
 UseLTO: true

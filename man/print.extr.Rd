@@ -4,10 +4,10 @@
 \alias{print.extr}
 \title{Print an object of class \code{extr}}
 \usage{
-\method{print}{extr}(obj, ...)
+\method{print}{extr}(x, ...)
 }
 \arguments{
-\item{obj}{An object of class \code{extr}}
+\item{x}{An object of class \code{extr}}
 
 \item{...}{currently not used}
 }

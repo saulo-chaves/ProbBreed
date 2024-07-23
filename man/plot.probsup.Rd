@@ -4,18 +4,18 @@
 \alias{plot.probsup}
 \title{Plots for the \code{probsup} object}
 \usage{
-\method{plot}{probsup}(obj, category = "perfo", level = "across", ...)
+\method{plot}{probsup}(x, ..., category = "perfo", level = "across")
 }
 \arguments{
-\item{obj}{An object of class \code{probsup}.}
+\item{x}{An object of class \code{probsup}.}
+
+\item{...}{currently not used}
 
 \item{category}{A string indicating which plot to build. See options in the Details section.}
 
 \item{level}{A string indicating the information level to be used for building
 the plots. Options are \code{"across"} for focusing on the probabilities across environments,
 or \code{"within"} to focus on the within-environment effects. Defaults to \code{"across"}.}
-
-\item{...}{currently not used}
 }
 \description{
 Build plots using the outputs stored in the \code{probsup} object.
@@ -54,7 +54,7 @@ mod = bayes_met(data = soy,
                 reg = NULL,
                 res.het = FALSE,
                 trait = 'Y',
-                iter = 6000, cores = 4, chains = 4)
+                iter = 6000, cores = 1, chains = 4)
 
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),
@@ -78,5 +78,5 @@ plot(results, category = "joint")
 
 }
 \seealso{
-\link{ggplot2}, \link{prob_sup}
+\link{prob_sup}
 }

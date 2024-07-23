@@ -3,11 +3,4 @@ template:
   bootstrap: 5
   bootswatch: sandstone
   theme: atom-one-dark
-navbar:
-  structure: ~
-  left:
-  - intro
-  - reference
-  - github
-  right: search
 

@@ -165,7 +165,7 @@
 ##'                 reg = NULL,
 ##'                 res.het = TRUE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 1, chains = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -1829,14 +1829,13 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 #' Build plots using the outputs stored in the `probsup` object.
 #'
 #'
-#' @param obj An object of class `probsup`.
+#' @param x An object of class `probsup`.
 #' @param category A string indicating which plot to build. See options in the Details section.
 #' @param level A string indicating the information level to be used for building
 #' the plots. Options are `"across"` for focusing on the probabilities across environments,
 #' or `"within"` to focus on the within-environment effects. Defaults to `"across"`.
 #' @param ... currently not used
 #' @method plot probsup
-#'
 #'
 #' @details The available options are:
 ##'   \itemize{
@@ -1862,12 +1861,13 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 ##'   }
 #'
 #'
-#' @seealso  [ggplot2], [ProbBreed::prob_sup]
+#' @seealso  [ProbBreed::prob_sup]
 #'
 ##' @import ggplot2
 ##' @importFrom stats reshape na.exclude
 ##' @importFrom rlang .data
-#'
+##'
+#' @rdname plot.probsup
 #' @export
 #'
 #' @examples
@@ -1880,7 +1880,7 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 ##'                 reg = NULL,
 ##'                 res.het = FALSE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 1, chains = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -1903,8 +1903,9 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 #' }
 #'
 
-plot.probsup = function(obj, category = "perfo", level = "across", ...){
+plot.probsup = function(x, ..., category = "perfo", level = "across"){
 
+  obj = x
   # Namespaces
   requireNamespace('ggplot2')
 
@@ -2225,7 +2226,7 @@ plot.probsup = function(obj, category = "perfo", level = "across", ...){
 #'
 #' Print a `probsup` object in R console
 #'
-#' @param obj An object of class `probsup`
+#' @param x An object of class `probsup`
 #' @param ... currently not used
 #' @method print probsup
 #'
@@ -2234,7 +2235,8 @@ plot.probsup = function(obj, category = "perfo", level = "across", ...){
 #' @export
 #'
 
-print.probsup = function(obj, ...){
+print.probsup = function(x, ...){
+  obj = x
   message("==> Considering an intensity of ", attr(obj, "control")$intensity *100,'%, here are the selected candidates:')
   temp =obj$across$perfo[1:ceiling(nrow(obj$across$perfo) * attr(obj, "control")$intensity),]
   rownames(temp) = NULL

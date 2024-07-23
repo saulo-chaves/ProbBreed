@@ -96,12 +96,12 @@
 ##'                 reg = NULL,
 ##'                 res.het = TRUE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 4, chains = 4)
+##'                 iter = 6000, cores = 1, chains = 4)
 ##' }
 ##' @export
 
 bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
-                     res.het = FALSE, iter = 2000, cores = 2, chains = 4,
+                     res.het = FALSE, iter = 2000, cores = 1, chains = 4,
                      pars = NA, warmup = floor(iter/2), thin = 1,
                      seed = sample.int(.Machine$integer.max, 1),
                      init = 'random', verbose = FALSE,
