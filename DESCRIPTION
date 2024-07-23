@@ -17,9 +17,18 @@ License: AGPL (>= 3)
 Depends: R (>= 3.5.0)
 Imports: 
     ggplot2,
-    rstan,
+    rstan (>= 2.32.0),
     rlang,
-    lifecycle
+    lifecycle,
+    stats,
+    utils
+LinkingTo: 
+    StanHeaders (>= 2.32.0),
+    rstan (>= 2.32.0),
+    BH (>= 1.72.0-2),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1)
 Suggests: 
     knitr,
     rmarkdown
