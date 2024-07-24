@@ -23,7 +23,7 @@ Imports:
     RcppParallel (>= 5.0.1),
     rlang,
     rstan (>= 2.32.0),
-    rstantools (>= 2.4.0.9000),
+    rstantools (>= 2.4.0),
     stats,
     utils
 LinkingTo: 
