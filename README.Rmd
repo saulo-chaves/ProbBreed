@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![R-CMD-check](https://github.com/saulo-chaves/ProbBreed/actions/workflows/check-release.yaml/badge.svg)](https://github.com/saulo-chaves/ProbBreed/actions/workflows/check-release.yaml)
 [![CRAN status](https://www.r-pkg.org/badges/version/ProbBreed)](https://CRAN.R-project.org/package=ProbBreed)
 [![ProbBreed status badge](https://saulo-chaves.r-universe.dev/badges/ProbBreed)](https://saulo-chaves.r-universe.dev/ProbBreed)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/ProbBreed)](https://cran.r-project.org/package=ProbBreed)
