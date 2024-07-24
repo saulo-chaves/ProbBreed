@@ -82,23 +82,38 @@ model's convergence.</p></li>
 <span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                reg <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                trait <span class="op">=</span> <span class="st">'Y'</span>,</span></span>
-<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">6000</span>, cores <span class="op">=</span> <span class="fl">1</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in bayes_met(data = soy, gen = "Gen", loc = "Loc", repl = NULL,     year = NULL, reg = NULL, res.het = FALSE, trait = "Y", iter = 6000,     cores = 1, chains = 4):</span> By default, a model with no replicates can only be fitted with heterogeneous residual variances (res.het = TRUE)</span>
+<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">outs</span> <span class="op">=</span> <span class="fu"><a href="extr_outs.html">extr_outs</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">mod</span>,</span></span>
 <span class="r-in"><span>                 probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'mod' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">results</span>, category <span class="op">=</span> <span class="st">"ppdensity"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'results' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">results</span>, category <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'results' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">results</span>, category <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'results' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">results</span>, category <span class="op">=</span> <span class="st">"traceplot"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'results' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Posterior effects extracted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Variances extracted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Maximum posterior values extracted</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Posterior predictive checks computed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Divergences:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations ended with a divergence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tree depth:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations saturated the maximum tree depth of 10.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Energy:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI indicated no pathological behavior.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"ppdensity"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.extr-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.extr-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
+<span class="r-plt img"><img src="plot.extr-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"traceplot"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.extr-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
