@@ -44,7 +44,7 @@ devtools::install_github("saulo-chaves/ProbBreed")
 library(ProbBreed)
 ```
 
-Currently, `ProbBreed` has nine available models implemented in the `bayes_met` function. See `?bayes_met` for more details. Using the `soy` example dataset, a basic usage is as follows:
+Currently, `ProbBreed` has nine available models implemented in the `bayes_met` function. See `?bayes_met` for more details. An examples using the `soy` example dataset is described below:
 
 ```{r eval=TRUE, echo=TRUE, results='hide'}
 model = bayes_met(data = soy,

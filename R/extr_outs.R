@@ -46,7 +46,7 @@
 ##'                 reg = NULL,
 ##'                 res.het = TRUE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 1, chains = 4)
+##'                 iter = 2000, cores = 2, chains = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -314,17 +314,17 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 ##'                 repl = NULL,
 ##'                 year = NULL,
 ##'                 reg = NULL,
-##'                 res.het = FALSE,
+##'                 res.het = TRUE,
 ##'                 trait = 'Y',
-##'                 iter = 6000, cores = 1, chains = 4)
+##'                 iter = 2000, cores = 2, chains = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
 ##'                  verbose = TRUE)
-##' plot(results, category = "ppdensity")
-##' plot(results, category = "density")
-##' plot(results, category = "histogram")
-##' plot(results, category = "traceplot")
+##' plot(outs, category = "ppdensity")
+##' plot(outs, category = "density")
+##' plot(outs, category = "histogram")
+##' plot(outs, category = "traceplot")
 #' }
 #'
 

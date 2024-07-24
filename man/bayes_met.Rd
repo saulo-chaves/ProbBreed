@@ -208,7 +208,7 @@ mod = bayes_met(data = soy,
                 reg = NULL,
                 res.het = TRUE,
                 trait = 'Y',
-                iter = 6000, cores = 1, chains = 4)
+                iter = 2000, cores = 2, chains = 4)
 }
 }
 \seealso{
