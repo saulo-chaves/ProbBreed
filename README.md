@@ -48,29 +48,29 @@ library(ProbBreed)
 
 Currently, `ProbBreed` has nine available models implemented in the
 `bayes_met` function. See `?bayes_met` for more details. An examples
-using the `soy` example dataset is described below:
+using the `maize` example dataset is described below:
 
 ``` r
-model = bayes_met(data = soy,
-                gen = "Gen",
-                loc = "Loc",
-                repl = NULL,
-                year = NULL,
-                reg = NULL,
-                res.het = TRUE,
-                trait = 'Y',
-                iter = 6000, cores = 4, chains = 4)
+mod = bayes_met(data = maize, 
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep","Block"),
+                trait = "GY", 
+                reg = "Region",
+                year = NULL, 
+                res.het = TRUE, 
+                iter = 4000, cores = 4, chain = 4)
 ```
 
 `gen`, `loc`, `repl`, `year` and `reg` are all column names that contain
 information on genotypes, environments (locations), replicates, years
-(or seasons) and regions (or mega-environments). The `soy` dataset has
-only adjusted means, so only `gen` and `loc` have values. `res.het`
-indicates if a per-environmental residual variance should be estimated.
-`trait` is the column in `data` that contain the phenotypic
-observations. The other arguments are specifications for model fitting:
-the number of iterations, cores and chains. Feel free to customize these
-and other options according to your necessity.
+(or seasons) and regions (or mega-environments). The `maize` has no
+multi-year information, so `year = NULL`. `res.het` indicates if a
+per-environmental residual variance should be estimated. `trait` is the
+column in `data` that contain the phenotypic observations. The other
+arguments are specifications for model fitting: the number of
+iterations, cores and chains. Feel free to customize these and other
+options according to your necessity.
 
 The output of this function will be an object of class `stanfit`, which
 should be used in the `extr_outs` function for further processing before
@@ -78,7 +78,7 @@ computing the probabilities per se. This function also provides some
 useful diagnostics. Here is how to use it:
 
 ``` r
-outs = extr_outs(model = model,
+outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),
                  verbose = TRUE)
 ```
@@ -89,34 +89,41 @@ components and some posterior predictive checks. Here are them:
 
 ``` r
 outs$variances
-#>         effect     var      sd naive.se HPD_0.05 HPD_0.95
-#> 1          Gen   3.396   1.299    0.012    1.641    5.785
-#> 2          Loc 248.539 127.507    1.164  115.950  481.170
-#> 3   error_env1  10.029   2.728    0.025    6.363   14.965
-#> 4   error_env2  28.849   7.225    0.066   18.944   42.313
-#> 5   error_env3  11.657   3.424    0.031    7.222   18.003
-#> 6   error_env4  18.542   4.805    0.044   12.119   27.472
-#> 7   error_env5  51.517  12.889    0.118   34.229   74.745
-#> 8   error_env6  15.476   4.034    0.037   10.080   23.001
-#> 9   error_env7  19.270   4.841    0.044   12.608   28.188
-#> 10  error_env8  21.256   5.437    0.050   13.962   31.129
-#> 11  error_env9  14.802   3.832    0.035    9.678   21.811
-#> 12 error_env10  13.496   5.583    0.051    6.887   23.748
-#> 13 error_env11  21.969   8.980    0.082   11.698   37.850
-#> 14 error_env12   7.749   3.433    0.031    3.712   14.234
-#> 15 error_env13  14.443   5.877    0.054    7.553   25.375
-#> 16 error_env14  10.795   4.452    0.041    5.597   19.389
+#>             effect   var     sd naive.se HPD_0.05 HPD_0.95
+#> 1              Rep 0.036  0.040    0.000    0.001    0.108
+#> 2            Block 0.214  0.049    0.001    0.137    0.298
+#> 3           Hybrid 0.217  0.075    0.001    0.118    0.353
+#> 4         Location 7.995  3.864    0.043    3.773   15.124
+#> 5  Hybrid:Location 0.369  0.068    0.001    0.260    0.485
+#> 6           Region 4.712 18.433    0.206    0.013   17.110
+#> 7    Hybrid:Region 0.056  0.041    0.000    0.002    0.130
+#> 8       error_env1 0.879  0.200    0.002    0.595    1.236
+#> 9       error_env2 0.945  0.257    0.003    0.593    1.418
+#> 10      error_env3 1.398  0.315    0.004    0.961    1.965
+#> 11      error_env4 0.591  0.147    0.002    0.388    0.862
+#> 12      error_env5 1.062  0.240    0.003    0.732    1.494
+#> 13      error_env6 1.453  0.327    0.004    0.980    2.039
+#> 14      error_env7 0.285  0.073    0.001    0.186    0.420
+#> 15      error_env8 2.000  0.476    0.005    1.311    2.847
+#> 16      error_env9 0.581  0.165    0.002    0.362    0.884
+#> 17     error_env10 0.628  0.150    0.002    0.423    0.905
+#> 18     error_env11 1.254  0.288    0.003    0.851    1.779
+#> 19     error_env12 0.456  0.116    0.001    0.296    0.670
+#> 20     error_env13 0.732  0.179    0.002    0.484    1.062
+#> 21     error_env14 1.834  0.401    0.004    1.264    2.556
+#> 22     error_env15 0.826  0.189    0.002    0.567    1.172
+#> 23     error_env16 1.813  0.422    0.005    1.221    2.584
 outs$ppcheck
 #>                   Diagnostics
-#> p.val_max              0.9178
-#> p.val_min              0.3604
-#> p.val_median           0.7216
-#> p.val_mean             0.5008
-#> p.val_sd               0.5567
-#> Eff_No_parameters     27.5075
-#> WAIC2               2715.4563
-#> mean_Rhat              1.0003
-#> Eff_sample_size        0.6675
+#> p.val_max              0.3390
+#> p.val_min              0.3222
+#> p.val_median           0.5479
+#> p.val_mean             0.5011
+#> p.val_sd               0.5294
+#> Eff_No_parameters    184.3898
+#> WAIC2               3924.8912
+#> mean_Rhat              1.0005
+#> Eff_sample_size        0.8484
 ```
 
 You can also the `plot` S3 method for some useful visualizations. For
@@ -153,35 +160,28 @@ superior performances across and within environments:
 
 ``` r
 head(results$across$perfo)
-#>     ID      prob
-#> 36 G36 0.9825833
-#> 9  G09 0.8340833
-#> 20 G20 0.8162500
-#> 38 G38 0.7317500
-#> 31 G31 0.6750000
-#> 1  G01 0.5250833
+#>     ID     prob
+#> 36  G9 0.997500
+#> 1   G1 0.920000
+#> 22 G29 0.788500
+#> 24 G30 0.629375
+#> 5  G13 0.616250
+#> 35  G8 0.569000
 head(results$within$perfo$gl)
-#>   gen         E01         E02         E03         E04         E05         E06
-#> 1 G01 0.525083333 0.525083333 0.666333333 0.525083333 0.525083333 0.525083333
-#> 2 G02 0.007833333 0.007833333 0.016333333 0.007833333 0.007833333 0.007833333
-#> 3 G03 0.163333333 0.163333333 0.248666667 0.163333333 0.163333333 0.163333333
-#> 4 G04 0.013750000 0.013750000 0.027000000 0.013750000 0.013750000 0.013750000
-#> 5 G05 0.001083333 0.001083333 0.002583333 0.001083333 0.001083333 0.001083333
-#> 6 G06 0.194500000 0.194500000 0.286833333 0.194500000 0.194500000 0.194500000
-#>           E07         E08         E09       E10       E11       E12       E13
-#> 1 0.525083333 0.525083333 0.525083333 0.9579167 0.9579167 0.9579167 0.9579167
-#> 2 0.007833333 0.007833333 0.007833333        NA        NA        NA        NA
-#> 3 0.163333333 0.163333333 0.163333333        NA        NA        NA        NA
-#> 4 0.013750000 0.013750000 0.013750000        NA        NA        NA        NA
-#> 5 0.001083333 0.001083333 0.001083333        NA        NA        NA        NA
-#> 6 0.194500000 0.194500000 0.194500000        NA        NA        NA        NA
-#>         E14
-#> 1 0.9579167
-#> 2        NA
-#> 3        NA
-#> 4        NA
-#> 5        NA
-#> 6        NA
+#>   gen       E1      E10      E11      E12      E13      E14      E15      E16
+#> 1  G1 0.984000 0.277875 0.386375 0.434125 0.262625 0.953625 0.311625 0.972625
+#> 2 G10 0.010250 0.000875 0.001750 0.002500 0.026500 0.068000 0.000125 0.043000
+#> 3 G11 0.006250 0.100125 0.110625 0.004875 0.608000 0.111875 0.745375 0.094750
+#> 4 G12 0.153875 0.093000 0.045125 0.058750 0.064375 0.302125 0.173250 0.569250
+#> 5 G13 0.202875 0.194625 0.136375 0.134125 0.070375 0.595250 0.807125 0.068500
+#> 6 G14 0.000000 0.006750 0.111375 0.156500 0.030375 0.070875 0.000375 0.023625
+#>         E2       E3       E4       E5       E6       E7       E8       E9
+#> 1 0.899000 0.619250 0.907125 0.522125 0.302500 0.005500 0.863875 0.385625
+#> 2 0.093000 0.199250 0.001625 0.042875 0.024375 0.001750 0.000250 0.044000
+#> 3 0.020625 0.031625 0.014250 0.110000 0.340375 0.017375 0.049625 0.229500
+#> 4 0.413625 0.602125 0.193125 0.389125 0.430500 0.819750 0.160375 0.313000
+#> 5 0.234375 0.705375 0.684750 0.606250 0.825625 0.467125 0.118750 0.537375
+#> 6 0.001625 0.048000 0.122625 0.114750 0.631000 0.025000 0.037875 0.065000
 ```
 
 The S3 method `plot` is also available for `probsup` objects. Here are
@@ -219,7 +219,6 @@ plot(results, category = "perfo", level = "within")
 
 <img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
 
-The grey cells are environments where a given genotype was not assessed.
 See more options at `?plot.probsup`.
 
 The estimation of these probabilities are strictly related to some key

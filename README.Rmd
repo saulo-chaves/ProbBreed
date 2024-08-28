@@ -45,26 +45,26 @@ devtools::install_github("saulo-chaves/ProbBreed")
 library(ProbBreed)
 ```
 
-Currently, `ProbBreed` has nine available models implemented in the `bayes_met` function. See `?bayes_met` for more details. An examples using the `soy` example dataset is described below:
+Currently, `ProbBreed` has nine available models implemented in the `bayes_met` function. See `?bayes_met` for more details. An examples using the `maize` example dataset is described below:
 
-```{r eval=TRUE, echo=TRUE, results='hide'}
-model = bayes_met(data = soy,
-                gen = "Gen",
-                loc = "Loc",
-                repl = NULL,
-                year = NULL,
-                reg = NULL,
-                res.het = TRUE,
-                trait = 'Y',
-                iter = 6000, cores = 4, chains = 4)
+```{r eval=TRUE, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+mod = bayes_met(data = maize, 
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep","Block"),
+                trait = "GY", 
+                reg = "Region",
+                year = NULL, 
+                res.het = TRUE, 
+                iter = 4000, cores = 4, chain = 4)
 ```
 
-`gen`, `loc`, `repl`, `year` and `reg` are all column names that contain information on genotypes, environments (locations), replicates, years (or seasons) and regions (or mega-environments). The `soy` dataset has only adjusted means, so only `gen` and `loc` have values. `res.het` indicates if a per-environmental residual variance should be estimated. `trait` is the column in `data` that contain the phenotypic observations. The other arguments are specifications for model fitting: the number of iterations, cores and chains. Feel free to customize these and other options according to your necessity.
+`gen`, `loc`, `repl`, `year` and `reg` are all column names that contain information on genotypes, environments (locations), replicates, years (or seasons) and regions (or mega-environments). The `maize` has no multi-year information, so `year = NULL`. `res.het` indicates if a per-environmental residual variance should be estimated. `trait` is the column in `data` that contain the phenotypic observations. The other arguments are specifications for model fitting: the number of iterations, cores and chains. Feel free to customize these and other options according to your necessity.
 
 The output of this function will be an object of class `stanfit`, which should be used in the `extr_outs` function for further processing before computing the probabilities per se. This function also provides some useful diagnostics. Here is how to use it:
 
 ```{r eval=TRUE, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
-outs = extr_outs(model = model,
+outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),
                  verbose = TRUE)
 ```
@@ -130,7 +130,7 @@ plot(results, category = "stabi")
 plot(results, category = "perfo", level = "within")
 ```
 
-The grey cells are environments where a given genotype was not assessed. See more options at `?plot.probsup`. 
+See more options at `?plot.probsup`. 
 
 The estimation of these probabilities are strictly related to some key questions that constantly arises in plant breeding, like:
 

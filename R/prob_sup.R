@@ -17,6 +17,7 @@
 ##'
 ##' @return The function returns an object of class `probsup`, which contains two lists,
 ##' one with the `across`-environments probabilities, and another with the `within`-environments probabilities.
+##' If an entry-mean model was used in `ProbBreed::bayes_met`, only the `across` list will be available.
 ##'
 ##' The `across` list has the following elements:
 ##' \itemize{
@@ -24,10 +25,10 @@
 ##' \item \code{perfo}: the probabilities of superior performance.
 ##' \item \code{pair_perfo}: the pairwise probabilities of superior performance.
 ##' \item \code{stabi}: a list with the probabilities of superior stability. It contains the data frames `gl`,
-##' `gm` (when `reg` is not `NULL`) and `gt` (when `year` is not `NULL`).
+##' `gm` (when `reg` is not `NULL`) and `gt` (when `year` is not `NULL`). Unavailable if an entry-mean model was used in `bayes_met`.
 ##' \item \code{pair_stabi}: a list with the pairwise probabilities of superior stability. It contains the data frames `gl`,
-##' `gm` (when `reg` is not `NULL`) and `gt` (when `year` is not `NULL`).
-##' \item \code{joint_prob}: the joint probabilities of superior performance and stability.
+##' `gm` (when `reg` is not `NULL`) and `gt` (when `year` is not `NULL`). Unavailable if an entry-mean model was used in `bayes_met`.
+##' \item \code{joint_prob}: the joint probabilities of superior performance and stability. Unavailable if an entry-mean model was used in `bayes_met`.
 ##' }
 ##'
 ##' The `within` list has the following elements:
@@ -157,15 +158,15 @@
 ##'
 ##' @examples
 ##' \donttest{
-##' mod = bayes_met(data = soy,
-##'                 gen = "Gen",
-##'                 loc = "Loc",
-##'                 repl = NULL,
+##' mod = bayes_met(data = maize,
+##'                 gen = "Hybrid",
+##'                 loc = "Location",
+##'                 repl = c("Rep","Block"),
+##'                 trait = "GY",
+##'                 reg = "Region",
 ##'                 year = NULL,
-##'                 reg = NULL,
 ##'                 res.het = TRUE,
-##'                 trait = 'Y',
-##'                 iter = 2000, cores = 2, chains = 4)
+##'                 iter = 2000, cores = 4, chain = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -189,7 +190,7 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
   # Preparation
   data = attr(extr, "data")
   mod = extr
-  output = list(across = list(), within = list())
+  if(attr(extr, 'modmean')) output = list(across = list()) else output = list(across = list(), within = list())
   class(output) = "probsup"
   declared = attr(extr, "declared")
   trait = declared$trait
@@ -202,18 +203,17 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
                                        year = ifelse(is.null(year), 0, year),
                                        intensity = int)
 
-
   # Transforming again
   names(mod$post)[which(names(mod$post) == declared$loc)] = "l"
   names(mod$post)[which(names(mod$post) == declared$gen)] = "g"
-  names(mod$post)[which(names(mod$post) == paste(declared$gen, declared$loc, sep = ':'))] = "gl"
-  if("replicate" %in% names(mod$post)){names(mod$post)[which(names(mod$post) == declared$repl)] = "r"}
-  if("block" %in% names(mod$post)){names(mod$post)[which(names(mod$post) == declared$blk)] = "b"}
-  if("region" %in% names(mod$post)){
+  if(!attr(extr, 'modmean')) names(mod$post)[which(names(mod$post) == paste(declared$gen, declared$loc, sep = ':'))] = "gl"
+  if(declared$repl > 0){names(mod$post)[which(names(mod$post) == declared$repl)] = "r"}
+  if(declared$blk > 0){names(mod$post)[which(names(mod$post) == declared$blk)] = "b"}
+  if(declared$reg > 0){
     names(mod$post)[which(names(mod$post) == declared$reg)] = "m"
     names(mod$post)[which(names(mod$post) == paste(declared$gen, declared$reg, sep = ':'))] = "gm"
   }
-  if("year" %in% names(mod$post)){
+  if(declared$year > 0){
     names(mod$post)[which(names(mod$post) == declared$year)] = "t"
     names(mod$post)[which(names(mod$post) == paste(declared$gen, declared$year, sep = ':'))] = "gt"
   }
@@ -1555,18 +1555,18 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
     }
     else # Without region info --------------------
     {
-      aux = unique(data[,c(gen,loc)])
-      Z1 = stats::model.matrix(~-1 + aux[,gen])
-      colnames(Z1) = gsub("aux\\[, gen\\]",'', colnames(Z1))
-      Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
-      if(any(colSums(Z2) == 0 & ncol(Z2) == ncol(mod$post$gl))){
-        mod$post$gl = mod$post$gl[,-which(colSums(Z2) == 0)]
-        Z2 = Z2[,-which(colSums(Z2) == 0)]
-      }else if(any(colSums(Z2) == 0)){
-        Z2 = Z2[,-which(colSums(Z2) == 0)]
-      }
-      colnames(Z2) = gsub("aux\\[, gen\\]",'', gsub("aux\\[, loc\\]",'_@#', colnames(Z2)))
-      colnames(mod$post$gl) = paste("Gen",aux[,1], "loc", aux[,2], sep = "_@#")
+      # aux = unique(data[,c(gen,loc)])
+      # Z1 = stats::model.matrix(~-1 + aux[,gen])
+      # colnames(Z1) = gsub("aux\\[, gen\\]",'', colnames(Z1))
+      # Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
+      # if(any(colSums(Z2) == 0 & ncol(Z2) == ncol(mod$post$gl))){
+      #   mod$post$gl = mod$post$gl[,-which(colSums(Z2) == 0)]
+      #   Z2 = Z2[,-which(colSums(Z2) == 0)]
+      # }else if(any(colSums(Z2) == 0)){
+      #   Z2 = Z2[,-which(colSums(Z2) == 0)]
+      # }
+      # colnames(Z2) = gsub("aux\\[, gen\\]",'', gsub("aux\\[, loc\\]",'_@#', colnames(Z2)))
+      # colnames(mod$post$gl) = paste("Gen",aux[,1], "loc", aux[,2], sep = "_@#")
 
       # Genotypic effects and their HPD ------------
       g_hpd = data.frame(
@@ -1632,67 +1632,67 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 
       if(verbose) message('-> Pairwise probability of superior performance estimated')
 
-      ## Probability of superior stability - Location -----------------
-      staprob_gl = mod$post$gl
-      colnames(staprob_gl) = sub(
-        'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#loc'))[,1]
-      )
-      if(any(table(colnames(staprob_gl)) == 1)){
-        oncegeno =  names(table(colnames(staprob_gl))[which(table(colnames(staprob_gl)) == 1)])
-        staprob_gl = staprob_gl[,-which(colnames(staprob_gl) %in% oncegeno)]
-        warning("Some genotypes were evaluated in only one location (environment), so we could not compute their stability: ",
-                paste(oncegeno, collapse = ", "))
-      }
-      probsta = do.call(cbind, lapply(
-        lapply(
-          name.gen, function(x) staprob_gl[,grep(paste0(x,'$'), colnames(staprob_gl))]
-        ),
-        function(x) apply(x, 1, var)
-      ))
-      colnames(probsta) = name.gen
-
-      ind_post = apply(probsta, 1, function(x){
-        ifelse(name.gen %in% names(x[order(x, decreasing = F)][1:ceiling(int * num.gen)]), 1, 0)
-      })
-      rownames(ind_post) = name.gen
-      prob_gl = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
-      prob_gl = prob_gl[order(prob_gl$prob, decreasing = T),]
-
-      output$across$stabi$gl = prob_gl
-
-      if(verbose) message('-> Probability of superior stability (GL) estimated')
-
-      ## Pairwise probability of superior stability - Location -------------
-      pwsprob_gl = matrix(NA, num.gen, num.gen,
-                          dimnames = list(colnames(probsta), colnames(probsta)))
-      for(i in colnames(pwsprob_gl)){
-        for (j in colnames(pwsprob_gl)) {
-          pwsprob_gl[i,j] = mean(probsta[,j] < probsta[,i])
-        }
-      }
-
-      output$across$pair_stabi$gl = pwsprob_gl
-
-      if(verbose) message('-> Pairwise probability of superior stability (GL) estimated')
-
-      ## Joint probability of superior performance and stability -----------------
-      j_prob = rbind(merge(prob_g, prob_gl, by = 'ID'))
-
-      j_prob$joint = j_prob[,2] * j_prob[,3]
-      colnames(j_prob) = c('ID', 'Performance', 'Stability', 'Joint')
-      j_prob$lev = rep(c(loc), each = num.gen)
-      j_prob = stats::reshape(j_prob, direction = 'long', varying = list(2:4),
-                              times = colnames(j_prob)[2:4], v.names = 'value')
-      j_prob = j_prob[,-5]
-      colnames(j_prob) = c('ID', 'level', 'category', 'prob')
-      rownames(j_prob) = NULL
-      j_prob = j_prob[order(j_prob$level, j_prob$category,  j_prob$ID),]
-
-      j_prob = j_prob[j_prob$category == "Joint",]
-
-      output$across$joint = j_prob
-
-      if(verbose) message('-> Joint probability of superior performance and stability estimated')
+      # ## Probability of superior stability - Location -----------------
+      # staprob_gl = mod$post$gl
+      # colnames(staprob_gl) = sub(
+      #   'Gen_@#','',do.call(rbind,strsplit(colnames(staprob_gl),'_@#loc'))[,1]
+      # )
+      # if(any(table(colnames(staprob_gl)) == 1)){
+      #   oncegeno =  names(table(colnames(staprob_gl))[which(table(colnames(staprob_gl)) == 1)])
+      #   staprob_gl = staprob_gl[,-which(colnames(staprob_gl) %in% oncegeno)]
+      #   warning("Some genotypes were evaluated in only one location (environment), so we could not compute their stability: ",
+      #           paste(oncegeno, collapse = ", "))
+      # }
+      # probsta = do.call(cbind, lapply(
+      #   lapply(
+      #     name.gen, function(x) staprob_gl[,grep(paste0(x,'$'), colnames(staprob_gl))]
+      #   ),
+      #   function(x) apply(x, 1, var)
+      # ))
+      # colnames(probsta) = name.gen
+      #
+      # ind_post = apply(probsta, 1, function(x){
+      #   ifelse(name.gen %in% names(x[order(x, decreasing = F)][1:ceiling(int * num.gen)]), 1, 0)
+      # })
+      # rownames(ind_post) = name.gen
+      # prob_gl = data.frame(ID = rownames(ind_post), prob = rowMeans(ind_post), row.names = NULL)
+      # prob_gl = prob_gl[order(prob_gl$prob, decreasing = T),]
+      #
+      # output$across$stabi$gl = prob_gl
+      #
+      # if(verbose) message('-> Probability of superior stability (GL) estimated')
+      #
+      # ## Pairwise probability of superior stability - Location -------------
+      # pwsprob_gl = matrix(NA, num.gen, num.gen,
+      #                     dimnames = list(colnames(probsta), colnames(probsta)))
+      # for(i in colnames(pwsprob_gl)){
+      #   for (j in colnames(pwsprob_gl)) {
+      #     pwsprob_gl[i,j] = mean(probsta[,j] < probsta[,i])
+      #   }
+      # }
+      #
+      # output$across$pair_stabi$gl = pwsprob_gl
+      #
+      # if(verbose) message('-> Pairwise probability of superior stability (GL) estimated')
+      #
+      # ## Joint probability of superior performance and stability -----------------
+      # j_prob = rbind(merge(prob_g, prob_gl, by = 'ID'))
+      #
+      # j_prob$joint = j_prob[,2] * j_prob[,3]
+      # colnames(j_prob) = c('ID', 'Performance', 'Stability', 'Joint')
+      # j_prob$lev = rep(c(loc), each = num.gen)
+      # j_prob = stats::reshape(j_prob, direction = 'long', varying = list(2:4),
+      #                         times = colnames(j_prob)[2:4], v.names = 'value')
+      # j_prob = j_prob[,-5]
+      # colnames(j_prob) = c('ID', 'level', 'category', 'prob')
+      # rownames(j_prob) = NULL
+      # j_prob = j_prob[order(j_prob$level, j_prob$category,  j_prob$ID),]
+      #
+      # j_prob = j_prob[j_prob$category == "Joint",]
+      #
+      # output$across$joint = j_prob
+      #
+      # if(verbose) message('-> Joint probability of superior performance and stability estimated')
 
       ## Save data frames in the work directory -----------------
       if(save.df){
@@ -1700,120 +1700,124 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
         utils::write.csv(output$across$pair_perfo,
                          file = paste0(getwd(),'/across_probs/pair_perfo.csv'),
                          row.names = T)
-        for (i in names(output$across)[-grep("stabi|pair", names(output$across))]){
-          utils::write.csv(output$across[[i]],
-                           file = paste0(getwd(),'/across_probs/',i,'.csv'),
-                           row.names = F)
-        }
-        for (i in names(output$across$stabi)){
-          utils::write.csv(output$across$stabi[[i]],
-                           file = paste0(getwd(),'/across_probs/stabi_',i,'.csv'),
-                           row.names = F)
-        }
-        for (i in names(output$across$pair_stabi)){
-          utils::write.csv(output$across$pair_stabi[[i]],
-                           file = paste0(getwd(),'/across_probs/pair_stabi_',i,'.csv'),
-                           row.names = T)
-        }
-      }
-
-      # Conditional probabilities ----------------
-      posgge = apply(mod$post$g, 1, function(x){
-        Z1 %*% as.matrix(x)
-      }) +
-        apply(mod$post$gl, 1, function(x){
-          Z2 %*% as.matrix(x)
-        })
-
-      if(increase){
-        supprob = function(vector, num.gen, int){
-          ifelse(names(vector) %in%
-                   names(vector[order(vector, decreasing = T)][1:ceiling(int * num.gen)]), 1, 0)
-        }
-      } else {
-        supprob = function(vector, num.gen, int){
-          ifelse(names(vector) %in%
-                   names(vector[order(vector, decreasing = F)][1:ceiling(int * num.gen)]), 1, 0)
-        }
-      }
-
-      ## Probability of superior performance by location ----------------
-      cond_ggl = stats::aggregate(
-        x = posgge,
-        by = list(aux[,gen], aux[,loc]),
-        mean
-      )
-      cond_ggl = lapply(split(cond_ggl, f = cond_ggl[,2]), function(x){
-        rownames(x) = x[, 1]
-        x = x[,-c(1,2)]
-        x = t(x)
-        x
-      })
-
-      probs = lapply(cond_ggl, function(x){
-        y = apply(
-          x, MARGIN = 1, FUN = supprob, num.gen = num.gen, int = int
-        )
-        rownames(y) = colnames(x)
-        y = rowMeans(y)
-        data.frame(gen = names(y),
-                   probs = y)
-      })
-
-      prob_ggl = suppressWarnings(Reduce(function(df1, df2) merge(df1, df2, by = 'gen', all = T), probs))
-      colnames(prob_ggl)[-1] = name.loc
-
-      output$within$perfo$gl = prob_ggl
-
-      if(verbose) message('-> Probability of superior performance within locations estimated')
-
-      ## Pairwise probability of superior performance per location ----------------
-
-      if(increase){
-        pwprobs.loc = lapply(cond_ggl, function(x){
-          combs = data.frame(t(utils::combn(colnames(x), 2)))
-          colnames(combs) = c('x', 'y')
-
-          a = cbind(combs,
-                    pwprob = apply(combs, 1, function(y){
-                      mean(x[,grep(paste0(y[1], "$"), colnames(x))] >
-                             x[,grep(paste0(y[2], "$"), colnames(x))])
-                    }))
-          a
-        })
-
-      } else {
-        pwprobs.loc = lapply(cond_ggl, function(x){
-          combs = data.frame(t(utils::combn(colnames(x), 2)))
-          colnames(combs) = c('x', 'y')
-
-          a = cbind(combs,
-                    pwprob = apply(combs, 1, function(y){
-                      mean(x[,grep(paste0(y[1], "$"), colnames(x))] <
-                             x[,grep(paste0(y[2], "$"), colnames(x))])
-                    }))
-          a
-        })
-      }
-
-      output$within$pair_perfo$gl = pwprobs.loc
-
-      if(verbose) message('-> Pairwise probability of superior performance within locations estimated')
-
-      ## Save data frames in the work directory -----------------
-
-      if(save.df){
-        dir.create(path = paste0(getwd(),'/within'))
-        utils::write.csv(prob_ggl,
-                         file = paste0(getwd(),'/within_probs/prob_ggl.csv'),
+        utils::write.csv(output$across$perfo,
+                         file = paste0(getwd(),'/across_probs/perfo.csv'),
                          row.names = F)
-        dir.create(path = paste0(getwd(),'/within_probs/pairwise_ggl'))
-        for (i in names(pwprobs.loc)){
-          utils::write.csv(pwprobs.loc[[i]],
-                           file = paste0(getwd(),'/within_probs/pairwise_ggl/',i,'.csv'),
-                           row.names = F)
-        }
+
+        # for (i in names(output$across)[-grep("stabi|pair", names(output$across))]){
+        #   utils::write.csv(output$across[[i]],
+        #                    file = paste0(getwd(),'/across_probs/',i,'.csv'),
+        #                    row.names = F)
+        # }
+        # for (i in names(output$across$stabi)){
+        #   utils::write.csv(output$across$stabi[[i]],
+        #                    file = paste0(getwd(),'/across_probs/stabi_',i,'.csv'),
+        #                    row.names = F)
+        # }
+        # for (i in names(output$across$pair_stabi)){
+        #   utils::write.csv(output$across$pair_stabi[[i]],
+        #                    file = paste0(getwd(),'/across_probs/pair_stabi_',i,'.csv'),
+        #                    row.names = T)
+        # }
       }
+
+      # # Conditional probabilities ----------------
+      # posgge = apply(mod$post$g, 1, function(x){
+      #   Z1 %*% as.matrix(x)
+      # }) +
+      #   apply(mod$post$gl, 1, function(x){
+      #     Z2 %*% as.matrix(x)
+      #   })
+      #
+      # if(increase){
+      #   supprob = function(vector, num.gen, int){
+      #     ifelse(names(vector) %in%
+      #              names(vector[order(vector, decreasing = T)][1:ceiling(int * num.gen)]), 1, 0)
+      #   }
+      # } else {
+      #   supprob = function(vector, num.gen, int){
+      #     ifelse(names(vector) %in%
+      #              names(vector[order(vector, decreasing = F)][1:ceiling(int * num.gen)]), 1, 0)
+      #   }
+      # }
+      #
+      # ## Probability of superior performance by location ----------------
+      # cond_ggl = stats::aggregate(
+      #   x = posgge,
+      #   by = list(aux[,gen], aux[,loc]),
+      #   mean
+      # )
+      # cond_ggl = lapply(split(cond_ggl, f = cond_ggl[,2]), function(x){
+      #   rownames(x) = x[, 1]
+      #   x = x[,-c(1,2)]
+      #   x = t(x)
+      #   x
+      # })
+      #
+      # probs = lapply(cond_ggl, function(x){
+      #   y = apply(
+      #     x, MARGIN = 1, FUN = supprob, num.gen = num.gen, int = int
+      #   )
+      #   rownames(y) = colnames(x)
+      #   y = rowMeans(y)
+      #   data.frame(gen = names(y),
+      #              probs = y)
+      # })
+      #
+      # prob_ggl = suppressWarnings(Reduce(function(df1, df2) merge(df1, df2, by = 'gen', all = T), probs))
+      # colnames(prob_ggl)[-1] = name.loc
+      #
+      # output$within$perfo$gl = prob_ggl
+      #
+      # if(verbose) message('-> Probability of superior performance within locations estimated')
+      #
+      # ## Pairwise probability of superior performance per location ----------------
+      #
+      # if(increase){
+      #   pwprobs.loc = lapply(cond_ggl, function(x){
+      #     combs = data.frame(t(utils::combn(colnames(x), 2)))
+      #     colnames(combs) = c('x', 'y')
+      #
+      #     a = cbind(combs,
+      #               pwprob = apply(combs, 1, function(y){
+      #                 mean(x[,grep(paste0(y[1], "$"), colnames(x))] >
+      #                        x[,grep(paste0(y[2], "$"), colnames(x))])
+      #               }))
+      #     a
+      #   })
+      #
+      # } else {
+      #   pwprobs.loc = lapply(cond_ggl, function(x){
+      #     combs = data.frame(t(utils::combn(colnames(x), 2)))
+      #     colnames(combs) = c('x', 'y')
+      #
+      #     a = cbind(combs,
+      #               pwprob = apply(combs, 1, function(y){
+      #                 mean(x[,grep(paste0(y[1], "$"), colnames(x))] <
+      #                        x[,grep(paste0(y[2], "$"), colnames(x))])
+      #               }))
+      #     a
+      #   })
+      # }
+      #
+      # output$within$pair_perfo$gl = pwprobs.loc
+      #
+      # if(verbose) message('-> Pairwise probability of superior performance within locations estimated')
+      #
+      # ## Save data frames in the work directory -----------------
+      #
+      # if(save.df){
+      #   dir.create(path = paste0(getwd(),'/within'))
+      #   utils::write.csv(prob_ggl,
+      #                    file = paste0(getwd(),'/within_probs/prob_ggl.csv'),
+      #                    row.names = F)
+      #   dir.create(path = paste0(getwd(),'/within_probs/pairwise_ggl'))
+      #   for (i in names(pwprobs.loc)){
+      #     utils::write.csv(pwprobs.loc[[i]],
+      #                      file = paste0(getwd(),'/within_probs/pairwise_ggl/',i,'.csv'),
+      #                      row.names = F)
+      #   }
+      # }
 
       # Final output -----------
       if(verbose) message('Process completed!')
@@ -1847,17 +1851,19 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 ##'       environments. If a model with `reg` and/or `year` is fitted, multiple plots are produced.
 ##'     \item \code{stabi}: a lollipop plot with the probabilities of superior stability.
 ##'       If a model with `reg` and/or `year` is fitted, multiple plots are produced.
-##'       Available only if `level = "across"`.
+##'       Available only if `level = "across"`. Unavailable if an entry-mean model was used in `bayes_met`.
 ##'     \item \code{pair_perfo} : if `level = "across"`, a heatmap representing the pairwise probability of superior
-##'       performance (the probability of genotypes at the \emph{x}-axis being superior
+##'       performance (the probability of genotypes at the \emph{x}-axis being superior.
 ##'       to those on the \emph{y}-axis). If `level = "within"`, a list of heatmaps representing the pairwise probability of superior
 ##'       performance within environments.  If a model with `reg` and/or `year` is fitted, multiple plots (and multiple lists) are produced.
-##'       Should this option is set, it is mandatory to store the outputs in an object
+##'       Should this option is set, it is mandatory to store the outputs in an object.
 ##'       (e.g., `pl <- plot(obj, category = "pair_perfo", level = "within")`) so they can be visualized one at a time.
+##'       The option `level = "within"` is unavailable if an entry-mean model was used in `bayes_met`.
 ##'     \item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability
 ##'       (the probability of genotypes at the \emph{x}-axis being more stable than those on the \emph{y}-axis).
 ##'       If a model with `reg` and/or `year` is fitted, multiple plots are produced. Available only if `level = "across"`.
-##'     \item \code{joint}: a lollipop plot with the joint probabilities of superior performance and stability.
+##'       Unavailable if an entry-mean model was used in `bayes_met`.
+##'     \item \code{joint}: a lollipop plot with the joint probabilities of superior performance and stability. Unavailable if an entry-mean model was used in `bayes_met`.
 ##'   }
 #'
 #'
@@ -1872,15 +1878,15 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 #'
 #' @examples
 #' \donttest{
-##' mod = bayes_met(data = soy,
-##'                 gen = "Gen",
-##'                 loc = "Loc",
-##'                 repl = NULL,
+##' mod = bayes_met(data = maize,
+##'                 gen = "Hybrid",
+##'                 loc = "Location",
+##'                 repl = c("Rep","Block"),
+##'                 trait = "GY",
+##'                 reg = "Region",
 ##'                 year = NULL,
-##'                 reg = NULL,
 ##'                 res.het = TRUE,
-##'                 trait = 'Y',
-##'                 iter = 2000, cores = 2, chains = 4)
+##'                 iter = 2000, cores = 4, chain = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -1946,6 +1952,8 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
 
 
     }else if(level == "within"){
+      stopifnot("This plot is unavaiable if an entry-mean model was used in bayes_met" = "within" %in% names(obj))
+
       wperfo = lapply(obj$within$perfo, function(x){
         stats::reshape(
           data = x, direction = 'long',
@@ -1985,6 +1993,7 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
   # Stabi ---------------
   else if(category == "stabi"){
     stopifnot("This plot is available only for level = 'across'" = level == "across")
+    stopifnot("This plot is unavaiable if an entry-mean model was used in bayes_met" = "within" %in% names(obj))
 
     stabi.df = obj$across$stabi
     stabi.df$gl$fac = control$loc
@@ -2055,6 +2064,7 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
       }
 
     }else if(level == "within"){
+      stopifnot("This plot is unavaiable if an entry-mean model was used in bayes_met" = "within" %in% names(obj))
 
       pwprobs.plots = list()
       pwprobs.plots$gl = lapply(obj$within$pair_perfo$gl, function(x){
@@ -2164,6 +2174,7 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
   # Pair stabi -------------
   else if(category == "pair_stabi"){
     stopifnot("This plot is available only for level = 'across'" = level == "across")
+    stopifnot("This plot is unavaiable if an entry-mean model was used in bayes_met" = "within" %in% names(obj))
 
     pairstabi.df = obj$across$pair_stabi
     pairstabi.df = lapply(pairstabi.df, function(x){
@@ -2203,6 +2214,7 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
   # Joint prob -------------
   else if(category == "joint"){
     stopifnot("This plot is available only for level = 'across'" = level == "across")
+    stopifnot("This plot is unavaiable if an entry-mean model was used in bayes_met" = "within" %in% names(obj))
 
     jprob = obj$across$joint
 

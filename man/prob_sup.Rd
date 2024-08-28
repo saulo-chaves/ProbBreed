@@ -23,6 +23,7 @@ completed steps. Defaults to \code{FALSE}.}
 \value{
 The function returns an object of class \code{probsup}, which contains two lists,
 one with the \code{across}-environments probabilities, and another with the \code{within}-environments probabilities.
+If an entry-mean model was used in \code{ProbBreed::bayes_met}, only the \code{across} list will be available.
 
 The \code{across} list has the following elements:
 \itemize{
@@ -30,10 +31,10 @@ The \code{across} list has the following elements:
 \item \code{perfo}: the probabilities of superior performance.
 \item \code{pair_perfo}: the pairwise probabilities of superior performance.
 \item \code{stabi}: a list with the probabilities of superior stability. It contains the data frames \code{gl},
-\code{gm} (when \code{reg} is not \code{NULL}) and \code{gt} (when \code{year} is not \code{NULL}).
+\code{gm} (when \code{reg} is not \code{NULL}) and \code{gt} (when \code{year} is not \code{NULL}). Unavailable if an entry-mean model was used in \code{bayes_met}.
 \item \code{pair_stabi}: a list with the pairwise probabilities of superior stability. It contains the data frames \code{gl},
-\code{gm} (when \code{reg} is not \code{NULL}) and \code{gt} (when \code{year} is not \code{NULL}).
-\item \code{joint_prob}: the joint probabilities of superior performance and stability.
+\code{gm} (when \code{reg} is not \code{NULL}) and \code{gt} (when \code{year} is not \code{NULL}). Unavailable if an entry-mean model was used in \code{bayes_met}.
+\item \code{joint_prob}: the joint probabilities of superior performance and stability. Unavailable if an entry-mean model was used in \code{bayes_met}.
 }
 
 The \code{within} list has the following elements:
@@ -146,15 +147,15 @@ the \code{ProbBreed} package can be found at \url{https://saulo-chaves.github.io
 }
 \examples{
 \donttest{
-mod = bayes_met(data = soy,
-                gen = "Gen",
-                loc = "Loc",
-                repl = NULL,
+mod = bayes_met(data = maize,
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep","Block"),
+                trait = "GY",
+                reg = "Region",
                 year = NULL,
-                reg = NULL,
                 res.het = TRUE,
-                trait = 'Y',
-                iter = 2000, cores = 2, chains = 4)
+                iter = 2000, cores = 4, chain = 4)
 
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),

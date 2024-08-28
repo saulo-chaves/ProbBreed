@@ -29,15 +29,15 @@ model's convergence.
 }
 \examples{
 \donttest{
-mod = bayes_met(data = soy,
-                gen = "Gen",
-                loc = "Loc",
-                repl = NULL,
+mod = bayes_met(data = maize,
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep","Block"),
+                trait = "GY",
+                reg = "Region",
                 year = NULL,
-                reg = NULL,
                 res.het = TRUE,
-                trait = 'Y',
-                iter = 2000, cores = 2, chains = 4)
+                iter = 2000, cores = 4, chain = 4)
 
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),

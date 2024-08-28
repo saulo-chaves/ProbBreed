@@ -38,15 +38,15 @@
 ##'
 ##' @examples
 ##' \donttest{
-##' mod = bayes_met(data = soy,
-##'                 gen = "Gen",
-##'                 loc = "Loc",
-##'                 repl = NULL,
+##' mod = bayes_met(data = maize,
+##'                 gen = "Hybrid",
+##'                 loc = "Location",
+##'                 repl = c("Rep","Block"),
+##'                 trait = "GY",
+##'                 reg = "Region",
 ##'                 year = NULL,
-##'                 reg = NULL,
 ##'                 res.het = TRUE,
-##'                 trait = 'Y',
-##'                 iter = 2000, cores = 2, chains = 4)
+##'                 iter = 2000, cores = 4, chain = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -72,13 +72,13 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
   # Posterior effects ------------------------
   post = list()
 
-  if(length(effects) == 2){
-    for (i in c(effects, "sigma_vec")) {
+  if(attr(model, 'modmean')){
+    for (i in c(effects)) {
       post[[i]] = out[[i]]
     }
     names(post)[which(names(post) == 'l')] = declared$loc
     names(post)[which(names(post) == 'g')] = declared$gen
-    names(post)[which(names(post) == 'sigma_vec')] = paste(declared$gen, declared$loc, sep = ':')
+    # names(post)[which(names(post) == 'sigma_vec')] = paste(declared$gen, declared$loc, sep = ':')
 
   }else{
     for (i in effects) {
@@ -175,7 +175,7 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 
   variances$effect[which(variances$effect == 'l')] = declared$loc
   variances$effect[which(variances$effect == 'g')] = declared$gen
-  variances$effect[which(variances$effect == 'gl')] = paste(declared$gen, declared$loc, sep = ':')
+  if(!attr(model, 'modmean')) variances$effect[which(variances$effect == 'gl')] = paste(declared$gen, declared$loc, sep = ':')
   if("r" %in% effects){variances$effect[which(variances$effect == 'r')] = declared$repl}
   if("b" %in% effects){variances$effect[which(variances$effect == 'b')] = declared$blk}
   if("m" %in% effects){
@@ -270,7 +270,7 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
   )
 
   attr(results, "data") = data
-
+  attr(results, 'modmean') = attr(model, "modmean")
   attr(results, "declared") = declared
 
   return(results)
@@ -308,15 +308,15 @@ extr_outs = function(model, probs = c(0.025, 0.975), verbose = FALSE){
 #'
 #' @examples
 #' \donttest{
-##' mod = bayes_met(data = soy,
-##'                 gen = "Gen",
-##'                 loc = "Loc",
-##'                 repl = NULL,
+##' mod = bayes_met(data = maize,
+##'                 gen = "Hybrid",
+##'                 loc = "Location",
+##'                 repl = c("Rep","Block"),
+##'                 trait = "GY",
+##'                 reg = "Region",
 ##'                 year = NULL,
-##'                 reg = NULL,
 ##'                 res.het = TRUE,
-##'                 trait = 'Y',
-##'                 iter = 2000, cores = 2, chains = 4)
+##'                 iter = 2000, cores = 4, chain = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),

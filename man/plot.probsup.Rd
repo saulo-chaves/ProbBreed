@@ -31,30 +31,32 @@ If \code{level = "within"}, a heatmap with the probabilities of superior perform
 environments. If a model with \code{reg} and/or \code{year} is fitted, multiple plots are produced.
 \item \code{stabi}: a lollipop plot with the probabilities of superior stability.
 If a model with \code{reg} and/or \code{year} is fitted, multiple plots are produced.
-Available only if \code{level = "across"}.
+Available only if \code{level = "across"}. Unavailable if an entry-mean model was used in \code{bayes_met}.
 \item \code{pair_perfo} : if \code{level = "across"}, a heatmap representing the pairwise probability of superior
-performance (the probability of genotypes at the \emph{x}-axis being superior
+performance (the probability of genotypes at the \emph{x}-axis being superior.
 to those on the \emph{y}-axis). If \code{level = "within"}, a list of heatmaps representing the pairwise probability of superior
 performance within environments.  If a model with \code{reg} and/or \code{year} is fitted, multiple plots (and multiple lists) are produced.
-Should this option is set, it is mandatory to store the outputs in an object
+Should this option is set, it is mandatory to store the outputs in an object.
 (e.g., \code{pl <- plot(obj, category = "pair_perfo", level = "within")}) so they can be visualized one at a time.
+The option \code{level = "within"} is unavailable if an entry-mean model was used in \code{bayes_met}.
 \item \code{pair_stabi}: a heatmap with the pairwise probabilities of superior stability
 (the probability of genotypes at the \emph{x}-axis being more stable than those on the \emph{y}-axis).
 If a model with \code{reg} and/or \code{year} is fitted, multiple plots are produced. Available only if \code{level = "across"}.
-\item \code{joint}: a lollipop plot with the joint probabilities of superior performance and stability.
+Unavailable if an entry-mean model was used in \code{bayes_met}.
+\item \code{joint}: a lollipop plot with the joint probabilities of superior performance and stability. Unavailable if an entry-mean model was used in \code{bayes_met}.
 }
 }
 \examples{
 \donttest{
-mod = bayes_met(data = soy,
-                gen = "Gen",
-                loc = "Loc",
-                repl = NULL,
+mod = bayes_met(data = maize,
+                gen = "Hybrid",
+                loc = "Location",
+                repl = c("Rep","Block"),
+                trait = "GY",
+                reg = "Region",
                 year = NULL,
-                reg = NULL,
                 res.het = TRUE,
-                trait = 'Y',
-                iter = 2000, cores = 2, chains = 4)
+                iter = 2000, cores = 4, chain = 4)
 
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),

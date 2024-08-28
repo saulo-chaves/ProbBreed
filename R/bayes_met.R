@@ -88,15 +88,15 @@
 ##'
 ##' @examples
 ##' \donttest{
-##' mod = bayes_met(data = soy,
-##'                 gen = "Gen",
-##'                 loc = "Loc",
-##'                 repl = NULL,
+##' mod = bayes_met(data = maize,
+##'                 gen = "Hybrid",
+##'                 loc = "Location",
+##'                 repl = c("Rep","Block"),
+##'                 trait = "GY",
+##'                 reg = "Region",
 ##'                 year = NULL,
-##'                 reg = NULL,
 ##'                 res.het = TRUE,
-##'                 trait = 'Y',
-##'                 iter = 2000, cores = 2, chains = 4)
+##'                 iter = 2000, cores = 4, chain = 4)
 ##' }
 ##' @export
 
@@ -164,6 +164,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = TRUE
 
         }else if(length(repl) == 1){
           # RCB ------------------------
@@ -195,6 +196,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }else if(length(repl) == 2){
           # incomplete blocks ------------------------
@@ -229,6 +231,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }
       }else{
@@ -267,6 +270,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }else if(length(repl) == 2){
           # incomplete blocks ------------------------
@@ -306,6 +310,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
         }
       }
 
@@ -351,6 +356,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }else if(length(repl) == 2) # Incomplete blocks ------------------------
           {
@@ -389,6 +395,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }
       }else # With region effect ------------------------
@@ -436,6 +443,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }else if(length(repl) == 2) # incomplete blocks ------------------------
           {
@@ -480,6 +488,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
         }
       }
     }
@@ -517,6 +526,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                 init = init, verbose = verbose,
                                 algorithm = algorithm, control = control,
                                 include = include, show_messages = show_messages,...)
+        attr(Model, 'modmean') = FALSE
 
       }else if(length(repl) == 2) # incomplete blocks --------------------------
         {
@@ -548,6 +558,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                 init = init, verbose = verbose,
                                 algorithm = algorithm, control = control,
                                 include = include, show_messages = show_messages, ...)
+        attr(Model, 'modmean') = FALSE
 
       }
     }else # With region information -------------------------
@@ -586,6 +597,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                 init = init, verbose = verbose,
                                 algorithm = algorithm, control = control,
                                 include = include, show_messages = show_messages, ...)
+        attr(Model, 'modmean') = FALSE
 
       }else if(length(repl) == 2) # Incomplete blocks --------------------------
         {
@@ -623,6 +635,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                 init = init, verbose = verbose,
                                 algorithm = algorithm, control = control,
                                 include = include, show_messages = show_messages, ...)
+        attr(Model, 'modmean') = FALSE
       }
     }
   }else # With year effect ------------------
@@ -663,6 +676,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }else if(length(repl) == 2) # incomplete blocks --------------------------
         {
@@ -699,6 +713,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }
       }else # With region information -------------------------
@@ -742,6 +757,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
 
         }else if(length(repl) == 2) # Incomplete blocks --------------------------
         {
@@ -784,6 +800,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
                                   init = init, verbose = verbose,
                                   algorithm = algorithm, control = control,
                                   include = include, show_messages = show_messages, ...)
+          attr(Model, 'modmean') = FALSE
         }
       }
   }
