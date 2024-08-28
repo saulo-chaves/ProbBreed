@@ -166,7 +166,7 @@
 ##'                 reg = "Region",
 ##'                 year = NULL,
 ##'                 res.het = TRUE,
-##'                 iter = 2000, cores = 4, chain = 4)
+##'                 iter = 2000, cores = 2, chain = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),
@@ -1886,7 +1886,7 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
 ##'                 reg = "Region",
 ##'                 year = NULL,
 ##'                 res.het = TRUE,
-##'                 iter = 2000, cores = 4, chain = 4)
+##'                 iter = 2000, cores = 2, chain = 4)
 ##'
 ##' outs = extr_outs(model = mod,
 ##'                  probs = c(0.05, 0.95),

@@ -96,7 +96,7 @@
 ##'                 reg = "Region",
 ##'                 year = NULL,
 ##'                 res.het = TRUE,
-##'                 iter = 2000, cores = 4, chain = 4)
+##'                 iter = 2000, cores = 2, chain = 4)
 ##' }
 ##' @export
 
