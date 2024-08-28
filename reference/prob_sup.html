@@ -9,7 +9,7 @@ across environments, and probabilities of superior performance within environmen
 
     <a class="navbar-brand me-2" href="../index.html">ProbBreed</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,15 +75,16 @@ completed steps. Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The function returns an object of class <code>probsup</code>, which contains two lists,
-one with the <code>across</code>-environments probabilities, and another with the <code>within</code>-environments probabilities.</p>
+one with the <code>across</code>-environments probabilities, and another with the <code>within</code>-environments probabilities.
+If an entry-mean model was used in <code><a href="bayes_met.html">ProbBreed::bayes_met</a></code>, only the <code>across</code> list will be available.</p>
 <p>The <code>across</code> list has the following elements:</p><ul><li><p><code>g_hpd</code>: Highest posterior density (HPD) of the posterior genotypic main effects.</p></li>
 <li><p><code>perfo</code>: the probabilities of superior performance.</p></li>
 <li><p><code>pair_perfo</code>: the pairwise probabilities of superior performance.</p></li>
 <li><p><code>stabi</code>: a list with the probabilities of superior stability. It contains the data frames <code>gl</code>,
-<code>gm</code> (when <code>reg</code> is not <code>NULL</code>) and <code>gt</code> (when <code>year</code> is not <code>NULL</code>).</p></li>
+<code>gm</code> (when <code>reg</code> is not <code>NULL</code>) and <code>gt</code> (when <code>year</code> is not <code>NULL</code>). Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 <li><p><code>pair_stabi</code>: a list with the pairwise probabilities of superior stability. It contains the data frames <code>gl</code>,
-<code>gm</code> (when <code>reg</code> is not <code>NULL</code>) and <code>gt</code> (when <code>year</code> is not <code>NULL</code>).</p></li>
-<li><p><code>joint_prob</code>: the joint probabilities of superior performance and stability.</p></li>
+<code>gm</code> (when <code>reg</code> is not <code>NULL</code>) and <code>gt</code> (when <code>year</code> is not <code>NULL</code>). Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
+<li><p><code>joint_prob</code>: the joint probabilities of superior performance and stability. Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 </ul><p>The <code>within</code> list has the following elements:</p><ul><li><p><code>perfo</code>: a list of data frames containing the probabilities of superior performance
 within locations (<code>gl</code>), regions (<code>gm</code>) and years (<code>gt</code>).</p></li>
 <li><p><code>pair_perfo</code>: lists with the pairwise probabilities of superior performance
@@ -178,18 +179,27 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>,</span></span>
-<span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Gen"</span>,</span></span>
-<span class="r-in"><span>                loc <span class="op">=</span> <span class="st">"Loc"</span>,</span></span>
-<span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">maize</span>,</span></span>
+<span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Hybrid"</span>,</span></span>
+<span class="r-in"><span>                loc <span class="op">=</span> <span class="st">"Location"</span>,</span></span>
+<span class="r-in"><span>                repl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Rep"</span>,<span class="st">"Block"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                trait <span class="op">=</span> <span class="st">"GY"</span>,</span></span>
+<span class="r-in"><span>                reg <span class="op">=</span> <span class="st">"Region"</span>,</span></span>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                reg <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                trait <span class="op">=</span> <span class="st">'Y'</span>,</span></span>
-<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">4</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bfmi-low</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Examine the pairs() plot to diagnose sampling problems</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.18, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">outs</span> <span class="op">=</span> <span class="fu"><a href="extr_outs.html">extr_outs</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">mod</span>,</span></span>
 <span class="r-in"><span>                 probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.95</span><span class="op">)</span>,</span></span>
@@ -206,7 +216,10 @@ componentes of variability. <em>Heredity</em>, 29:237-245. <a href="https://doi.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations saturated the maximum tree depth of 10.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Energy:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI indicated no pathological behavior.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI indicated possible pathological behavior:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 2: E-BFMI = 0.161</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 4: E-BFMI = 0.155</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI below 0.2 indicates you may need to reparameterize your model.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">=</span> <span class="fu">prob_sup</span><span class="op">(</span>extr <span class="op">=</span> <span class="va">outs</span>,</span></span>
 <span class="r-in"><span>                   int <span class="op">=</span> <span class="fl">.2</span>,</span></span>

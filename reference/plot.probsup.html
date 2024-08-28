@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ProbBreed</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,17 +75,19 @@ If <code>level = "within"</code>, a heatmap with the probabilities of superior p
 environments. If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple plots are produced.</p></li>
 <li><p><code>stabi</code>: a lollipop plot with the probabilities of superior stability.
 If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple plots are produced.
-Available only if <code>level = "across"</code>.</p></li>
+Available only if <code>level = "across"</code>. Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 <li><p><code>pair_perfo</code> : if <code>level = "across"</code>, a heatmap representing the pairwise probability of superior
-performance (the probability of genotypes at the <em>x</em>-axis being superior
+performance (the probability of genotypes at the <em>x</em>-axis being superior.
 to those on the <em>y</em>-axis). If <code>level = "within"</code>, a list of heatmaps representing the pairwise probability of superior
 performance within environments.  If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple plots (and multiple lists) are produced.
-Should this option is set, it is mandatory to store the outputs in an object
-(e.g., <code>pl &lt;- plot(obj, category = "pair_perfo", level = "within")</code>) so they can be visualized one at a time.</p></li>
+Should this option is set, it is mandatory to store the outputs in an object.
+(e.g., <code>pl &lt;- plot(obj, category = "pair_perfo", level = "within")</code>) so they can be visualized one at a time.
+The option <code>level = "within"</code> is unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 <li><p><code>pair_stabi</code>: a heatmap with the pairwise probabilities of superior stability
 (the probability of genotypes at the <em>x</em>-axis being more stable than those on the <em>y</em>-axis).
-If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple plots are produced. Available only if <code>level = "across"</code>.</p></li>
-<li><p><code>joint</code>: a lollipop plot with the joint probabilities of superior performance and stability.</p></li>
+If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple plots are produced. Available only if <code>level = "across"</code>.
+Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
+<li><p><code>joint</code>: a lollipop plot with the joint probabilities of superior performance and stability. Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -95,15 +97,22 @@ If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple pl
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy</span>,</span></span>
-<span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Gen"</span>,</span></span>
-<span class="r-in"><span>                loc <span class="op">=</span> <span class="st">"Loc"</span>,</span></span>
-<span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">maize</span>,</span></span>
+<span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"Hybrid"</span>,</span></span>
+<span class="r-in"><span>                loc <span class="op">=</span> <span class="st">"Location"</span>,</span></span>
+<span class="r-in"><span>                repl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Rep"</span>,<span class="st">"Block"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                trait <span class="op">=</span> <span class="st">"GY"</span>,</span></span>
+<span class="r-in"><span>                reg <span class="op">=</span> <span class="st">"Region"</span>,</span></span>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>                reg <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                trait <span class="op">=</span> <span class="st">'Y'</span>,</span></span>
-<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chains <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">4</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 6 divergent transitions after warmup. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Examine the pairs() plot to diagnose sampling problems</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.06, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
@@ -120,7 +129,8 @@ If a model with <code>reg</code> and/or <code>year</code> is fitted, multiple pl
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Posterior predictive checks computed</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Divergences:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations ended with a divergence.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 6 of 4000 iterations ended with a divergence (0.15%).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Try increasing 'adapt_delta' to remove the divergences.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree depth:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations saturated the maximum tree depth of 10.</span>
