@@ -40,7 +40,7 @@ candidates and locations (or environments, if you are working with factor combin
 If the trial is randomized in incomplete blocks design, \code{repl} will be a string vector
 containing the name of the columns that correspond to the replicate and block effects on
 the first and second positions, respectively (\code{c(replicate, block)}).
-If the data does not have replicates, \code{repl} will be \code{NULL}.}
+If the data does not have replicates, \code{repl} must be \code{NULL}.}
 
 \item{trait}{A string. The analysed variable. Currently, only single-trait models are fitted.}
 
@@ -52,7 +52,7 @@ years (or seasons). \code{NULL} (default) if not applicable.}
 
 \item{res.het}{Should the model consider heterogeneous residual variances?
 Defaults for \code{FALSE}. If \code{TRUE}, the model will estimate one
-residual variance per location (or environmnet). If \code{repl = NULL}, \code{res.het} must be \code{TRUE}.}
+residual variance per location (or environmnet).}
 
 \item{iter}{A positive integer specifying the number of iterations for each 
     chain (including warmup). The default is 2000.}
@@ -139,7 +139,7 @@ options set in the arguments:
 \deqn{y = \mu + g + l + \varepsilon}
 Where \eqn{y} is the phenotype, \eqn{\mu} is the intercept, \eqn{g} is the genotypic
 effect, \eqn{l} is the location (or environment) effect, and \eqn{\varepsilon} is
-the residue (which contains the genotype-by-location interaction, in this case).
+the error (which contains the genotype-by-location interaction, in this case).
 
 \item{Randomized complete blocks design} : fitted when \code{repl} is a single string.
 It will fit different models depending if \code{reg} and \code{year} are \code{NULL}:
@@ -208,7 +208,7 @@ mod = bayes_met(data = maize,
                 reg = "Region",
                 year = NULL,
                 res.het = TRUE,
-                iter = 2000, cores = 2, chain = 4)
+                iter = 2000, cores = 4, chain = 4)
 }
 }
 \seealso{

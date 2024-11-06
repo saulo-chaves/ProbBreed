@@ -16,4 +16,6 @@ stanExports_RCBD5.o
 stanExports_RCBD6.o
 stanExports_RCBD7.o
 stanExports_RCBD8.o
-stanExports_entrymean.o
+stanExports_entrymean1.o
+stanExports_entrymean2.o
+ProbBreed.dll

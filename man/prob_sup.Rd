@@ -155,7 +155,7 @@ mod = bayes_met(data = maize,
                 reg = "Region",
                 year = NULL,
                 res.het = TRUE,
-                iter = 2000, cores = 2, chain = 4)
+                iter = 2000, cores = 4, chain = 4)
 
 outs = extr_outs(model = mod,
                  probs = c(0.05, 0.95),

@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_IBD2.h"
+#include "stanExports_entrymean1.h"
 
-RCPP_MODULE(stan_fit4IBD2_mod) {
+RCPP_MODULE(stan_fit4entrymean1_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_IBD2")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_entrymean1")
 
     .constructor<SEXP,SEXP,SEXP>()
 

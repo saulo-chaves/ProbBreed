@@ -28,7 +28,8 @@ RcppExport SEXP _rcpp_module_boot_stan_fit4RCBD5_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4RCBD6_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4RCBD7_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4RCBD8_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4entrymean_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4entrymean1_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4entrymean2_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4IBD1_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4IBD1_mod, 0},
@@ -47,7 +48,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4RCBD6_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4RCBD6_mod, 0},
     {"_rcpp_module_boot_stan_fit4RCBD7_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4RCBD7_mod, 0},
     {"_rcpp_module_boot_stan_fit4RCBD8_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4RCBD8_mod, 0},
-    {"_rcpp_module_boot_stan_fit4entrymean_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4entrymean_mod, 0},
+    {"_rcpp_module_boot_stan_fit4entrymean1_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4entrymean1_mod, 0},
+    {"_rcpp_module_boot_stan_fit4entrymean2_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4entrymean2_mod, 0},
     {NULL, NULL, 0}
 };
 

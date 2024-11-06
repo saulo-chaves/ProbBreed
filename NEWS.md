@@ -1,3 +1,9 @@
+# ProbBreed 1.0.4.3
+
+* Corrected flaws in the prob_sup function when models without Region or Year were fitted
+* Corrected the entry-mean model (again)
+* Changed details in the documentation
+
 # ProbBreed 1.0.4.1
 
 * Added S3 methods. 
