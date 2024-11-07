@@ -9,6 +9,6 @@
 # echo "CXX14=g++" >> ./src/Makevars.win
 
 ## Add configuration needed for big object files
-echo "PKG_CXXFLAGS += -Wa,-mbig-obj" >> ./src/Makevars.win
+# echo "PKG_CXXFLAGS += -Wa,-mbig-obj" >> ./src/Makevars.win
 
 

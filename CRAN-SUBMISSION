@@ -1,4 +1,31 @@
-Version: 1.0.4.0
-Date: 2024-07-17 16:11:04 UTC
-SHA: 303eb42ff039b462e40e6203f47c98420f62bf88
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: fatal: detected dubious ownership in repository at 'D:/Saulo/ProbBreed'
 
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: 'D:/Saulo/ProbBreed' is owned by:
+
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: (inconvertible) (S-1-5-21-4257429841-4210360613-3870763565-1001)
+
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: but the current user is:
+
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: AGROENERGIA/Agroe (S-1-5-21-4039833157-249910716-644605664-1001)
+
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: To add an exception for this directory, call:
+
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA:
+
+Version: 1.0.4.3
+Date: 2024-11-07 00:26:46 UTC
+SHA: git config --global --add safe.directory D:/Saulo/ProbBreed
