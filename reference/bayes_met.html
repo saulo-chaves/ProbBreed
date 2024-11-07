@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ProbBreed</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@ candidates and locations (or environments, if you are working with factor combin
 If the trial is randomized in incomplete blocks design, <code>repl</code> will be a string vector
 containing the name of the columns that correspond to the replicate and block effects on
 the first and second positions, respectively (<code>c(replicate, block)</code>).
-If the data does not have replicates, <code>repl</code> will be <code>NULL</code>.</p></dd>
+If the data does not have replicates, <code>repl</code> must be <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-trait">trait<a class="anchor" aria-label="anchor" href="#arg-trait"></a></dt>
@@ -104,7 +104,7 @@ years (or seasons). <code>NULL</code> (default) if not applicable.</p></dd>
 <dt id="arg-res-het">res.het<a class="anchor" aria-label="anchor" href="#arg-res-het"></a></dt>
 <dd><p>Should the model consider heterogeneous residual variances?
 Defaults for <code>FALSE</code>. If <code>TRUE</code>, the model will estimate one
-residual variance per location (or environmnet). If <code>repl = NULL</code>, <code>res.het</code> must be <code>TRUE</code>.</p></dd>
+residual variance per location (or environmnet).</p></dd>
 
 
 <dt id="arg-iter">iter<a class="anchor" aria-label="anchor" href="#arg-iter"></a></dt>
@@ -217,7 +217,7 @@ options set in the arguments:</p><ol><li><p>Entry-mean model : fitted when <code
 $$y = \mu + g + l + \varepsilon$$
 Where \(y\) is the phenotype, \(\mu\) is the intercept, \(g\) is the genotypic
 effect, \(l\) is the location (or environment) effect, and \(\varepsilon\) is
-the residue (which contains the genotype-by-location interaction, in this case).</p></li>
+the error (which contains the genotype-by-location interaction, in this case).</p></li>
 <li><p>Randomized complete blocks design : fitted when <code>repl</code> is a single string.
 It will fit different models depending if <code>reg</code> and <code>year</code> are <code>NULL</code>:</p><ul><li><p><code>reg = NULL</code> and <code>year = NULL</code> :
 $$y = \mu + g + l + gl + r + \varepsilon$$
@@ -283,7 +283,7 @@ Solutions to convergence or mixing issues can be found at
 <span class="r-in"><span>                reg <span class="op">=</span> <span class="st">"Region"</span>,</span></span>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">4</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 2 divergent transitions after warmup. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
@@ -309,7 +309,7 @@ Solutions to convergence or mixing issues can be found at
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
