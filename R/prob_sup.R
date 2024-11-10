@@ -1641,13 +1641,13 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
         aux = unique(data[,c(gen,loc)])
         Z1 = stats::model.matrix(~-1 + aux[,gen])
         Z2 = stats::model.matrix(~-1 + aux[,gen]:aux[,loc])
+        colnames(Z2) = gsub("aux\\[, gen\\]",'', gsub("aux\\[, loc\\]",'_@#', colnames(Z2)))
+        colnames(mod$post$gl) = paste('Gen', rep(name.gen,  times = num.loc),
+                                      "loc", rep(name.loc,  each = num.gen), sep = '_@#')
         if(any(colSums(Z2) == 0)){
           mod$post$gl = mod$post$gl[,-which(colSums(Z2) == 0)]
           Z2 = Z2[,-which(colSums(Z2) == 0)]
         }
-        colnames(Z2) = gsub("aux\\[, gen\\]",'', gsub("aux\\[, loc\\]",'_@#', colnames(Z2)))
-        colnames(mod$post$gl) = paste('Gen', rep(name.gen,  times = num.loc),
-                                      "loc", rep(name.loc,  each = num.gen), sep = '_@#')
 
         # Genotypic effects and their HPD ------------
         g_hpd = data.frame(

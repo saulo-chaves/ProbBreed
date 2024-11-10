@@ -1,5 +1,9 @@
 # ProbBreed 1.0.4.3
 
+* Corrected a small inconsistency that appeared in unbalanced data was used in RCBD models without Region or Year
+
+# ProbBreed 1.0.4.3
+
 * Corrected flaws in the prob_sup function when models without Region or Year were fitted
 * Corrected the entry-mean model (again)
 * Changed details in the documentation
