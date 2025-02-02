@@ -2087,7 +2087,7 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
         geom_tile()  +
         scale_fill_viridis_c(direction = 1, na.value = '#D3D7DC',
                              limits = c(0,1), option = 'turbo') +
-        labs(y = 'Genotypes',
+        labs(y = 'Genotypes', title = "Probability of superior performance",
              fill = expression(bold(Pr(g %in% Omega)))) +
         guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5,
                                      title.position = 'top',
@@ -2146,7 +2146,8 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
                             y = factor(.data$y,
                                        levels = unique(.data$y)))) +
           geom_tile(aes(fill = .data$prob)) +
-          labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] > g[y]))))+
+          labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] > g[y]))),
+               title = "Pairwise probability of superior performance")+
           theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
                 legend.position = 'inside',
                 legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
@@ -2160,7 +2161,8 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
                             y = factor(.data$y,
                                        levels = unique(.data$y)))) +
           geom_tile(aes(fill = .data$prob)) +
-          labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))))+
+          labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))),
+               title = "Pairwise probability of superior performance")+
           theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
                 legend.position = 'inside',
                 legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
@@ -2205,67 +2207,82 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
         }
 
       })
-
-      if(control$reg != 0) pwprobs.plots$gm = lapply(obj$within$pair_perfo$gm, function(x){
-        if(control$increase){
-          ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
-                               y = factor(.data$y, levels = unique(.data$y)),
-                               fill = .data$pwprob)) +
-            geom_tile() +
-            labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] > g[y]))))+
-            theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
-                  legend.position = 'inside',
-                  legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
-            scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
-                                 option = 'turbo')+
-            guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
-                                         title.hjust = .5))
-        }else{
-          ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
-                               y = factor(.data$y, levels = unique(.data$y)),
-                               fill = .data$pwprob)) +
-            geom_tile() +
-            labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))))+
-            theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
-                  legend.position = 'inside',
-                  legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
-            scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
-                                 option = 'turbo')+
-            guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
-                                         title.hjust = .5))
+      for (i in names(pwprobs.plots$gl)){
+        pwprobs.plots$gl[[i]] = pwprobs.plots$gl[[i]] +
+          labs(title = paste("Pairwise probability of superior performance:", i))
+      }
+      if(control$reg != 0){
+        pwprobs.plots$gm = lapply(obj$within$pair_perfo$gm, function(x){
+          if(control$increase){
+            ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
+                                 y = factor(.data$y, levels = unique(.data$y)),
+                                 fill = .data$pwprob)) +
+              geom_tile() +
+              labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] > g[y]))))+
+              theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
+                    legend.position = 'inside',
+                    legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
+              scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
+                                   option = 'turbo')+
+              guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
+                                           title.hjust = .5))
+          }else{
+            ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
+                                 y = factor(.data$y, levels = unique(.data$y)),
+                                 fill = .data$pwprob)) +
+              geom_tile() +
+              labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))))+
+              theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
+                    legend.position = 'inside',
+                    legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
+              scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
+                                   option = 'turbo')+
+              guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
+                                           title.hjust = .5))
+          }
+        })
+        for (i in names(pwprobs.plots$gm)){
+          pwprobs.plots$gm[[i]] = pwprobs.plots$gm[[i]] +
+            labs(title = paste("Pairwise probability of superior performance:", i))
         }
-      })
+      }
 
-      if(control$year != 0) pwprobs.plots$gt = lapply(obj$within$pair_perfo$gt, function(x){
-        if(control$increase){
-          ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
-                               y = factor(.data$y, levels = unique(.data$y)),
-                               fill = .data$pwprob)) +
-            geom_tile() +
-            labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] > g[y]))))+
-            theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
-                  legend.position = 'inside',
-                  legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
-            scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
-                                 option = 'turbo')+
-            guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
-                                         title.hjust = .5))
-        }else{
-          ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
-                               y = factor(.data$y, levels = unique(.data$y)),
-                               fill = .data$pwprob)) +
-            geom_tile() +
-            labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))))+
-            theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
-                  legend.position = 'inside',
-                  legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
-            scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
-                                 option = 'turbo')+
-            guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
-                                         title.hjust = .5))
+      if(control$year != 0){
+        pwprobs.plots$gt = lapply(obj$within$pair_perfo$gt, function(x){
+          if(control$increase){
+            ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
+                                 y = factor(.data$y, levels = unique(.data$y)),
+                                 fill = .data$pwprob)) +
+              geom_tile() +
+              labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] > g[y]))))+
+              theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
+                    legend.position = 'inside',
+                    legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
+              scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
+                                   option = 'turbo')+
+              guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
+                                           title.hjust = .5))
+          }else{
+            ggplot(data = x, aes(x = factor(.data$x, levels = unique(.data$x)),
+                                 y = factor(.data$y, levels = unique(.data$y)),
+                                 fill = .data$pwprob)) +
+              geom_tile() +
+              labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold(Pr(g[x] < g[y]))))+
+              theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
+                    legend.position = 'inside',
+                    legend.position.inside = c(.8,.15), legend.direction = 'horizontal')+
+              scale_fill_viridis_c(direction = 1, na.value = 'white',limits = c(0,1),
+                                   option = 'turbo')+
+              guides(fill = guide_colorbar(barwidth = 7, barheight = 1.5, title.position = 'top',
+                                           title.hjust = .5))
+          }
+
+        })
+        for (i in names(pwprobs.plots$gt)){
+          pwprobs.plots$gt[[i]] = pwprobs.plots$gt[[i]] +
+            labs(title = paste("Pairwise probability of superior performance:", i))
         }
-
-      })
+      }
 
       resp <- readline("Are you using an object to store the outputs of this function? Enter Y/n: ")
       if(substr(resp, 1, 1)  ==  "y" | substr(resp, 1, 1)  ==  "yes" | substr(resp, 1, 1)  ==  "Y" | resp  == "")
@@ -2308,7 +2325,8 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
                y = factor(.data$y, levels = unique(.data$y))))+
       geom_tile(aes(fill = .data$prob))+
       facet_wrap(.~fac) +
-      labs(x = 'Genotypes', y = 'Genotypes', fill = expression(bold("Pr["~var(gei[x]) < var(gei[y])~"]")))+
+      labs(x = 'Genotypes', y = 'Genotypes', title = "Probability of superior stability",
+           fill = expression(bold("Pr["~var(gei[x]) < var(gei[y])~"]")))+
       theme_bw() +
       theme(axis.text.x = element_text(angle = 90),panel.background = element_blank(),
             legend.position = 'top', legend.direction = 'horizontal')+
@@ -2335,7 +2353,7 @@ plot.probsup = function(x, ..., category = "perfo", level = "across"){
                        y = 0, yend = .data$prob), linewidth = 1) +
       geom_point(size = 2, color = 'black', fill = alpha('#33a02c', 0.3),
                  alpha = 0.7, shape = 21, stroke = .4) +
-      labs(x = "Genotype", y = "Joint probability")
+      labs(x = "Genotype", y = "Joint probability", title = "Joint probability (performance and stability)")
 
   }
 }

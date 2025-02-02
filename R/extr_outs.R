@@ -357,7 +357,9 @@ plot.extr = function(x, ..., category = "ppdensity"){
                                            eff = 'Empirical'))
     ggplot(data = temp, aes(x = .data$value, color = .data$eff, fill = .data$eff)) +
       geom_density(linewidth = 1.3, alpha = .25) +
-      labs(x = declared$trait, y = 'Frequency', fill = '', color = '') + theme_bw() +
+      labs(x = declared$trait, y = 'Frequency', fill = '', color = '',
+           title = "Density: Empirical vs Sampled phenotypic values") +
+      theme_bw() +
       theme(legend.position = 'top') +
       scale_fill_manual(values = c('Empirical' = '#1f78b4', 'Sampled' = "#33a02c")) +
       scale_color_manual(values = c('Empirical' = '#1f78b4', 'Sampled' = "#33a02c"))
@@ -371,7 +373,8 @@ plot.extr = function(x, ..., category = "ppdensity"){
       facet_wrap(.~.data$eff, scales = "free")+
       theme_bw() + theme(legend.position = "none", axis.title = element_blank()) +
       geom_density(aes(fill = .data$eff), colour = "black", alpha = .5) +
-      scale_fill_viridis_d(option = "turbo")
+      scale_fill_viridis_d(option = "turbo") +
+      labs(title = "Density of the posterior values")
   }
   else if(category == "histogram"){
     df.post = do.call(rbind, df.post.list)
@@ -381,7 +384,8 @@ plot.extr = function(x, ..., category = "ppdensity"){
       facet_wrap(.~.data$eff, scales = "free")+
       theme_bw() + theme(legend.position = "none", axis.title = element_blank()) +
       geom_histogram(aes(fill = .data$eff), colour = "black", alpha = .5, ...) +
-      scale_fill_viridis_d(option = "turbo")
+      scale_fill_viridis_d(option = "turbo") +
+      labs(title = "Histogram of the posterior values")
   }
   else if(category == 'traceplot'){
     df.post = do.call(rbind, df.post.list)
@@ -392,7 +396,7 @@ plot.extr = function(x, ..., category = "ppdensity"){
       theme_bw() + theme(legend.position = "top", axis.title.y = element_blank()) +
       geom_line(aes(group = factor(.data$chain), linetype = factor(.data$chain))) +
       scale_colour_viridis_d(option = "turbo")  +
-      labs(x = 'Iterations', colour = 'Chain', linetype = 'Chain')
+      labs(x = 'Iterations', colour = 'Chain', linetype = 'Chain', title = "Traceplot")
   }
 
 }
