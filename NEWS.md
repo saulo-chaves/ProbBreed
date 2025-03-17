@@ -1,5 +1,9 @@
 # ProbBreed 1.0.4.3
 
+* Update deprecated Stan syntax (thanks Andrew Johnson)
+
+# ProbBreed 1.0.4.3
+
 * Corrected a small inconsistency that appeared in unbalanced data was used in RCBD models without Region or Year
 
 # ProbBreed 1.0.4.3
