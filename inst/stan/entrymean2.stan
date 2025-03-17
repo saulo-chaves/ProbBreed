@@ -9,7 +9,7 @@ data{
     matrix[n, p3] Z3;
     matrix[n, p4] Z4;
 
-    real y[n];
+    array[n] real y;
 
     real phi;
 
@@ -27,7 +27,7 @@ data{
     real<lower=0> s_l;
     vector[p4] l;
 
-    real y_gen[n];
+    array[n] real y_gen;
   }
 
   transformed parameters{
@@ -57,7 +57,7 @@ data{
   }
 
   generated quantities {
-    real y_log_like[n];
+    array[n] real y_log_like;
       for (j in 1:n) {
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
       }
