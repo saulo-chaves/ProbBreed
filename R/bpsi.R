@@ -3,12 +3,12 @@
 ##' @title Bayesian Probabilistic Selection Index (BPSI)
 ##'
 ##' @description
-##' This function estimates the genotipic merit for multiple traits using the
+##' This function estimates the genotypic merit for multiple traits using the
 ##' probabilities of superior performance across environments.
 ##'
-##' @param modlist A list of object of class `probsup`, obtained from the [ProbBreed::prob_sup] function
-##' @param increase Logical vector of amount of traits used in the same order of modlist.`TRUE` (default) if the selection is for increasing the trait value, `FALSE` otherwise.
-##' @param omega A numeric representing the weigth of each trait, the default is 1, the trait with more
+##' @param problist A list of object of class `probsup`, obtained from the [ProbBreed::prob_sup] function
+##' @param increase Logical vector of amount of traits used in the same order of problist.`TRUE` (default) if the selection is for increasing the trait value, `FALSE` otherwise.
+##' @param omega A numeric representing the weight of each trait, the default is 1, the trait with more
 ##' economic interest should be greater.
 ##' @param int A numeric representing the selection intensity
 ##' (between 0 and 1)
@@ -32,38 +32,31 @@
 ##' \itemize{\item Bayesian Probabilistic Selection Index}
 ##'
 ##'
-##' \deqn{BPSI_{i}=\sum_{m=1}^t \frac{\gamma^t}{\omega^t}}
+##' \deqn{BPSI_i = \sum_{m=1}^{t} \frac{\gamma_{pt} -\gamma_{it} }{(1/\lambda_t)}}
 ##'
-##' where \eqn{\gamma} is the probability of superior performance of genotype
-##'  \eqn{i} for trait \eqn{m},
+##' where \eqn{\gamma_p} is the probability of superior performance of the worst genotype for the trait \eqn{m},
+##' \eqn{\gamma} is the probability of superior performance of genotype  \eqn{i} for trait \eqn{t},
 ##'  \eqn{t} is the total number of traits evaluated,
 ##'   \eqn{\left(m = 1, 2, ..., t \right)},
-##' and \eqn{\omega} is the weight for each trait.
+##' and \eqn{\lambda} is the weight for each trait \eqn{t}.
 ##'
 ##'
 ##'
-##' More details about the usage of `BPSI`, as well as the other function of
-##' the `ProbBreed` package can be found at \url{https://saulo-chaves.github.io/ProbBreed_site/}.
 ##'
 ##' @references
 ##'
-##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
+##'##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
 ##' Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
 ##' for cultivar recommendation in multi-environment trials. \emph{Theoretical and
 ##' Applied Genetics}, 133(2):443-455. \doi{10.1007/s00122-022-04041-y}
 ##'
-##' Shukla, G. K. (1972) Some statistical aspects of partioning genotype environmental
-##' componentes of variability. \emph{Heredity}, 29:237-245. \doi{10.1038/hdy.1972.87}
-##'
 ##' Chaves, S. F. S., Krause, M. D., Dias, L. A. S., Garcia, A. A. F., & Dias, K. O. G. (2024).
 ##' ProbBreed: a novel tool for calculating the risk of cultivar recommendation in multienvironment trials.
-##' G3 Genes|Genomes|Genetics, 14(3).
+##' \emph{G3 Genes|Genomes|Genetics}, 14(3). \doi{10.1093/g3journal/jkae013}
 ##'
 ##' Chagas, J. T. B., Dias, K. O. das G., Quintão Carneiro, V., de Oliveira, L. M. C., Nunes, N. X., Júnior, J. D. P., Carneiro, P. C. S., & Carneiro, J. E. de S. (2025).
 ##' Bayesian probabilistic selection index in the selection of common bean families.
-##'  Crop Science, 65(3).
-##'
-##' \doi{https://doi.org/10.1002/CSC2.70072}
+##'  \emph{Crop Science, 65(3). \doi{10.1002/CSC2.70072}
 ##'
 ##'
 ##' @import ggplot2
@@ -71,56 +64,98 @@
 ##' @importFrom stats reshape median quantile na.exclude model.matrix aggregate
 ##' @importFrom rlang .data
 ##'
-##' @seealso [ProbBreed::plot.probsup]
+##' @seealso [ProbBreed::plot.BPSI]
 ##'
 ##' @export
 ##'
 ##' @examples
 #' \donttest{
-##' source("Data/bpsi_fun.R")
 ##'
 ##'
 ##' library(ProbBreed)
 ##' library(tidyverse)
+##'
+##' source("Data/bpsi_fun.R")
+##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
+##'
+##' head(met_df)
+##' mod = bayes_met(data = met_df,
+##'                 gen = "gen",
+##'                 loc = "env",
+##'                 repl = NULL,
+##'                 trait = "PH",
+##'                 reg = NULL,
+##'                 year = NULL,
+##'                 res.het = T,
+##'                 iter =400, cores = 4, chain = 4) #recommended run at least 4k iterations
+##'
+##'
+##' mod2 = bayes_met(data = met_df,
+##'                  gen = "gen",
+##'                  loc = "env",
+##'                  repl = NULL,
+##'                  trait = "GY",
+##'                  reg = NULL,
+##'                  year = NULL,
+##'                  res.het = T,
+##'                  iter = 400, cores = 4, chain = 4) #recommended run at least 4k iterations
+##'
+##' mod3 = bayes_met(data = met_df,
+##'                  gen = "gen",
+##'                  loc = "env",
+##'                  repl =  NULL,
+##'                  trait = "NDM",
+##'                  reg = NULL,
+##'                  year = NULL,
+##'                  res.het = T,
+##'                  iter = 400, cores = 4, chain = 4) #recommended run at least 4k iterations
+##'
+##'
+##'
 ##' models=list(mod,mod2,mod3)
-##' models <- vector("list",length(mods))
-##' names(models) <- c("GY","LOD","CB")
-##' str(models)
+##' names(models) <- c("PH","GY","NDM")
 ##' outs= vector("list",length(models))
-##' names(outs) <- c("GY","LOD","CB")
+##' names(outs) <- c("PH","GY","NDM")
 ##'
 ##' for (mods in 1:length(models)) {
 ##'   a= extr_outs(model = models[[mods]],
-##'              probs = c(0.05, 0.95),
-##'                       verbose = TRUE)
-##'                       outs[[mods]]=a
-##'                         rm(a)
-##'                         }
+##'                probs = c(0.05, 0.95),
+##'                verbose = TRUE)
+##'   outs[[mods]]=a
+##'   rm(a)
+##' }
 ##'
 ##' results= vector("list",length(outs))
-##' names(results) <- c("GY","LOD","CB")
-##' inc=c(TRUE,FALSE,FALSE)
+##' names(results) <- c("PH","GY","NDM")
+##' inc=c(FALSE,TRUE,FALSE)
 ##'
-##'               for (mods in 1:length(outs)) {
-##'                         a = prob_sup(extr = outs[[mods]],
-##'                         int = .2,
-##'                         increase = inc[[mods]],
-##'                         save.df = FALSE,
-##'                         verbose = TRUE)
-##'                         results[[mods]]=a
-##'                         rm(a)
-##'                         }
-##' saveRDS(results,file = "results.rds")
+##' for (mods in 1:length(outs)) {
+##'   a = prob_sup(extr = outs[[mods]],
+##'                int = .2,
+##'                increase = inc[[mods]],
+##'                save.df = FALSE,
+##'                verbose = TRUE)
+##'   results[[mods]]=a
+##'   rm(a)
+##' }
+##' source("R/bpsi.R")
 ##'
-##' results=readRDS("results.rds")
-##' source("bpsi_fun.R")
 ##'
-##' bpsi=BPSI(modlist=results,
-##'  increase = c(TRUE,FALSE,FALSE),
-##'  int = 0.1,
-##'  omega=c(2,1,1),
-##'  save.df = F,
-##'  verbose = T)
+##' setdiff(results[[2]]$across$g_hpd$gen,results[[1]]$across$g_hpd$gen)
+##'
+##' length(results[[3]]$across$g_hpd$gen)
+##'
+##' results[[2]]$across$perfo <- results[[2]]$across$perfo[-which(results[[2]]$across$perfo$ID %in% c("G10", "G36", "G37")),]
+##' results[[3]]$across$perfo <- results[[3]]$across$perfo[-which(results[[3]]$across$perfo$ID %in% c("G10", "G36", "G37")),]
+##'
+##'
+##'
+##' bpsi=BPSI(problist=results,
+##'           increase = c(FALSE,TRUE,FALSE),
+##'           int = 0.1,
+##'           omega=c(1,2,1),
+##'           save.df = F,
+##'           verbose = T)
 ##'
 ##'
 ##'
@@ -128,34 +163,35 @@
 ##'
 ##' plot(bpsi,category = "BPSI")
 ##'
-##' df=print(BPSI_soy)
+##' df=print(bpsi)
+##'
 #' }
 ##'
 
 
-BPSI = function(modlist, increase = c(TRUE,FALSE,FALSE), omega, int, save.df = FALSE, verbose = FALSE){
+BPSI = function(problist, increase = c(TRUE,FALSE,FALSE), omega, int, save.df = FALSE, verbose = FALSE){
 
   stopifnot("Please, provide a valid vector of selection direction" !=is.null(increase))
-  stopifnot("Please, provide names to the list of models" !=is.null(names(modlist)))
-  stopifnot("Please, provide a list of objects from class probsup" =class(modlist[[1]])=="probsup")
+  stopifnot("Please, provide names to the list of models" !=is.null(names(problist)))
+  stopifnot("Please, provide a list of objects from class probsup" =class(problist[[1]])=="probsup")
   stopifnot("Please provide a list with same number of genotypes for all traits" =
-              all(dim(modlist[[1]]$across$perfo) == dim(modlist[[2]]$across$perfo),
-                  dim(modlist[[2]]$across$perfo) == dim(modlist[[3]]$across$perfo)))
+              all(dim(problist[[1]]$across$perfo) == dim(problist[[2]]$across$perfo),
+                  dim(problist[[2]]$across$perfo) == dim(problist[[3]]$across$perfo)))
   stopifnot("Please, provide a valid selection intensity (number between 0 and 1)" = {
     is.numeric(int)
     int >= 0 & int <=1
   })
 
 
-  df <- data.frame(matrix(nrow = length(modlist[[1]]$across$perfo$ID),
-                          ncol = length(modlist)))
-  rownames(df) <- modlist[[1]]$across$perfo$ID
-  colnames(df) <- names(modlist)
+  df <- data.frame(matrix(nrow = length(problist[[1]]$across$perfo$ID),
+                          ncol = length(problist)))
+  rownames(df) <- problist[[1]]$across$perfo$ID
+  colnames(df) <- names(problist)
   rownames(df)=sort(row.names(df),decreasing = F)
   # Preparation
-  for (traits in 1:length(modlist)) {
-    tname=names(modlist[traits])
-    a=modlist[[traits]]$across$perfo[order(modlist[[traits]]$across$perfo$ID,decreasing =F),]
+  for (traits in 1:length(problist)) {
+    tname=names(problist[traits])
+    a=problist[[traits]]$across$perfo[order(problist[[traits]]$across$perfo$ID,decreasing =F),]
     df[paste0(tname)]=a$prob
     rm(a)
   }
@@ -222,13 +258,13 @@ BPSI = function(modlist, increase = c(TRUE,FALSE,FALSE), omega, int, save.df = F
 #' Build plots using the outputs stored in the `BPSI` object.
 #'
 #'
-#' @param modlist A list of object of class `probsup`, obtained from the [ProbBreed::prob_sup] function
-##' @param increase Logical vector of amount of traits used in the same order of modlist.`TRUE` (default) if the selection is for increasing the trait value, `FALSE` otherwise.
+#' @param problist A list of object of class `probsup`, obtained from the [ProbBreed::prob_sup] function
+##' @param increase Logical vector of amount of traits used in the same order of problist.`TRUE` (default) if the selection is for increasing the trait value, `FALSE` otherwise.
 ##' @param omega A numeric representing the weigth of each trait, the default is 1, the trait with more
 ##' economic interest should be greater.
 ##' @param int A numeric representing the selection intensity
 ##' (between 0 and 1)
-##'##' @param save.df Logical. Should the data frames be saved in the work directory?
+##' @param save.df Logical. Should the data frames be saved in the work directory?
 ##' `TRUE` for saving, `FALSE` (default) otherwise.
 ##' @param verbose A logical value. If `TRUE`, the function will indicate the
 ##' completed steps. Defaults to `FALSE`.
@@ -240,13 +276,13 @@ BPSI = function(modlist, increase = c(TRUE,FALSE,FALSE), omega, int, save.df = F
 ##' \itemize{\item Probability of superior performance}
 ##'
 ##'
-##' \deqn{BPSI_{i}=\sum_{m=1}^t \frac{\gamma^t}{\omega^t}}
+##' \deqn{BPSI_i = \sum_{m=1}^{t} \frac{\gamma_{pt} -\gamma_{it} }{(1/\lambda_t)}}
 ##'
-##' where \eqn{\gamma} is the probability of superior performance of genotype
-##'  \eqn{i} for trait \eqn{m},
+##' where \eqn{\gamma_p} is the probability of superior performance of the worst genotype for the trait \eqn{m},
+##' \eqn{\gamma} is the probability of superior performance of genotype  \eqn{i} for trait \eqn{t},
 ##'  \eqn{t} is the total number of traits evaluated,
 ##'   \eqn{\left(m = 1, 2, ..., t \right)},
-##' and \eqn{\omega} is the weight for each trait.
+##' and \eqn{\lambda} is the weight for each trait \eqn{t}.
 ##'
 ##'
 ##' More details about the usage of `BPSI`, as well as the other function of
@@ -254,23 +290,10 @@ BPSI = function(modlist, increase = c(TRUE,FALSE,FALSE), omega, int, save.df = F
 ##'
 ##' @references
 ##'
-##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
-##' Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
-##' for cultivar recommendation in multi-environment trials. \emph{Theoretical and
-##' Applied Genetics}, 133(2):443-455. \doi{10.1007/s00122-022-04041-y}
-##'
-##' Shukla, G. K. (1972) Some statistical aspects of partioning genotype environmental
-##' componentes of variability. \emph{Heredity}, 29:237-245. \doi{10.1038/hdy.1972.87}
-##'
-##' Chaves, S. F. S., Krause, M. D., Dias, L. A. S., Garcia, A. A. F., & Dias, K. O. G. (2024).
-##' ProbBreed: a novel tool for calculating the risk of cultivar recommendation in multienvironment trials.
-##' G3 Genes|Genomes|Genetics, 14(3).
 ##'
 ##' Chagas, J. T. B., Dias, K. O. das G., Quintão Carneiro, V., de Oliveira, L. M. C., Nunes, N. X., Júnior, J. D. P., Carneiro, P. C. S., & Carneiro, J. E. de S. (2025).
 ##' Bayesian probabilistic selection index in the selection of common bean families.
-##'  Crop Science, 65(3).
-##'
-##' \doi{https://doi.org/10.1002/CSC2.70072}
+##'  \emph{Crop Science}, 65(3).\doi{https://doi.org/10.1002/CSC2.70072}
 #'
 #'
 #' @seealso  [ProbBreed::prob_sup]
@@ -298,7 +321,7 @@ BPSI = function(modlist, increase = c(TRUE,FALSE,FALSE), omega, int, save.df = F
 ##' models[[2]] = res_PH
 ##' models[[3]] = res_PL
 ##'
-##' bpsi=BPSI(modlist=results,
+##' bpsi=BPSI(problist=results,
 ##'  increase = c(TRUE,FALSE,FALSE),
 ##'  int = 0.1,
 ##'  omega=c(2,1,1),
