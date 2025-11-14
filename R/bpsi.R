@@ -428,12 +428,12 @@ plot.BPSI = function(BPSI_result, ..., category = "BPSI"){
   # Rank plot --------------
   if(category == "Ranks"){
 
-    library(ggplot2)
+
 
     ggplot() +
       geom_col( aes(x = .data[["gen"]],y =.data[["rank"]], fill=.data[["sel"]]),data=obja)+
 
-      facet_wrap(~.data[["rank"]], scales = "free_x") +
+      facet_wrap(~.data[["trait"]], scales = "free_x") +
       theme(
         axis.text.x = element_text(size = 4, angle = 90, hjust = 1, vjust = 0.5),
         panel.background = element_blank(),
