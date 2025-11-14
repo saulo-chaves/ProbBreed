@@ -315,7 +315,7 @@ BPSI = function(problist,increase, lambda, int, save.df = FALSE){
 ##'                 reg = NULL,
 ##'                 year = NULL,
 ##'                 res.het = T,
-##'                 iter =400, cores = 4, chain = 4) #recommended run at least 4k iterations
+##'                 iter =400, cores = 2, chain = 4) #recommended run at least 4k iterations and 4 cores
 ##'
 ##'
 ##' mod2 = bayes_met(data = met_df,
@@ -326,7 +326,7 @@ BPSI = function(problist,increase, lambda, int, save.df = FALSE){
 ##'                  reg = NULL,
 ##'                  year = NULL,
 ##'                  res.het = T,
-##'                  iter = 400, cores = 4, chain = 4) #recommended run at least 4k iterations
+##'                  iter = 400, cores = 2, chain = 4) #recommended run at least 4k iterations and 4 cores
 ##'
 ##' mod3 = bayes_met(data = met_df,
 ##'                  gen = "gen",
@@ -336,7 +336,7 @@ BPSI = function(problist,increase, lambda, int, save.df = FALSE){
 ##'                  reg = NULL,
 ##'                  year = NULL,
 ##'                  res.het = T,
-##'                  iter = 400, cores = 4, chain = 4) #recommended run at least 4k iterations
+##'                  iter = 400, cores = 2, chain = 4) #recommended run at least 4k iterations and 4 cores
 ##'
 ##'
 ##'
@@ -468,7 +468,7 @@ plot.BPSI = function(BPSI_result, ..., category = "BPSI"){
                         breaks = c("Not_Selected","Selected"),
                         labels = c("Not selected","Selected")) +
       geom_point(data = data.frame(Sel = c("Not_Selected","Selected")),
-                 aes(x = 0, y = 0, color = Sel),
+                 aes(x = 0, y = 0, color = .data[["Sel"]]),
                  inherit.aes = FALSE, size = 4, alpha = 0) +
       scale_color_manual(values = c("Selected" = "blue3",
                                     "Not_Selected" = "grey"),
