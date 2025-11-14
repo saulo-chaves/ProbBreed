@@ -388,7 +388,6 @@ BPSI = function(problist,increase, lambda, int, save.df = FALSE){
 
 plot.BPSI = function(BPSI_result, ..., category = "BPSI"){
 
-  library(ggplot2)
   obj = BPSI_result
 
 
@@ -432,9 +431,9 @@ plot.BPSI = function(BPSI_result, ..., category = "BPSI"){
     library(ggplot2)
 
     ggplot() +
-      geom_col( aes(x = gen,y =rank, fill=sel),data=obja)+
+      geom_col( aes(x = .data[["gen"]],y =.data[["rank"]], fill=.data[["sel"]]),data=obja)+
 
-      facet_wrap(~trait, scales = "free_x") +
+      facet_wrap(~.data[["rank"]], scales = "free_x") +
       theme(
         axis.text.x = element_text(size = 4, angle = 90, hjust = 1, vjust = 0.5),
         panel.background = element_blank(),
@@ -462,7 +461,7 @@ plot.BPSI = function(BPSI_result, ..., category = "BPSI"){
 
 
 
-    ggplot(obj, aes(x = as.factor(id), y =  bpsi, fill = sel)) +  # Reverse values
+    ggplot(obj, aes(x = as.factor(.data[["id"]]), y =  .data[["bpsi"]], fill = .data[["sel"]])) +  # Reverse values
       geom_col() +
       scale_fill_manual(values = c("Selected" = "blue3",
                                    "Not_Selected" = "grey"),
@@ -476,8 +475,8 @@ plot.BPSI = function(BPSI_result, ..., category = "BPSI"){
                          name = NULL,
                          guide = "none") +
       coord_polar(start = 0) +
-      geom_text(aes(x = id, y = max(bpsi) + 10,  # Keep original positioning
-                    label = gen, angle = angle, hjust = hjust),
+      geom_text(aes(x = .data[["id"]], y = max(.data[["bpsi"]]) + 10,  # Keep original positioning
+                    label = .data[["gen"]], angle = .data[["angle"]], hjust = .data[["hjust"]]),
                 size = 2.8) +
       theme_minimal() +
       theme(axis.text = element_blank(),
