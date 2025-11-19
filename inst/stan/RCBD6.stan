@@ -21,7 +21,7 @@ data{
     matrix[n, p7] Z7;
 
     // Phenotype vector
-    real y[n];
+    array[n] real y;
 
     // Global hyperparameter
     real phi;
@@ -61,7 +61,7 @@ data{
     vector[p7] gm;
 
     // Defining variable to generate data from the model
-    real y_gen[n];
+    array[n] real y_gen;
   }
 
   transformed parameters{
@@ -115,7 +115,7 @@ data{
   }
 
   generated quantities {
-    real y_log_like[n];
+    array[n] real y_log_like;
       for (j in 1:n) {
       // Computing log-likelihood of the observed data:
       y_log_like[j] = cauchy_lpdf(y[j] | expectation[j], sigma);
