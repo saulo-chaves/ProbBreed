@@ -37,9 +37,9 @@ static constexpr std::array<const char*, 43> locations_array__ =
   " (in 'string', line 17, column 4 to column 17)",
   " (in 'string', line 18, column 4 to column 22)",
   " (in 'string', line 19, column 4 to column 17)",
-  " (in 'string', line 20, column 4 to column 18)",
+  " (in 'string', line 20, column 4 to column 24)",
   " (in 'string', line 23, column 4 to column 26)",
-  " (in 'string', line 39, column 4 to column 23)",
+  " (in 'string', line 39, column 4 to column 29)",
   " (in 'string', line 24, column 4 to column 35)",
   " (in 'string', line 41, column 6 to column 64)",
   " (in 'string', line 40, column 21 to line 42, column 7)",
@@ -63,14 +63,14 @@ static constexpr std::array<const char*, 43> locations_array__ =
   " (in 'string', line 7, column 11 to column 12)",
   " (in 'string', line 7, column 14 to column 16)",
   " (in 'string', line 7, column 4 to column 21)",
-  " (in 'string', line 8, column 11 to column 12)",
-  " (in 'string', line 8, column 4 to column 14)",
+  " (in 'string', line 8, column 10 to column 11)",
+  " (in 'string', line 8, column 4 to column 20)",
   " (in 'string', line 9, column 4 to column 13)",
   " (in 'string', line 17, column 11 to column 13)",
   " (in 'string', line 19, column 11 to column 13)",
-  " (in 'string', line 20, column 15 to column 16)",
+  " (in 'string', line 20, column 10 to column 11)",
   " (in 'string', line 23, column 11 to column 12)",
-  " (in 'string', line 39, column 20 to column 21)"};
+  " (in 'string', line 39, column 10 to column 11)"};
 #include <stan_meta_header.hpp>
 class model_entrymean2 final : public model_base_crtp<model_entrymean2> {
 private:
