@@ -45,9 +45,9 @@ static constexpr std::array<const char*, 79> locations_array__ =
   " (in 'string', line 45, column 4 to column 17)",
   " (in 'string', line 47, column 4 to column 23)",
   " (in 'string', line 48, column 4 to column 18)",
-  " (in 'string', line 50, column 4 to column 18)",
+  " (in 'string', line 50, column 4 to column 24)",
   " (in 'string', line 54, column 4 to column 26)",
-  " (in 'string', line 89, column 4 to column 23)",
+  " (in 'string', line 89, column 4 to column 29)",
   " (in 'string', line 56, column 4 to column 65)",
   " (in 'string', line 92, column 6 to column 64)",
   " (in 'string', line 90, column 21 to line 93, column 7)",
@@ -95,8 +95,8 @@ static constexpr std::array<const char*, 79> locations_array__ =
   " (in 'string', line 18, column 11 to column 12)",
   " (in 'string', line 18, column 14 to column 16)",
   " (in 'string', line 18, column 4 to column 21)",
-  " (in 'string', line 20, column 11 to column 12)",
-  " (in 'string', line 20, column 4 to column 14)",
+  " (in 'string', line 20, column 10 to column 11)",
+  " (in 'string', line 20, column 4 to column 20)",
   " (in 'string', line 22, column 4 to column 13)",
   " (in 'string', line 33, column 11 to column 13)",
   " (in 'string', line 36, column 11 to column 13)",
@@ -104,9 +104,9 @@ static constexpr std::array<const char*, 79> locations_array__ =
   " (in 'string', line 42, column 11 to column 13)",
   " (in 'string', line 45, column 11 to column 13)",
   " (in 'string', line 48, column 11 to column 13)",
-  " (in 'string', line 50, column 15 to column 16)",
+  " (in 'string', line 50, column 10 to column 11)",
   " (in 'string', line 54, column 11 to column 12)",
-  " (in 'string', line 89, column 20 to column 21)"};
+  " (in 'string', line 89, column 10 to column 11)"};
 #include <stan_meta_header.hpp>
 class model_RCBD7 final : public model_base_crtp<model_RCBD7> {
 private:

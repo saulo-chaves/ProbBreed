@@ -30,7 +30,7 @@ stan::math::profile_map profiles__;
 static constexpr std::array<const char*, 94> locations_array__ =
   {" (found before start of program)",
   " (in 'string', line 23, column 4 to column 26)",
-  " (in 'string', line 24, column 4 to column 28)",
+  " (in 'string', line 24, column 4 to column 34)",
   " (in 'string', line 25, column 4 to column 23)",
   " (in 'string', line 26, column 4 to column 12)",
   " (in 'string', line 27, column 4 to column 22)",
@@ -47,10 +47,10 @@ static constexpr std::array<const char*, 94> locations_array__ =
   " (in 'string', line 38, column 4 to column 17)",
   " (in 'string', line 39, column 4 to column 23)",
   " (in 'string', line 40, column 4 to column 18)",
-  " (in 'string', line 41, column 4 to column 18)",
+  " (in 'string', line 41, column 4 to column 24)",
   " (in 'string', line 44, column 4 to column 26)",
   " (in 'string', line 45, column 4 to column 33)",
-  " (in 'string', line 72, column 4 to column 23)",
+  " (in 'string', line 72, column 4 to column 29)",
   " (in 'string', line 46, column 4 to column 72)",
   " (in 'string', line 47, column 4 to column 40)",
   " (in 'string', line 74, column 6 to column 71)",
@@ -105,12 +105,12 @@ static constexpr std::array<const char*, 94> locations_array__ =
   " (in 'string', line 17, column 11 to column 12)",
   " (in 'string', line 17, column 14 to column 16)",
   " (in 'string', line 17, column 4 to column 21)",
-  " (in 'string', line 18, column 11 to column 12)",
-  " (in 'string', line 18, column 4 to column 14)",
+  " (in 'string', line 18, column 10 to column 11)",
+  " (in 'string', line 18, column 4 to column 20)",
   " (in 'string', line 19, column 4 to column 13)",
-  " (in 'string', line 20, column 13 to column 14)",
-  " (in 'string', line 20, column 3 to column 16)",
-  " (in 'string', line 24, column 24 to column 26)",
+  " (in 'string', line 20, column 9 to column 10)",
+  " (in 'string', line 20, column 3 to column 22)",
+  " (in 'string', line 24, column 10 to column 12)",
   " (in 'string', line 28, column 11 to column 13)",
   " (in 'string', line 30, column 11 to column 13)",
   " (in 'string', line 32, column 11 to column 13)",
@@ -118,10 +118,10 @@ static constexpr std::array<const char*, 94> locations_array__ =
   " (in 'string', line 36, column 11 to column 13)",
   " (in 'string', line 38, column 11 to column 13)",
   " (in 'string', line 40, column 11 to column 13)",
-  " (in 'string', line 41, column 15 to column 16)",
+  " (in 'string', line 41, column 10 to column 11)",
   " (in 'string', line 44, column 11 to column 12)",
   " (in 'string', line 45, column 20 to column 21)",
-  " (in 'string', line 72, column 20 to column 21)"};
+  " (in 'string', line 72, column 10 to column 11)"};
 #include <stan_meta_header.hpp>
 class model_IBD3 final : public model_base_crtp<model_IBD3> {
 private:

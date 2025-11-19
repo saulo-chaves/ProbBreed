@@ -1,8 +1,8 @@
 Package: ProbBreed
 Title: Probability Theory for Selecting Candidates in Plant Breeding
-Version: 1.0.4.6
+Version: 1.0.4.8
 Authors@R: c(person("Saulo", "Chaves", role = c("aut", "cre"),
-                     email = "saulo.chaves@ufv.br",
+                     email = "saulochaves@usp.br",
                      comment = c(ORCID = "0000-0002-0694-1798")),
               person("Kaio", "Dias", role = c("aut", "cph"),
                      email = "kaio.o.dias@ufv.br",
@@ -40,7 +40,7 @@ Encoding: UTF-8
 UseLTO: true
 NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LazyData: true
 Biarch: true
 SystemRequirements: GNU make

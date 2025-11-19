@@ -111,7 +111,7 @@ bayes_met = function(data, gen, loc, repl, trait, reg = NULL, year = NULL,
 
   requireNamespace('rstan')
 
-  data = if(any(is.na(data[,trait]))) data[-which(is.na(data[,trait])),] else data
+  data = if(any(is.na(data[,trait]))) droplevels(data[-which(is.na(data[,trait])),]) else data
 
   stopifnot("gen is not in the data" = gen %in% colnames(data))
   stopifnot("loc is not in the data" = loc %in% colnames(data))
