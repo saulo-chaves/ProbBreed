@@ -24,7 +24,27 @@
 ##' @details
 ##' Probabilities provide the risk of recommending a selection candidate for a
 ##' multi-trait ideotype in a target population of environments.
-##' `bpsi` computes the probabilities of superior performance for multi-trait selection:
+##' `bpsi` estimates the genotypic merit for multiple traits using the
+##' probabilities of superior performance across environments.
+##'
+##' @param problist A list of object of class `probsup`, obtained from the [ProbBreed::prob_sup] function
+##' @param increase Logical vector of amount of traits used in the same order of problist.`TRUE` (default) if the selection is for increasing the trait value, `FALSE` otherwise.
+##' @param lambda A numeric representing the weight of each trait, the default is 1, the trait with more
+##' economic interest should be greater.
+##' @param int A numeric representing the selection intensity
+##' (between 0 and 1)
+##'##' @param save.df Logical. Should the data frames be saved in the work directory?
+##' `TRUE` for saving, `FALSE` (default) otherwise.
+##' completed steps. Defaults to `FALSE`.
+##'
+##' @return The function returns an object of class `BPSI`, which contains two lists,
+##' one with the `BPSI`- Bayesian Probabilistic Selection Index, and another with the original `data`-
+##' with across-environments probabilities of superior performance for each trait.
+##'
+##'
+##'
+##'
+##' @details
 ##'
 ##' \itemize{\item Bayesian Probabilistic Selection Index}
 ##'
@@ -61,6 +81,8 @@
 ##'
 ##' @examples
 #' \donttest{
+##'
+##'
 ##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
 ##'
 ##' mod = bayes_met(data = met_df,
@@ -128,6 +150,7 @@
 
 bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 
+
   # stopifnot("Please, provide a valid vector of selection ideotype" !=is.null(increase))
   stopifnot("Please, provide a list of objects from class probsup" = all(sapply(problist, inherits, "probsup")))
   stopifnot("Please, provide a valid selection intensity (number between 0 and 1)" = {
@@ -144,6 +167,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
   if(is.null(increase)){
     inc=sapply(problist, function(x) attr(x,"control")$increase)
   } else inc = increase
+
   traits=t(traits)
   names(traits) <- traits
   prob_l <- lapply(seq_along(problist), function(x){
@@ -210,6 +234,8 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 
 
 
+
+
   ## Save data frames in the work directory -----------------
   if(save.df){
     dir.create(path = paste0(getwd(),'/BPSI'))
@@ -223,11 +249,11 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
   # Final output -----------
   # if(verbose) message('Process completed!')
   # message('Process completed!')
+
   return(output)
 
 
 }
-
 
 
 ##' Plots for the `bpsi` object
@@ -256,10 +282,10 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' @importFrom stats reshape na.exclude
 ##' @importFrom rlang .data
 ##'
-##' @rdname plot.probsup
+
+##' @rdname plot.bpsi
 ##' @export
 #'
-##' @examples
 ##' @examples
 #' \donttest{
 ##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
@@ -339,6 +365,7 @@ plot.bpsi = function(x, ..., category = "BPSI"){
   stopifnot("Object is not of class 'bpsi'" = class(x) == "bpsi")
 
   obj=x[["BPSI"]]
+
   #control = attr(obj, "control")
 
   #ord_gen = factor(obj$across$perfo$ID, levels = obj$across$perfo$ID)
@@ -378,12 +405,38 @@ plot.bpsi = function(x, ..., category = "BPSI"){
         legend.position = "top",
         strip.text = element_text(size = 8, face = "bold")
       ) +
+
+
+  obja <- reshape(obj, direction = "long",varying =list(traits),
+                  v.names = "rank",timevar = "trait",idvar="gen",times = traits )
+
+  selected=obja[which(obja$sel %in% "Selected"),]
+
+  # Rank plot --------------
+  if(category == "Ranks"){
+
+    library(ggplot2)
+
+    ggplot() +
+      geom_col( aes(x = .data[["gen"]],y =.data[["rank"]], fill=.data[["sel"]]),data=obja)+
+
+      facet_wrap(~.data[["rank"]], scales = "free_x") +
+      theme(
+        axis.text.x = element_text(size = 4, angle = 90, hjust = 1, vjust = 0.5),
+        panel.background = element_blank(),
+        legend.position = "top",
+        strip.text = element_text(size = 8,face = "bold")) +
       scale_fill_manual(
         values = c("Selected" = "blue3", "Not_Selected" = "grey"),
         breaks = c("Not_Selected", "Selected"),
         labels = c("Not selected", "Selected")
       ) +
-      labs(x = "Genotypes", y = "Ranking of superior performance", fill = expression(bold(Pr(g %in% Omega))))
+
+      labs(
+        x = "Genotypes",
+        y = "Ranking of superior performance",
+        fill = expression(bold(Pr(g %in% Omega)))
+      )
 
   }
 
@@ -398,7 +451,9 @@ plot.bpsi = function(x, ..., category = "BPSI"){
                         breaks = c("Not_Selected","Selected"),
                         labels = c("Not selected","Selected")) +
       geom_point(data = data.frame(Sel = c("Not_Selected","Selected")),
+
                  aes(x = 0, y = 0, color = .data[["Sel"]]),
+
                  inherit.aes = FALSE, size = 4, alpha = 0) +
       scale_color_manual(values = c("Selected" = "blue3",
                                     "Not_Selected" = "grey"),
@@ -436,6 +491,7 @@ plot.bpsi = function(x, ..., category = "BPSI"){
 #'
 #' @export
 #'
+
 
 print.bpsi = function(x, ...){
   obj = x

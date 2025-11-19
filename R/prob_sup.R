@@ -218,6 +218,7 @@ prob_sup = function(extr, int, increase = TRUE, save.df = FALSE, verbose = FALSE
     names(mod$post)[which(names(mod$post) == paste(declared$gen, declared$year, sep = ':'))] = "gt"
   }
 
+
   # Conditions
   if(!all(grepl('[A-Za-z]', data[, gen]))){data[,gen] = paste("G", data[,gen], sep = "_")}
   if(!all(grepl('[A-Za-z]', data[, loc]))){data[,loc] = paste("E", data[,loc], sep = "_")}
