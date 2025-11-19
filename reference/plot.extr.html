@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ProbBreed</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,14 +85,13 @@ model's convergence.</p></li>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              599.911 seconds (Total)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 5 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 3 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bfmi-low</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               409.196 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 1 divergent transitions after warmup. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Examine the pairs() plot to diagnose sampling problems</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.13, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.1, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -109,20 +108,16 @@ model's convergence.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Variances extracted</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Maximum posterior values extracted</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Posterior predictive checks computed</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations ended with a divergence.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 5 of 4000 iterations saturated the maximum tree depth of 10 (0.125%).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Try increasing 'max_treedepth' to avoid saturation.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI indicated possible pathological behavior:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 2: E-BFMI = 0.153</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 3: E-BFMI = 0.121</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 4: E-BFMI = 0.187</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI below 0.2 indicates you may need to reparameterize your model.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 1 of 4000 iterations ended with a divergence (0.025%).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Try increasing 'adapt_delta' to remove the divergences.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations saturated the maximum tree depth of 10.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI indicated no pathological behavior.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"ppdensity"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.extr-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.extr-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"histogram"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span>
 <span class="r-plt img"><img src="plot.extr-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outs</span>, category <span class="op">=</span> <span class="st">"traceplot"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.extr-4.png" alt="" width="700" height="433"></span>
@@ -139,7 +134,7 @@ model's convergence.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
