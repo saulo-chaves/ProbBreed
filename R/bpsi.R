@@ -1,6 +1,7 @@
 ## Function bpsi
 ##
-##' @title Bayesian Probabilistic Selection Index (BPSI)
+##' @title
+##' Bayesian Probabilistic Selection Index (BPSI)
 ##'
 ##' @description
 ##' This function estimates the genotype's merit for multiple traits using the
@@ -16,7 +17,8 @@
 ##' @param save.df Logical. Should the data frames be saved in the work directory?
 ##' `TRUE` for saving, `FALSE` (default) otherwise.
 ##'
-##' @return The function returns an object of class `bpsi`, which contains two lists,
+##' @return
+##' The function returns an object of class `bpsi`, which contains two lists,
 ##' one with the BPSI- Bayesian Probabilistic Selection Index, and another with the original `data`-
 ##' with across-environments probabilities of superior performance for each trait.
 ##'
@@ -33,19 +35,16 @@
 ##' economic interest should be greater.
 ##' @param int A numeric representing the selection intensity
 ##' (between 0 and 1)
-##'##' @param save.df Logical. Should the data frames be saved in the work directory?
+##' @param save.df Logical. Should the data frames be saved in the work directory?
 ##' `TRUE` for saving, `FALSE` (default) otherwise.
 ##' completed steps. Defaults to `FALSE`.
 ##'
-##' @return The function returns an object of class `BPSI`, which contains two lists,
+##' @return
+##' The function returns an object of class `BPSI`, which contains two lists,
 ##' one with the `BPSI`- Bayesian Probabilistic Selection Index, and another with the original `data`-
 ##' with across-environments probabilities of superior performance for each trait.
 ##'
-##'
-##'
-##'
 ##' @details
-##'
 ##' \itemize{\item Bayesian Probabilistic Selection Index}
 ##'
 ##'
@@ -57,11 +56,9 @@
 ##'   \eqn{\left(m = 1, 2, ..., t \right)},
 ##' and \eqn{\lambda} is the weight for each trait \eqn{t}.
 ##'
-##'
 ##' More details about the usage of `bpsi` can be found at \url{https://tiagobchagas.github.io/BPSI/}.
 ##'
 ##' @references
-##'
 ##' Chagas, J. T. B., Dias, K. O. G., Carneiro, V. Q., Oliveira, L. M. C., Nunes, N. X.,
 ##' Pereira Júnior, J. D., Carneiro, P. C. S., & Carneiro, J. E. S. (2025).
 ##' Bayesian probabilistic selection index in the selection of common bean families.
@@ -73,7 +70,7 @@
 ##' @importFrom stats reshape median quantile na.exclude model.matrix aggregate
 ##' @importFrom rlang .data
 ##'
-##' @seealso [ProbBreed::plot.bpsi]
+##' @seealso [ProbBreed::plot.bpsi()]
 ##'
 ##' @author José Tiago Barroso Chagas
 ##'
@@ -83,7 +80,7 @@
 #' \donttest{
 ##'
 ##'
-##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
+##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv", header=TRUE)
 ##'
 ##' mod = bayes_met(data = met_df,
 ##'                 gen = "gen",
@@ -260,34 +257,32 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'
 ##' Build plots using the outputs stored in the `bpsi` object.
 ##'
-##'
 ##' @param x An object of class `bpsi`.
 ##' @param category A string indicating which plot to build. There are currently two
 ##' types of visualizations. Set "Rank" for bar plots and "BPSI" (default) for circular bar plots.
 ##' @param ... currently not used
 ##' @method plot bpsi
 ##'
-##'
 ##' @references
-##'
 ##' Chagas, J. T. B., Dias, K. O. das G., Quintão Carneiro, V., de Oliveira, L. M. C., Nunes, N. X., Júnior, J. D. P., Carneiro, P. C. S., & Carneiro, J. E. de S. (2025).
 ##' Bayesian probabilistic selection index in the selection of common bean families.
 ##'  \emph{Crop Science}, 65(3).\doi{https://doi.org/10.1002/CSC2.70072}
 ##'
 ##' @author José Tiago Barroso Chagas
 ##'
-##' @seealso  [ProbBreed::bpsi]
+##' @seealso [ProbBreed::bpsi()]
 ##'
 ##' @import ggplot2
 ##' @importFrom stats reshape na.exclude
 ##' @importFrom rlang .data
 ##'
 ##' @rdname plot.bpsi
+##'
 ##' @export
 #'
 ##' @examples
 #' \donttest{
-##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
+##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv", header=TRUE)
 ##'
 ##' mod = bayes_met(data = met_df,
 ##'                 gen = "gen",
