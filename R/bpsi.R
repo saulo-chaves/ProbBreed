@@ -282,7 +282,6 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' @importFrom stats reshape na.exclude
 ##' @importFrom rlang .data
 ##'
-
 ##' @rdname plot.bpsi
 ##' @export
 #'
@@ -358,7 +357,6 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 
 
 plot.bpsi = function(x, ..., category = "BPSI"){
-
   # Namespaces
   requireNamespace('ggplot2')
 
@@ -404,39 +402,11 @@ plot.bpsi = function(x, ..., category = "BPSI"){
         panel.background = element_blank(),
         legend.position = "top",
         strip.text = element_text(size = 8, face = "bold")
-      ) +
-
-
-  obja <- reshape(obj, direction = "long",varying =list(traits),
-                  v.names = "rank",timevar = "trait",idvar="gen",times = traits )
-
-  selected=obja[which(obja$sel %in% "Selected"),]
-
-  # Rank plot --------------
-  if(category == "Ranks"){
-
-    library(ggplot2)
-
-    ggplot() +
-      geom_col( aes(x = .data[["gen"]],y =.data[["rank"]], fill=.data[["sel"]]),data=obja)+
-
-      facet_wrap(~.data[["rank"]], scales = "free_x") +
-      theme(
-        axis.text.x = element_text(size = 4, angle = 90, hjust = 1, vjust = 0.5),
-        panel.background = element_blank(),
-        legend.position = "top",
-        strip.text = element_text(size = 8,face = "bold")) +
-      scale_fill_manual(
-        values = c("Selected" = "blue3", "Not_Selected" = "grey"),
-        breaks = c("Not_Selected", "Selected"),
-        labels = c("Not selected", "Selected")
-      ) +
-
-      labs(
-        x = "Genotypes",
-        y = "Ranking of superior performance",
-        fill = expression(bold(Pr(g %in% Omega)))
       )
+
+
+
+
 
   }
 
@@ -483,7 +453,7 @@ plot.bpsi = function(x, ..., category = "BPSI"){
 #'
 #' @param x An object of class `bpsi`
 #' @param ... currently not used
-#' @method print BPSI
+#' @method print bpsi
 #'
 #' @seealso [ProbBreed::bpsi]
 #'
@@ -492,13 +462,11 @@ plot.bpsi = function(x, ..., category = "BPSI"){
 #' @export
 #'
 
-
-print.bpsi = function(x, ...){
-  obj = x
-  message("==> Considering an intensity of ", attr(obj[[1]], "control") *100,'%, here are the selected candidates:')
-  obj=obj[[1]]
-  obj$gen=rownames(obj)
-  rownames(obj) = NULL
-  print(obj)
-}
-
+  print.bpsi = function(x, ...){
+    obj = x
+    message("==> Considering an intensity of ", attr(obj[[1]], "control") *100,'%, here are the selected candidates:')
+    obj=obj[[1]]
+    obj$gen=rownames(obj)
+    rownames(obj) = NULL
+    print(obj)
+  }
