@@ -4,13 +4,15 @@
 \alias{plot.bpsi}
 \title{Plots for the \code{bpsi} object}
 \usage{
-\method{plot}{bpsi}(x, category = "BPSI")
+\method{plot}{bpsi}(BPSI_result, category = "BPSI", ...)
 }
 \arguments{
-\item{x}{An object of class \code{bpsi}.}
+\item{BPSI_result}{An object of class \code{bpsi}.}
 
 \item{category}{A string indicating which plot to build. There are currently two
 types of visualizations. Set "Ranks" for bar plots along each trait and "BPSI" (default) for circular bar plots multitrait.}
+
+\item{...}{currently not used}
 }
 \description{
 Build plots using the outputs stored in the \code{bpsi} object.
@@ -27,7 +29,7 @@ mod = bayes_met(data = met_df,
                 trait = "PH",
                 reg = NULL,
                 year = NULL,
-                res.het = T,
+                res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
 
 
@@ -38,7 +40,7 @@ mod2 = bayes_met(data = met_df,
                  trait = "GY",
                  reg = NULL,
                  year = NULL,
-                 res.het = T,
+                 res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
 
 mod3 = bayes_met(data = met_df,
@@ -48,7 +50,7 @@ mod3 = bayes_met(data = met_df,
                  trait = "NDM",
                  reg = NULL,
                  year = NULL,
-                 res.het = T,
+                 res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
 
 
@@ -78,7 +80,7 @@ index = bpsi(
   increase = increase,
   int = 0.1,
   lambda = c(1, 2, 1),
-  save.df = F
+  save.df = FALSE
 )
 
 plot(bpsi, category = "BPSI")

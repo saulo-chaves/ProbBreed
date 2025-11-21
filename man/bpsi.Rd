@@ -57,7 +57,7 @@ mod = bayes_met(data = met_df,
                 trait = "PH",
                 reg = NULL,
                 year = NULL,
-                res.het = T,
+                res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
 
 
@@ -68,7 +68,7 @@ mod2 = bayes_met(data = met_df,
                  trait = "GY",
                  reg = NULL,
                  year = NULL,
-                 res.het = T,
+                 res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
 
 mod3 = bayes_met(data = met_df,
@@ -78,7 +78,7 @@ mod3 = bayes_met(data = met_df,
                  trait = "NDM",
                  reg = NULL,
                  year = NULL,
-                 res.het = T,
+                 res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
 
 
@@ -108,7 +108,7 @@ index = bpsi(
   increase = increase,
   int = 0.1,
   lambda = c(1, 2, 1),
-  save.df = F
+  save.df = FALSE
 )
 }
 }

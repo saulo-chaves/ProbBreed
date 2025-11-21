@@ -67,7 +67,7 @@
 ##'                 trait = "PH",
 ##'                 reg = NULL,
 ##'                 year = NULL,
-##'                 res.het = T,
+##'                 res.het = TRUE,
 ##'                 iter = 2000, cores = 2, chain = 4)
 ##'
 ##'
@@ -78,7 +78,7 @@
 ##'                  trait = "GY",
 ##'                  reg = NULL,
 ##'                  year = NULL,
-##'                  res.het = T,
+##'                  res.het = TRUE,
 ##'                  iter = 2000, cores = 2, chain = 4)
 ##'
 ##' mod3 = bayes_met(data = met_df,
@@ -88,7 +88,7 @@
 ##'                  trait = "NDM",
 ##'                  reg = NULL,
 ##'                  year = NULL,
-##'                  res.het = T,
+##'                  res.het = TRUE,
 ##'                  iter = 2000, cores = 2, chain = 4)
 ##'
 ##'
@@ -118,7 +118,7 @@
 ##'   increase = increase,
 ##'   int = 0.1,
 ##'   lambda = c(1, 2, 1),
-##'   save.df = F
+##'   save.df = FALSE
 ##' )
 ##' }
 
@@ -234,7 +234,8 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'
 ##' Build plots using the outputs stored in the `bpsi` object.
 ##'
-##' @param x An object of class `bpsi`.
+##' @param BPSI_result An object of class `bpsi`.
+##' @param ... currently not used
 ##' @param category A string indicating which plot to build. There are currently two
 ##' types of visualizations. Set "Ranks" for bar plots along each trait and "BPSI" (default) for circular bar plots multitrait.
 ##' @method plot bpsi
@@ -268,7 +269,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'                 trait = "PH",
 ##'                 reg = NULL,
 ##'                 year = NULL,
-##'                 res.het = T,
+##'                 res.het = TRUE,
 ##'                 iter = 2000, cores = 2, chain = 4)
 ##'
 ##'
@@ -279,7 +280,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'                  trait = "GY",
 ##'                  reg = NULL,
 ##'                  year = NULL,
-##'                  res.het = T,
+##'                  res.het = TRUE,
 ##'                  iter = 2000, cores = 2, chain = 4)
 ##'
 ##' mod3 = bayes_met(data = met_df,
@@ -289,7 +290,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'                  trait = "NDM",
 ##'                  reg = NULL,
 ##'                  year = NULL,
-##'                  res.het = T,
+##'                  res.het = TRUE,
 ##'                  iter = 2000, cores = 2, chain = 4)
 ##'
 ##'
@@ -319,7 +320,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'   increase = increase,
 ##'   int = 0.1,
 ##'   lambda = c(1, 2, 1),
-##'   save.df = F
+##'   save.df = FALSE
 ##' )
 ##'
 ##' plot(bpsi, category = "BPSI")
@@ -327,7 +328,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' }
 
 
-plot.bpsi = function(x, category = "BPSI"){
+plot.bpsi = function(BPSI_result, category = "BPSI",...){
   # Namespaces
   requireNamespace('ggplot2')
 
@@ -422,7 +423,8 @@ plot.bpsi = function(x, category = "BPSI"){
 ##'
 ##' Print a `bpsi` object in R console
 ##'
-##' @param x An object of class `bpsi`
+##' @param BPSI_result An object of class `bpsi`
+##' @param ... currently not used
 ##' @method print bpsi
 ##'
 ##' @seealso [ProbBreed::bpsi()]
@@ -434,7 +436,7 @@ plot.bpsi = function(x, category = "BPSI"){
 ##' @export
 ##'
 
-  print.bpsi = function(x){
+  print.bpsi = function(BPSI_result, ...){
     obj = x
     message("==> Considering an intensity of ", attr(obj[[1]], "control") *100,'%, here are the selected candidates:')
     obj=obj[[1]]
