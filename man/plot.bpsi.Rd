@@ -4,22 +4,21 @@
 \alias{plot.bpsi}
 \title{Plots for the \code{bpsi} object}
 \usage{
-\method{plot}{bpsi}(x, ..., category = "BPSI")
+\method{plot}{bpsi}(x, category = "BPSI")
 }
 \arguments{
 \item{x}{An object of class \code{bpsi}.}
 
-\item{...}{currently not used}
-
 \item{category}{A string indicating which plot to build. There are currently two
-types of visualizations. Set "Rank" for bar plots and "BPSI" (default) for circular bar plots.}
+types of visualizations. Set "Ranks" for bar plots along each trait and "BPSI" (default) for circular bar plots multitrait.}
 }
 \description{
 Build plots using the outputs stored in the \code{bpsi} object.
 }
 \examples{
 \donttest{
-met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
+met_df <-
+read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 
 mod = bayes_met(data = met_df,
                 gen = "gen",
@@ -85,7 +84,6 @@ index = bpsi(
 plot(bpsi, category = "BPSI")
 plot(bpsi, category = "Ranks")
 }
-
 }
 \references{
 Chagas, J. T. B., Dias, K. O. das G., Quintão Carneiro, V., de Oliveira, L. M. C., Nunes, N. X., Júnior, J. D. P., Carneiro, P. C. S., & Carneiro, J. E. de S. (2025).

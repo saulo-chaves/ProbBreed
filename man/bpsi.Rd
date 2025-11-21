@@ -9,25 +9,21 @@ bpsi(problist, increase = NULL, lambda = NULL, int, save.df = FALSE)
 \arguments{
 \item{problist}{A list of object of class \code{probsup}, obtained from the \link{prob_sup} function}
 
-\item{increase}{Logical vector of amount of traits used in the same order of problist.\code{TRUE} (default) if the selection is for increasing the trait value, \code{FALSE} otherwise.}
+\item{increase}{Optional logical vector with size corresponding to the number of traits
+of \code{problist}, in the same order.\code{TRUE} if the selection is for increasing the trait value, \code{FALSE} otherwise.
+If not declared, \code{bpsi} will consider the information provided in \link{prob_sup}}
 
-\item{lambda}{A numeric representing the weight of each trait, the default is 1, the trait with more
-economic interest should be greater.}
+\item{lambda}{A numeric representing the weight of each trait. Defaults to 1 (equal weights).
+The trait with more economic interest should be greater.}
 
-\item{int}{A numeric representing the selection intensity
-(between 0 and 1)}
+\item{int}{A numeric representing the selection intensity (between 0 and 1), considering the selection index.}
 
 \item{save.df}{Logical. Should the data frames be saved in the work directory?
-\code{TRUE} for saving, \code{FALSE} (default) otherwise.
-completed steps. Defaults to \code{FALSE}.}
+\code{TRUE} for saving, \code{FALSE} (default) otherwise.}
 }
 \value{
 The function returns an object of class \code{bpsi}, which contains two lists,
 one with the BPSI- Bayesian Probabilistic Selection Index, and another with the original \code{data}-
-with across-environments probabilities of superior performance for each trait.
-
-The function returns an object of class \code{BPSI}, which contains two lists,
-one with the \code{BPSI}- Bayesian Probabilistic Selection Index, and another with the original \code{data}-
 with across-environments probabilities of superior performance for each trait.
 }
 \description{
@@ -35,11 +31,6 @@ This function estimates the genotype's merit for multiple traits using the
 probabilities of superior performance across environments.
 }
 \details{
-Probabilities provide the risk of recommending a selection candidate for a
-multi-trait ideotype in a target population of environments.
-\code{bpsi} estimates the genotypic merit for multiple traits using the
-probabilities of superior performance across environments.
-
 \itemize{\item Bayesian Probabilistic Selection Index}
 
 \deqn{BPSI_i = \sum_{m=1}^{t} \frac{\gamma_{pt} -\gamma_{it} }{(1/\lambda_t)}}
@@ -56,7 +47,8 @@ More details about the usage of \code{bpsi} can be found at \url{https://tiagobc
 \donttest{
 
 
-met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
+met_df <-
+read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 
 mod = bayes_met(data = met_df,
                 gen = "gen",
@@ -119,13 +111,12 @@ index = bpsi(
   save.df = F
 )
 }
-
 }
 \references{
 Chagas, J. T. B., Dias, K. O. G., Carneiro, V. Q., Oliveira, L. M. C., Nunes, N. X.,
 Pereira Júnior, J. D., Carneiro, P. C. S., & Carneiro, J. E. S. (2025).
 Bayesian probabilistic selection index in the selection of common bean families.
-\emph{Crop Science, 65(3). \doi{10.1002/CSC2.70072}
+\emph{Crop Science}, 65(3). \doi{10.1002/CSC2.70072}
 }
 \seealso{
 \code{\link[=plot.bpsi]{plot.bpsi()}}

@@ -1,7 +1,4 @@
-## Function bpsi
-##
-##' @title
-##' Bayesian Probabilistic Selection Index (BPSI)
+##' @title Bayesian Probabilistic Selection Index (BPSI)
 ##'
 ##' @description
 ##' This function estimates the genotype's merit for multiple traits using the
@@ -23,30 +20,9 @@
 ##' with across-environments probabilities of superior performance for each trait.
 ##'
 ##'
-##' @details
-##' Probabilities provide the risk of recommending a selection candidate for a
-##' multi-trait ideotype in a target population of environments.
-##' `bpsi` estimates the genotypic merit for multiple traits using the
-##' probabilities of superior performance across environments.
-##'
-##' @param problist A list of object of class `probsup`, obtained from the [ProbBreed::prob_sup] function
-##' @param increase Logical vector of amount of traits used in the same order of problist.`TRUE` (default) if the selection is for increasing the trait value, `FALSE` otherwise.
-##' @param lambda A numeric representing the weight of each trait, the default is 1, the trait with more
-##' economic interest should be greater.
-##' @param int A numeric representing the selection intensity
-##' (between 0 and 1)
-##' @param save.df Logical. Should the data frames be saved in the work directory?
-##' `TRUE` for saving, `FALSE` (default) otherwise.
-##' completed steps. Defaults to `FALSE`.
-##'
-##' @return
-##' The function returns an object of class `BPSI`, which contains two lists,
-##' one with the `BPSI`- Bayesian Probabilistic Selection Index, and another with the original `data`-
-##' with across-environments probabilities of superior performance for each trait.
 ##'
 ##' @details
 ##' \itemize{\item Bayesian Probabilistic Selection Index}
-##'
 ##'
 ##' \deqn{BPSI_i = \sum_{m=1}^{t} \frac{\gamma_{pt} -\gamma_{it} }{(1/\lambda_t)}}
 ##'
@@ -62,7 +38,8 @@
 ##' Chagas, J. T. B., Dias, K. O. G., Carneiro, V. Q., Oliveira, L. M. C., Nunes, N. X.,
 ##' Pereira Júnior, J. D., Carneiro, P. C. S., & Carneiro, J. E. S. (2025).
 ##' Bayesian probabilistic selection index in the selection of common bean families.
-##' \emph{Crop Science, 65(3). \doi{10.1002/CSC2.70072}
+##' \emph{Crop Science}, 65(3). \doi{10.1002/CSC2.70072}
+##'
 ##'
 ##'
 ##' @import ggplot2
@@ -77,10 +54,11 @@
 ##' @export
 ##'
 ##' @examples
-#' \donttest{
+##' \donttest{
 ##'
 ##'
-##' met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
+##' met_df <-
+##' read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 ##'
 ##' mod = bayes_met(data = met_df,
 ##'                 gen = "gen",
@@ -143,7 +121,6 @@
 ##'   save.df = F
 ##' )
 ##' }
-##'
 
 bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 
@@ -259,8 +236,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'
 ##' @param x An object of class `bpsi`.
 ##' @param category A string indicating which plot to build. There are currently two
-##' types of visualizations. Set "Rank" for bar plots and "BPSI" (default) for circular bar plots.
-##' @param ... currently not used
+##' types of visualizations. Set "Ranks" for bar plots along each trait and "BPSI" (default) for circular bar plots multitrait.
 ##' @method plot bpsi
 ##'
 ##' @references
@@ -279,10 +255,11 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' @rdname plot.bpsi
 ##'
 ##' @export
-#'
+##'
 ##' @examples
-#' \donttest{
-##' met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
+##' \donttest{
+##' met_df <-
+##' read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 ##'
 ##' mod = bayes_met(data = met_df,
 ##'                 gen = "gen",
@@ -348,10 +325,9 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' plot(bpsi, category = "BPSI")
 ##' plot(bpsi, category = "Ranks")
 ##' }
-##'
 
 
-plot.bpsi = function(x, ..., category = "BPSI"){
+plot.bpsi = function(x, category = "BPSI"){
   # Namespaces
   requireNamespace('ggplot2')
 
@@ -442,22 +418,23 @@ plot.bpsi = function(x, ..., category = "BPSI"){
 }
 
 
-#' Print an object of class `bpsi`
-#'
-#' Print a `bpsi` object in R console
-#'
-#' @param x An object of class `bpsi`
-#' @param ... currently not used
-#' @method print bpsi
-#'
-#' @seealso [ProbBreed::bpsi]
-#'
-#' @author José Tiago Barroso Chagas
-#'
-#' @export
-#'
+##' Print an object of class `bpsi`
+##'
+##' Print a `bpsi` object in R console
+##'
+##' @param x An object of class `bpsi`
+##' @method print bpsi
+##'
+##' @seealso [ProbBreed::bpsi()]
+##'
+##' @author José Tiago Barroso Chagas
+##'
+##' @rdname print.bpsi
+##'
+##' @export
+##'
 
-  print.bpsi = function(x, ...){
+  print.bpsi = function(x){
     obj = x
     message("==> Considering an intensity of ", attr(obj[[1]], "control") *100,'%, here are the selected candidates:')
     obj=obj[[1]]

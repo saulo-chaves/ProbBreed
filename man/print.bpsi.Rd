@@ -4,18 +4,16 @@
 \alias{print.bpsi}
 \title{Print an object of class \code{bpsi}}
 \usage{
-\method{print}{bpsi}(x, ...)
+\method{print}{bpsi}(x)
 }
 \arguments{
 \item{x}{An object of class \code{bpsi}}
-
-\item{...}{currently not used}
 }
 \description{
 Print a \code{bpsi} object in R console
 }
 \seealso{
-\link{bpsi}
+\code{\link[=bpsi]{bpsi()}}
 }
 \author{
 José Tiago Barroso Chagas
