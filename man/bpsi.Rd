@@ -15,13 +15,11 @@ bpsi(problist, increase = NULL, lambda = NULL, int, save.df = FALSE)
 economic interest should be greater.}
 
 \item{int}{A numeric representing the selection intensity
-(between 0 and 1)
-##' @param save.df Logical. Should the data frames be saved in the work directory?
-\code{TRUE} for saving, \code{FALSE} (default) otherwise.
-completed steps. Defaults to \code{FALSE}.}
+(between 0 and 1)}
 
 \item{save.df}{Logical. Should the data frames be saved in the work directory?
-\code{TRUE} for saving, \code{FALSE} (default) otherwise.}
+\code{TRUE} for saving, \code{FALSE} (default) otherwise.
+completed steps. Defaults to \code{FALSE}.}
 }
 \value{
 The function returns an object of class \code{bpsi}, which contains two lists,
@@ -58,7 +56,7 @@ More details about the usage of \code{bpsi} can be found at \url{https://tiagobc
 \donttest{
 
 
-met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
+met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 
 mod = bayes_met(data = met_df,
                 gen = "gen",
@@ -130,7 +128,7 @@ Bayesian probabilistic selection index in the selection of common bean families.
 \emph{Crop Science, 65(3). \doi{10.1002/CSC2.70072}
 }
 \seealso{
-\link{plot.bpsi}
+\code{\link[=plot.bpsi]{plot.bpsi()}}
 }
 \author{
 José Tiago Barroso Chagas

@@ -19,7 +19,7 @@ Build plots using the outputs stored in the \code{bpsi} object.
 }
 \examples{
 \donttest{
-met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv",header=T)
+met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 
 mod = bayes_met(data = met_df,
                 gen = "gen",
@@ -93,7 +93,7 @@ Bayesian probabilistic selection index in the selection of common bean families.
 \emph{Crop Science}, 65(3).\doi{https://doi.org/10.1002/CSC2.70072}
 }
 \seealso{
-\link{bpsi}
+\code{\link[=bpsi]{bpsi()}}
 }
 \author{
 José Tiago Barroso Chagas
