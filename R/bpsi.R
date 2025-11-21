@@ -80,7 +80,7 @@
 #' \donttest{
 ##'
 ##'
-##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv", header=TRUE)
+##' met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 ##'
 ##' mod = bayes_met(data = met_df,
 ##'                 gen = "gen",
@@ -282,7 +282,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 #'
 ##' @examples
 #' \donttest{
-##' met_df=read.csv("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.csv", header=TRUE)
+##' met_df <- read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 ##'
 ##' mod = bayes_met(data = met_df,
 ##'                 gen = "gen",
