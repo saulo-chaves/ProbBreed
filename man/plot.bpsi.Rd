@@ -83,8 +83,8 @@ index = bpsi(
   save.df = FALSE
 )
 
-plot(bpsi, category = "BPSI")
-plot(bpsi, category = "Ranks")
+plot(index, category = "BPSI")
+plot(index, category = "Ranks")
 }
 }
 \references{

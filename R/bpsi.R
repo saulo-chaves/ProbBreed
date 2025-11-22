@@ -323,8 +323,8 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'   save.df = FALSE
 ##' )
 ##'
-##' plot(bpsi, category = "BPSI")
-##' plot(bpsi, category = "Ranks")
+##' plot(index, category = "BPSI")
+##' plot(index, category = "Ranks")
 ##' }
 
 
