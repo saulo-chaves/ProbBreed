@@ -106,13 +106,17 @@ Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 1 divergent transitions after warmup. See</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            512.47 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 3 divergent transitions after warmup. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 999 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bfmi-low</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Examine the pairs() plot to diagnose sampling problems</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.78, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.12, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -129,11 +133,12 @@ Unavailable if an entry-mean model was used in <code>bayes_met</code>.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Variances extracted</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Maximum posterior values extracted</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -&gt; Posterior predictive checks computed</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 1 of 4000 iterations ended with a divergence (0.025%).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 3 of 4000 iterations ended with a divergence (0.075%).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Try increasing 'adapt_delta' to remove the divergences.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 0 of 4000 iterations saturated the maximum tree depth of 10.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 999 of 4000 iterations saturated the maximum tree depth of 10 (24.975%).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Try increasing 'max_treedepth' to avoid saturation.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI indicated possible pathological behavior:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 2: E-BFMI = 0.090</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Chain 2: E-BFMI = 0.192</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> E-BFMI below 0.2 indicates you may need to reparameterize your model.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">results</span> <span class="op">=</span> <span class="fu"><a href="prob_sup.html">prob_sup</a></span><span class="op">(</span>extr <span class="op">=</span> <span class="va">outs</span>,</span></span>

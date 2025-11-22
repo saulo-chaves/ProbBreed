@@ -235,16 +235,15 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>     193.575 seconds (Sampling)
-#> Chain 2:                455.647 seconds (Total)
-#> Chain 2: 
+#>             521.202 seconds (Total)
+#> Chain 1: 
 #> Warning: There were 4 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
 #> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
 #> https://mc-stan.org/misc/warnings.html#bfmi-low
 #> Warning: Examine the pairs() plot to diagnose sampling problems
-#> Warning: The largest R-hat is 1.05, indicating chains have not mixed.
+#> Warning: The largest R-hat is 1.09, indicating chains have not mixed.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#r-hat
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
@@ -265,7 +264,7 @@ outs = extr_outs(model = mod,
 #> Try increasing 'adapt_delta' to remove the divergences.
 #> 0 of 4000 iterations saturated the maximum tree depth of 10.
 #> E-BFMI indicated possible pathological behavior:
-#>   Chain 2: E-BFMI = 0.169
+#>   Chain 1: E-BFMI = 0.091
 #> E-BFMI below 0.2 indicates you may need to reparameterize your model.
 
 results = prob_sup(extr = outs,

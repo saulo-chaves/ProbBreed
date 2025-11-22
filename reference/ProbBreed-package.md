@@ -37,7 +37,7 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Saulo Chaves <saulo.chaves@ufv.br>
+**Maintainer**: Saulo Chaves <saulochaves@usp.br>
 ([ORCID](https://orcid.org/0000-0002-0694-1798))
 
 Authors:

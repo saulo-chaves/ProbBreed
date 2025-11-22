@@ -91,13 +91,17 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#> Warning: There were 1 divergent transitions after warmup. See
+#>            512.47 seconds (Total)
+#> Chain 2: 
+#> Warning: There were 3 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
-#> Warning: There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See
+#> Warning: There were 999 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+#> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded
+#> Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
 #> https://mc-stan.org/misc/warnings.html#bfmi-low
 #> Warning: Examine the pairs() plot to diagnose sampling problems
-#> Warning: The largest R-hat is 1.78, indicating chains have not mixed.
+#> Warning: The largest R-hat is 1.12, indicating chains have not mixed.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#r-hat
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
@@ -114,11 +118,12 @@ outs = extr_outs(model = mod,
 #> -> Variances extracted
 #> -> Maximum posterior values extracted
 #> -> Posterior predictive checks computed
-#> 1 of 4000 iterations ended with a divergence (0.025%).
+#> 3 of 4000 iterations ended with a divergence (0.075%).
 #> Try increasing 'adapt_delta' to remove the divergences.
-#> 0 of 4000 iterations saturated the maximum tree depth of 10.
+#> 999 of 4000 iterations saturated the maximum tree depth of 10 (24.975%).
+#> Try increasing 'max_treedepth' to avoid saturation.
 #> E-BFMI indicated possible pathological behavior:
-#>   Chain 2: E-BFMI = 0.090
+#>   Chain 2: E-BFMI = 0.192
 #> E-BFMI below 0.2 indicates you may need to reparameterize your model.
 
 results = prob_sup(extr = outs,

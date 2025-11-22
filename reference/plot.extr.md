@@ -57,13 +57,15 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>               409.196 seconds (Total)
-#> Chain 1: 
-#> Warning: There were 1 divergent transitions after warmup. See
-#> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
-#> to find out why this is a problem and how to eliminate them.
+#>             376.976 seconds (Sampling)
+#> Chain 2:                632.858 seconds (Total)
+#> Chain 2: 
+#> Warning: There were 104 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+#> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded
+#> Warning: There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See
+#> https://mc-stan.org/misc/warnings.html#bfmi-low
 #> Warning: Examine the pairs() plot to diagnose sampling problems
-#> Warning: The largest R-hat is 1.1, indicating chains have not mixed.
+#> Warning: The largest R-hat is 1.37, indicating chains have not mixed.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#r-hat
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
@@ -80,10 +82,13 @@ outs = extr_outs(model = mod,
 #> -> Variances extracted
 #> -> Maximum posterior values extracted
 #> -> Posterior predictive checks computed
-#> 1 of 4000 iterations ended with a divergence (0.025%).
-#> Try increasing 'adapt_delta' to remove the divergences.
-#> 0 of 4000 iterations saturated the maximum tree depth of 10.
-#> E-BFMI indicated no pathological behavior.
+#> 0 of 4000 iterations ended with a divergence.
+#> 104 of 4000 iterations saturated the maximum tree depth of 10 (2.6%).
+#> Try increasing 'max_treedepth' to avoid saturation.
+#> E-BFMI indicated possible pathological behavior:
+#>   Chain 3: E-BFMI = 0.140
+#>   Chain 4: E-BFMI = 0.026
+#> E-BFMI below 0.2 indicates you may need to reparameterize your model.
 plot(outs, category = "ppdensity")
 
 plot(outs, category = "density")

@@ -5,6 +5,9 @@
 - [`bayes_met()`](https://saulo-chaves.github.io/ProbBreed/reference/bayes_met.md)
   : Bayesian model for multi-environment trials
 
+- [`bpsi()`](https://saulo-chaves.github.io/ProbBreed/reference/bpsi.md)
+  : Bayesian Probabilistic Selection Index (BPSI)
+
 - [`extr_outs()`](https://saulo-chaves.github.io/ProbBreed/reference/extr_outs.md)
   :
 
@@ -12,6 +15,11 @@
 
 - [`maize`](https://saulo-chaves.github.io/ProbBreed/reference/maize.md)
   : Maize real data set
+
+- [`plot(`*`<bpsi>`*`)`](https://saulo-chaves.github.io/ProbBreed/reference/plot.bpsi.md)
+  :
+
+  Plots for the `bpsi` object
 
 - [`plot(`*`<extr>`*`)`](https://saulo-chaves.github.io/ProbBreed/reference/plot.extr.md)
   :
@@ -22,6 +30,11 @@
   :
 
   Plots for the `probsup` object
+
+- [`print(`*`<bpsi>`*`)`](https://saulo-chaves.github.io/ProbBreed/reference/print.bpsi.md)
+  :
+
+  Print an object of class `bpsi`
 
 - [`print(`*`<extr>`*`)`](https://saulo-chaves.github.io/ProbBreed/reference/print.extr.md)
   :

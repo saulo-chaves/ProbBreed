@@ -271,7 +271,8 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>                 391.657 seconds (Total)
+#>      174.745 seconds (Sampling)
+#> Chain 2:                393.713 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See
 #> https://mc-stan.org/misc/warnings.html#bfmi-low
