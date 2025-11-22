@@ -234,7 +234,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'
 ##' Build plots using the outputs stored in the `bpsi` object.
 ##'
-##' @param BPSI_result An object of class `bpsi`.
+##' @param x An object of class `bpsi`.
 ##' @param ... currently not used
 ##' @param category A string indicating which plot to build. There are currently two
 ##' types of visualizations. Set "Ranks" for bar plots along each trait and "BPSI" (default) for circular bar plots multitrait.
@@ -247,7 +247,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'
 ##' @author José Tiago Barroso Chagas
 ##'
-##' @seealso [ProbBreed::bpsi()]
+##' @seealso [ProbBreed::bpsi]
 ##'
 ##' @import ggplot2
 ##' @importFrom stats reshape na.exclude
@@ -328,7 +328,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' }
 
 
-plot.bpsi = function(BPSI_result, category = "BPSI",...){
+plot.bpsi = function(x, ..., category = "BPSI"){
   # Namespaces
   requireNamespace('ggplot2')
 
@@ -423,20 +423,19 @@ plot.bpsi = function(BPSI_result, category = "BPSI",...){
 ##'
 ##' Print a `bpsi` object in R console
 ##'
-##' @param BPSI_result An object of class `bpsi`
+##' @param x An object of class `bpsi`
 ##' @param ... currently not used
 ##' @method print bpsi
 ##'
-##' @seealso [ProbBreed::bpsi()]
+##' @seealso [ProbBreed::bpsi]
 ##'
 ##' @author José Tiago Barroso Chagas
 ##'
-##' @rdname print.bpsi
 ##'
 ##' @export
 ##'
 
-  print.bpsi = function(BPSI_result, ...){
+  print.bpsi = function(x, ...){
     obj = x
     message("==> Considering an intensity of ", attr(obj[[1]], "control") *100,'%, here are the selected candidates:')
     obj=obj[[1]]

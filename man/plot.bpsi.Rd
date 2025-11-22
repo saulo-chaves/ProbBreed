@@ -4,15 +4,15 @@
 \alias{plot.bpsi}
 \title{Plots for the \code{bpsi} object}
 \usage{
-\method{plot}{bpsi}(BPSI_result, category = "BPSI", ...)
+\method{plot}{bpsi}(x, ..., category = "BPSI")
 }
 \arguments{
-\item{BPSI_result}{An object of class \code{bpsi}.}
+\item{x}{An object of class \code{bpsi}.}
+
+\item{...}{currently not used}
 
 \item{category}{A string indicating which plot to build. There are currently two
 types of visualizations. Set "Ranks" for bar plots along each trait and "BPSI" (default) for circular bar plots multitrait.}
-
-\item{...}{currently not used}
 }
 \description{
 Build plots using the outputs stored in the \code{bpsi} object.
@@ -93,7 +93,7 @@ Bayesian probabilistic selection index in the selection of common bean families.
 \emph{Crop Science}, 65(3).\doi{https://doi.org/10.1002/CSC2.70072}
 }
 \seealso{
-\code{\link[=bpsi]{bpsi()}}
+\link{bpsi}
 }
 \author{
 José Tiago Barroso Chagas
