@@ -33,7 +33,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Saulo Chaves \email{saulo.chaves@ufv.br} (\href{https://orcid.org/0000-0002-0694-1798}{ORCID})
+\strong{Maintainer}: Saulo Chaves \email{saulochaves@usp.br} (\href{https://orcid.org/0000-0002-0694-1798}{ORCID})
 
 Authors:
 \itemize{
