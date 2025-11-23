@@ -97,7 +97,7 @@ mod = bayes_met(data = met_df,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#> in 2:                21.52 seconds (Total)
+#> hain 2:                21.639 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 24 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
@@ -117,7 +117,7 @@ mod2 = bayes_met(data = met_df,
                  year = NULL,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
-#> :                21.52 seconds (Total)
+#> :                21.639 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See

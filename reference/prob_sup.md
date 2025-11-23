@@ -235,7 +235,8 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>             521.202 seconds (Total)
+#>             210.248 seconds (Sampling)
+#> Chain 1:                523.934 seconds (Total)
 #> Chain 1: 
 #> Warning: There were 4 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup

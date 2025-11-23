@@ -1,5 +1,11 @@
 # Changelog
 
+## ProbBreed 1.0.4.8
+
+- Droping levels from bayes_met
+- Adding a new function (bpsi: Bayesian Probability Selection Index),
+  authored by José Tiago Barroso Chagas
+
 ## ProbBreed 1.0.4.3
 
 CRAN release: 2024-11-07
