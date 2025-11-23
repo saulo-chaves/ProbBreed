@@ -57,10 +57,9 @@
 ##' \donttest{
 ##'
 ##'
-##' met_df <-
-##' read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
+##' load("data/soy_pat.rda")
 ##'
-##' mod = bayes_met(data = met_df,
+##' mod = bayes_met(data = soy_pat,
 ##'                 gen = "gen",
 ##'                 loc = "env",
 ##'                 repl = NULL,
@@ -71,7 +70,7 @@
 ##'                 iter = 2000, cores = 2, chain = 4)
 ##'
 ##'
-##' mod2 = bayes_met(data = met_df,
+##' mod2 = bayes_met(data = soy_pat,
 ##'                  gen = "gen",
 ##'                  loc = "env",
 ##'                  repl = NULL,
@@ -81,7 +80,7 @@
 ##'                  res.het = TRUE,
 ##'                  iter = 2000, cores = 2, chain = 4)
 ##'
-##' mod3 = bayes_met(data = met_df,
+##' mod3 = bayes_met(data = soy_pat,
 ##'                  gen = "gen",
 ##'                  loc = "env",
 ##'                  repl =  NULL,
@@ -259,10 +258,11 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'
 ##' @examples
 ##' \donttest{
-##' met_df <-
-##' read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 ##'
-##' mod = bayes_met(data = met_df,
+##'  load("data/soy_pat.rda")
+##'
+##'
+##' mod = bayes_met(data = soy_pat,
 ##'                 gen = "gen",
 ##'                 loc = "env",
 ##'                 repl = NULL,
@@ -273,7 +273,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'                 iter = 2000, cores = 2, chain = 4)
 ##'
 ##'
-##' mod2 = bayes_met(data = met_df,
+##' mod2 = bayes_met(data = soy_pat,
 ##'                  gen = "gen",
 ##'                  loc = "env",
 ##'                  repl = NULL,
@@ -283,7 +283,7 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##'                  res.het = TRUE,
 ##'                  iter = 2000, cores = 2, chain = 4)
 ##'
-##' mod3 = bayes_met(data = met_df,
+##' mod3 = bayes_met(data = soy_pat,
 ##'                  gen = "gen",
 ##'                  loc = "env",
 ##'                  repl =  NULL,

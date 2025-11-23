@@ -47,10 +47,9 @@ More details about the usage of \code{bpsi} can be found at \url{https://tiagobc
 \donttest{
 
 
-met_df <-
-read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
+load("data/soy_pat.rda")
 
-mod = bayes_met(data = met_df,
+mod = bayes_met(data = soy_pat,
                 gen = "gen",
                 loc = "env",
                 repl = NULL,
@@ -61,7 +60,7 @@ mod = bayes_met(data = met_df,
                 iter = 2000, cores = 2, chain = 4)
 
 
-mod2 = bayes_met(data = met_df,
+mod2 = bayes_met(data = soy_pat,
                  gen = "gen",
                  loc = "env",
                  repl = NULL,
@@ -71,7 +70,7 @@ mod2 = bayes_met(data = met_df,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
 
-mod3 = bayes_met(data = met_df,
+mod3 = bayes_met(data = soy_pat,
                  gen = "gen",
                  loc = "env",
                  repl =  NULL,
