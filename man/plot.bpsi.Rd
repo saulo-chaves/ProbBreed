@@ -20,7 +20,6 @@ Build plots using the outputs stored in the \code{bpsi} object.
 \examples{
 \donttest{
 
- load("data/soy_pat.rda")
 
 
 mod = bayes_met(data = soy_pat,

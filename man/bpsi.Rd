@@ -47,7 +47,6 @@ More details about the usage of \code{bpsi} can be found at \url{https://tiagobc
 \donttest{
 
 
-load("data/soy_pat.rda")
 
 mod = bayes_met(data = soy_pat,
                 gen = "gen",

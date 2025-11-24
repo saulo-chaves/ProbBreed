@@ -57,7 +57,6 @@
 ##' \donttest{
 ##'
 ##'
-##' load("data/soy_pat.rda")
 ##'
 ##' mod = bayes_met(data = soy_pat,
 ##'                 gen = "gen",
@@ -259,7 +258,6 @@ bpsi = function(problist, increase = NULL, lambda = NULL, int, save.df = FALSE){
 ##' @examples
 ##' \donttest{
 ##'
-##'  load("data/soy_pat.rda")
 ##'
 ##'
 ##' mod = bayes_met(data = soy_pat,
