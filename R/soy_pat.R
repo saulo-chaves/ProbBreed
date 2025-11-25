@@ -6,7 +6,8 @@
 #' grain yield (GY), plant height (PH) and number of days to maturity (NDM)
 #' from 65 experimental genotypes evaluated in 19 locations.
 #'
-#' @format A data frame with 540 rows and 5 columns:
+#' @format ## `soy_pat`
+#'  A data frame with 540 rows and 5 columns:
 #' \describe{
 #'   \item{Env}{19 environments}
 #'   \item{Gen}{65 experimental genotypes}
@@ -16,16 +17,11 @@
 #' }
 #'
 #' @source
+#' \describe{
 #' Araújo, Mauricio S., Saulo F. Chaves, Gérson N. C. Ferreira, Godfree Chigeza,
 #' Erica P. Leles, Michelle F. Santos, Brian W. Diers, Peter Goldsmith, and José B. Pinheiro.
 #' 2025. "High-Resolution Soybean Trial Data Supporting the Expansion of
 #' Agriculture in Africa." Scientific Data.
-#' doi: https://doi.org/10.1038/s41597-025-06190-3.
+#' doi: https://doi.org/10.1038/s41597-025-06190-3.}
 #'
-#' @usage data(soy_pat)
-#' @examples
-#' data(soy_pat)
-#' head(soy_pat)
-#'
-#' @export
 "soy_pat"
