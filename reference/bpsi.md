@@ -85,10 +85,8 @@ José Tiago Barroso Chagas
 # \donttest{
 
 
-met_df <-
-read.table("https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt",header = TRUE)
 
-mod = bayes_met(data = met_df,
+mod = bayes_met(data = soy_pat,
                 gen = "gen",
                 loc = "env",
                 repl = NULL,
@@ -97,7 +95,7 @@ mod = bayes_met(data = met_df,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#> hain 2:                21.639 seconds (Total)
+#>                 21.18 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 24 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
@@ -108,7 +106,7 @@ mod = bayes_met(data = met_df,
 #> https://mc-stan.org/misc/warnings.html#tail-ess
 
 
-mod2 = bayes_met(data = met_df,
+mod2 = bayes_met(data = soy_pat,
                  gen = "gen",
                  loc = "env",
                  repl = NULL,
@@ -117,13 +115,13 @@ mod2 = bayes_met(data = met_df,
                  year = NULL,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
-#> :                21.639 seconds (Total)
+#>               21.18 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#bulk-ess
 
-mod3 = bayes_met(data = met_df,
+mod3 = bayes_met(data = soy_pat,
                  gen = "gen",
                  loc = "env",
                  repl =  NULL,
@@ -132,7 +130,9 @@ mod3 = bayes_met(data = met_df,
                  year = NULL,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
-#> hain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
+#> 
+#>               21.18 seconds (Total)
+#> Chain 2: 
 #> Warning: There were 41 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.

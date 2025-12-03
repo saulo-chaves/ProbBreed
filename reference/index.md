@@ -51,3 +51,6 @@
 
 - [`soy`](https://saulo-chaves.github.io/ProbBreed/reference/soy.md) :
   Soybean real data set
+
+- [`soy_pat`](https://saulo-chaves.github.io/ProbBreed/reference/soy_pat.md)
+  : Soybean PAT real data set

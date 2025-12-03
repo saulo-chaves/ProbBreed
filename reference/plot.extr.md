@@ -57,8 +57,8 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>             359.328 seconds (Sampling)
-#> Chain 2:                605.564 seconds (Total)
+#>               395.554 seconds (Sampling)
+#> Chain 2:                665.22 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 104 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
 #> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded

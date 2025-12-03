@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-11-23T13:07Z
+last_built: 2025-12-03T14:03Z
 urls:
   reference: https://saulo-chaves.github.io/ProbBreed/reference
   article: https://saulo-chaves.github.io/ProbBreed/articles

@@ -112,10 +112,8 @@ Bayesian probabilistic selection index in the selection of common bean families.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">met_df</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/tiagobchagas/BPSI/refs/heads/main/Data/blues_long.txt"</span>,header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">met_df</span>,</span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy_pat</span>,</span></span>
 <span class="r-in"><span>                gen <span class="op">=</span> <span class="st">"gen"</span>,</span></span>
 <span class="r-in"><span>                loc <span class="op">=</span> <span class="st">"env"</span>,</span></span>
 <span class="r-in"><span>                repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
@@ -124,7 +122,7 @@ Bayesian probabilistic selection index in the selection of common bean families.
 <span class="r-in"><span>                year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> hain 2:                21.639 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 21.18 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 24 divergent transitions after warmup. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
@@ -135,7 +133,7 @@ Bayesian probabilistic selection index in the selection of common bean families.
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mod2</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">met_df</span>,</span></span>
+<span class="r-in"><span><span class="va">mod2</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy_pat</span>,</span></span>
 <span class="r-in"><span>                 gen <span class="op">=</span> <span class="st">"gen"</span>,</span></span>
 <span class="r-in"><span>                 loc <span class="op">=</span> <span class="st">"env"</span>,</span></span>
 <span class="r-in"><span>                 repl <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
@@ -144,13 +142,13 @@ Bayesian probabilistic selection index in the selection of common bean families.
 <span class="r-in"><span>                 year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                 res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> :                21.639 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               21.18 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mod3</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">met_df</span>,</span></span>
+<span class="r-in"><span><span class="va">mod3</span> <span class="op">=</span> <span class="fu"><a href="bayes_met.html">bayes_met</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">soy_pat</span>,</span></span>
 <span class="r-in"><span>                 gen <span class="op">=</span> <span class="st">"gen"</span>,</span></span>
 <span class="r-in"><span>                 loc <span class="op">=</span> <span class="st">"env"</span>,</span></span>
 <span class="r-in"><span>                 repl <span class="op">=</span>  <span class="cn">NULL</span>,</span></span>
@@ -159,7 +157,9 @@ Bayesian probabilistic selection index in the selection of common bean families.
 <span class="r-in"><span>                 year <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
 <span class="r-in"><span>                 res.het <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 iter <span class="op">=</span> <span class="fl">2000</span>, cores <span class="op">=</span> <span class="fl">2</span>, chain <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> hain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               21.18 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 2: </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 41 divergent transitions after warmup. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
