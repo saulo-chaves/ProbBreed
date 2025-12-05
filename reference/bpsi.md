@@ -95,7 +95,7 @@ mod = bayes_met(data = soy_pat,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>                 21.18 seconds (Total)
+#>  2:                21.015 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 24 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
@@ -115,7 +115,7 @@ mod2 = bayes_met(data = soy_pat,
                  year = NULL,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
-#>               21.18 seconds (Total)
+#>                 21.015 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
@@ -130,8 +130,8 @@ mod3 = bayes_met(data = soy_pat,
                  year = NULL,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
-#> 
-#>               21.18 seconds (Total)
+#>  
+#>                 21.015 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 41 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup

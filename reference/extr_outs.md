@@ -54,7 +54,7 @@ More details about the usage of `extr_outs` and other functions of the
 
 rstan::stan_diag,
 [ggplot2::ggplot](https://ggplot2.tidyverse.org/reference/ggplot.html),
-[rstan::check_hmc_diagnostics](https://mc-stan.org/rstan/reference/check_hmc_diagnostics.html),
+[rstan::check_hmc_diagnostics](https://rdrr.io/pkg/rstan/man/check_hmc_diagnostics.html),
 [plot.extr](https://saulo-chaves.github.io/ProbBreed/reference/plot.extr.md)
 
 ## Examples
@@ -70,7 +70,8 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>              576.916 seconds (Total)
+#>            400.546 seconds (Sampling)
+#> Chain 2:                637.71 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 1 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup

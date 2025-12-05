@@ -72,7 +72,7 @@ mod2 = bayes_met(data = soy_pat,
                  year = NULL,
                  res.het = TRUE,
                  iter = 2000, cores = 2, chain = 4)
-#>  
+#> 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#bulk-ess

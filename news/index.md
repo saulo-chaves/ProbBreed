@@ -1,5 +1,9 @@
 # Changelog
 
+## ProbBreed 1.0.4.9
+
+- Added the soy_pat dataset
+
 ## ProbBreed 1.0.4.8
 
 - Droping levels from bayes_met
