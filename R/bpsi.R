@@ -19,8 +19,6 @@
 ##' one with the BPSI- Bayesian Probabilistic Selection Index, and another with the original `data`-
 ##' with across-environments probabilities of superior performance for each trait.
 ##'
-##'
-##'
 ##' @details
 ##' \itemize{\item Bayesian Probabilistic Selection Index}
 ##'

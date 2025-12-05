@@ -1,4 +1,4 @@
-##' Maize real data set
+##' Maize real dataset
 ##'
 ##' This dataset belongs to value of cultivation and use maize trials of
 ##' Embrapa Maize and Sorghum, and was used by Dias et al. (2022).
@@ -20,7 +20,7 @@
 ##'
 ##' @source
 ##'  \describe{
-##' Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
+##' Dias, K. O. G, Santos, J. P. R., Krause, M. D., Piepho, H. -P., Guimarães, L. J. M.,
 ##' Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
 ##' for cultivar recommendation in multi-environment trials. \emph{Theoretical and
 ##' Applied Genetics}, 133(2):443-455. \doi{10.1007/s00122-022-04041-y}
