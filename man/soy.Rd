@@ -3,7 +3,7 @@
 \docType{data}
 \name{soy}
 \alias{soy}
-\title{Soybean real data set}
+\title{Soybean real dataset}
 \format{
 \subsection{\code{soy}}{
 
@@ -17,11 +17,11 @@ A data frame with 823 rows and 3 columns:
 }
 \source{
 \describe{
-Krause MD, Dias KOG, Singh AK, Beavis WD. 2023. Using soybean
+Krause, M. D., Dias, K. O. G., Singh A. K., Beavis W. D. (2023). Using soybean
 historical field trial data to study genotype by environment
 variation and identify mega-environments with the integration
-of genetic and non-genetic factors. bioRxiv : the preprint server for biology.
-doi: https://doi.org/10.1101/2022.04.11.487885
+of genetic and non-genetic factors. \emph{Agronomy Journal},
+117(1):170023. \doi{10.1002/agj2.70023}
 }
 }
 \usage{

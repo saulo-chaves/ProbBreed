@@ -3,7 +3,7 @@
 \docType{data}
 \name{maize}
 \alias{maize}
-\title{Maize real data set}
+\title{Maize real dataset}
 \format{
 \subsection{\code{maize}}{
 
@@ -20,7 +20,7 @@ A data frame with 823 rows and 6 columns:
 }
 \source{
 \describe{
-Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães, L. J. M.,
+Dias, K. O. G, Santos, J. P. R., Krause, M. D., Piepho, H. -P., Guimarães, L. J. M.,
 Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging probability concepts
 for cultivar recommendation in multi-environment trials. \emph{Theoretical and
 Applied Genetics}, 133(2):443-455. \doi{10.1007/s00122-022-04041-y}
