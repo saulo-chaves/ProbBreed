@@ -14,7 +14,7 @@
   Extract outputs from `stanfit` objects obtained from bayes_met
 
 - [`maize`](https://saulo-chaves.github.io/ProbBreed/reference/maize.md)
-  : Maize real data set
+  : Maize real dataset
 
 - [`plot(`*`<bpsi>`*`)`](https://saulo-chaves.github.io/ProbBreed/reference/plot.bpsi.md)
   :
@@ -50,7 +50,7 @@
   : Probabilities of superior performance and stability
 
 - [`soy`](https://saulo-chaves.github.io/ProbBreed/reference/soy.md) :
-  Soybean real data set
+  Soybean real dataset
 
 - [`soy_pat`](https://saulo-chaves.github.io/ProbBreed/reference/soy_pat.md)
-  : Soybean PAT real data set
+  : Soybean Pan-African Trials data set

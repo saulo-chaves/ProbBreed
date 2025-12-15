@@ -208,10 +208,11 @@ function of the `ProbBreed` package can be found at
 
 ## References
 
-Dias, K. O. G, Santos J. P. R., Krause, M. D., Piepho H. -P., Guimarães,
-L. J. M., Pastina, M. M., and Garcia, A. A. F. (2022). Leveraging
-probability concepts for cultivar recommendation in multi-environment
-trials. *Theoretical and Applied Genetics*, 133(2):443-455.
+Dias, K. O. G, Santos, J. P. R., Krause, M. D., Piepho, H. -P.,
+Guimarães, L. J. M., Pastina, M. M., and Garcia, A. A. F. (2022).
+Leveraging probability concepts for cultivar recommendation in
+multi-environment trials. *Theoretical and Applied Genetics*,
+133(2):443-455.
 [doi:10.1007/s00122-022-04041-y](https://doi.org/10.1007/s00122-022-04041-y)
 
 Shukla, G. K. (1972) Some statistical aspects of partioning genotype
@@ -235,8 +236,9 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>              557.127 seconds (Total)
+#>             526.815 seconds (Total)
 #> Chain 1: 
+#> Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 #> Warning: There were 4 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.

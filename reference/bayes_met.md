@@ -131,7 +131,8 @@ bayes_met(
 - init:
 
   Initial values specification. See the detailed documentation for the
-  init argument in [`stan`](https://rdrr.io/pkg/rstan/man/stan.html).
+  init argument in
+  [`stan`](https://mc-stan.org/rstan/reference/stan.html).
 
 - verbose:
 
@@ -150,7 +151,7 @@ bayes_met(
 
   A named `list` of parameters to control the sampler's behavior. See
   the details in the documentation for the `control` argument in
-  [`stan`](https://rdrr.io/pkg/rstan/man/stan.html).
+  [`stan`](https://mc-stan.org/rstan/reference/stan.html).
 
 - include:
 
@@ -171,7 +172,8 @@ bayes_met(
 
   Additional arguments can be `chain_id`, `init_r`, `test_grad`,
   `append_samples`, `refresh`, `enable_random_init`. See the
-  documentation in [`stan`](https://rdrr.io/pkg/rstan/man/stan.html).
+  documentation in
+  [`stan`](https://mc-stan.org/rstan/reference/stan.html).
 
 ## Value
 
@@ -252,8 +254,9 @@ convergence or mixing issues can be found at
 
 ## See also
 
-rstan::sampling, [rstan::stan](https://rdrr.io/pkg/rstan/man/stan.html),
-[rstan::stanfit](https://rdrr.io/pkg/rstan/man/stanfit-class.html)
+rstan::sampling,
+[rstan::stan](https://mc-stan.org/rstan/reference/stan.html),
+[rstan::stanfit](https://mc-stan.org/rstan/reference/stanfit-class.html)
 
 ## Examples
 
@@ -268,7 +271,7 @@ mod = bayes_met(data = maize,
                 year = NULL,
                 res.het = TRUE,
                 iter = 2000, cores = 2, chain = 4)
-#>              412.829 seconds (Total)
+#>             405.33 seconds (Total)
 #> Chain 2: 
 #> Warning: There were 2 chains where the estimated Bayesian Fraction of Missing Information was low. See
 #> https://mc-stan.org/misc/warnings.html#bfmi-low

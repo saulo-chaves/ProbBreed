@@ -1,11 +1,13 @@
-# Soybean PAT real data set
+# Soybean Pan-African Trials data set
 
-This dataset belongs to the Soybean Pan-African Trials (PAT) which
-evaluate 65 soybean genotypes across 19 environments (Araújo et al.
-2025). It contains the empirical best linear unbiased estimates of
-genotypic means of grain yield (GY), plant height (PH) and number of
-days to maturity (NDM) from 65 experimental genotypes evaluated in 19
-locations.
+This data set belongs to the Soybean Pan-African Trials (PAT). This
+subset has the best linear unbiased estimates of grain yield (GY), plant
+height (PH) and number of days to maturity (NDM) of 65 soybean genotypes
+evaluated over 19 environments. The complete data set is available at
+Araújo et al. (2025) (check references). It contains the empirical best
+linear unbiased estimates of grain yield (GY), plant height (PH) and
+number of days to maturity (NDM) from 65 experimental genotypes
+evaluated in 19 locations.
 
 ## Usage
 
@@ -29,14 +31,14 @@ A data frame with 540 rows and 5 columns:
 
 - Plant_Height:
 
-  395 EBLUEs (phenotypes) - Plant height measurements
+  395 BLUEs - Plant height measurements
 
 - Grain_Yield:
 
-  525 EBLUEs (phenotypes) - Grain yield measurements
+  525 BLUEs - Grain yield measurements
 
 - Days_to_Maturity:
 
-  312 EBLUEs (phenotypes) - Number of days to maturity
+  312 BLUEs - Number of days to maturity
 
 ## Source

@@ -1,4 +1,4 @@
-# Soybean real data set
+# Soybean real dataset
 
 This dataset belongs to the USDA Northern Region Uniform Soybean Tests,
 and it is a subset of the data used by Krause et al. (2023). It contains

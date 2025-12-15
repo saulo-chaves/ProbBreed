@@ -1,4 +1,4 @@
-# Maize real data set
+# Maize real dataset
 
 This dataset belongs to value of cultivation and use maize trials of
 Embrapa Maize and Sorghum, and was used by Dias et al. (2022). It
