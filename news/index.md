@@ -2,6 +2,8 @@
 
 ## ProbBreed 1.0.4.9
 
+CRAN release: 2025-12-15
+
 - Added the soy_pat dataset
 
 ## ProbBreed 1.0.4.8
